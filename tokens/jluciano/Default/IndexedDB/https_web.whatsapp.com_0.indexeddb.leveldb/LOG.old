@@ -1,0 +1,607 @@
+2026/02/01-17:46:39.430 4d46 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/jluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/02/01-17:46:39.431 4d46 Recovering log #1093
+2026/02/01-17:46:39.455 4d46 Reusing old log /home/jgluciano/offertrigger/tokens/jluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/001093.log 
+2026/02/01-17:46:39.879 4d3d Compacting 1@1 + 10@2 files
+2026/02/01-17:46:39.924 4d3d Generated table #1106@1: 55368 keys, 2214727 bytes
+2026/02/01-17:46:39.956 4d3d Generated table #1107@1: 33852 keys, 2196640 bytes
+2026/02/01-17:46:39.976 4d3d Generated table #1108@1: 2160 keys, 2151181 bytes
+2026/02/01-17:46:39.993 4d3d Generated table #1109@1: 1621 keys, 2142183 bytes
+2026/02/01-17:46:40.013 4d3d Generated table #1110@1: 1660 keys, 2141266 bytes
+2026/02/01-17:46:40.035 4d3d Generated table #1111@1: 1620 keys, 2147247 bytes
+2026/02/01-17:46:40.052 4d3d Generated table #1112@1: 1267 keys, 2143952 bytes
+2026/02/01-17:46:40.074 4d3d Generated table #1113@1: 2200 keys, 2150769 bytes
+2026/02/01-17:46:40.098 4d3d Generated table #1114@1: 3042 keys, 2148611 bytes
+2026/02/01-17:46:40.115 4d3d Generated table #1115@1: 1801 keys, 1293067 bytes
+2026/02/01-17:46:40.115 4d3d Compacted 1@1 + 10@2 files => 20729643 bytes
+2026/02/01-17:46:40.119 4d3d compacted to: files[ 0 1 18 0 0 0 0 ]
+2026/02/01-17:46:40.119 4d3d Delete type=2 #1032
+2026/02/01-17:46:40.119 4d3d Delete type=2 #1033
+2026/02/01-17:46:40.119 4d3d Delete type=2 #1095
+2026/02/01-17:46:40.119 4d3d Delete type=2 #1052
+2026/02/01-17:46:40.120 4d3d Delete type=2 #1055
+2026/02/01-17:46:40.120 4d3d Delete type=2 #1030
+2026/02/01-17:46:40.120 4d3d Delete type=2 #1050
+2026/02/01-17:46:40.120 4d3d Delete type=2 #1051
+2026/02/01-17:46:40.120 4d3d Delete type=2 #1054
+2026/02/01-17:46:40.120 4d3d Delete type=2 #1031
+2026/02/01-17:46:40.120 4d3d Delete type=2 #1053
+2026/02/01-17:46:45.293 4d44 Compacting 1@1 + 2@2 files
+2026/02/01-17:46:45.676 4d44 Generated table #1116@1: 2630 keys, 2148167 bytes
+2026/02/01-17:46:45.697 4d44 Generated table #1117@1: 1465 keys, 1284594 bytes
+2026/02/01-17:46:45.697 4d44 Compacted 1@1 + 2@2 files => 3432761 bytes
+2026/02/01-17:46:45.700 4d44 compacted to: files[ 0 0 18 0 0 0 0 ]
+2026/02/01-17:46:50.393 4d44 Level-0 table #1119: started
+2026/02/01-17:46:50.410 4d44 Level-0 table #1119: 1003671 bytes OK
+2026/02/01-17:46:50.414 4d44 Delete type=2 #1115
+2026/02/01-17:46:50.414 4d44 Delete type=2 #1034
+2026/02/01-17:46:50.414 4d44 Delete type=2 #1096
+2026/02/01-17:46:50.414 4d44 Delete type=0 #1093
+2026/02/01-17:46:50.418 4d3d Compacting 1@0 + 0@1 files
+2026/02/01-17:46:50.434 4d3d Generated table #1120@0: 33951 keys, 477294 bytes
+2026/02/01-17:46:50.439 4d3d Generated table #1121@0: 4331 keys, 129089 bytes
+2026/02/01-17:46:50.439 4d3d Compacted 1@0 + 0@1 files => 606383 bytes
+2026/02/01-17:46:50.442 4d3d compacted to: files[ 0 2 18 0 0 0 0 ]
+2026/02/01-17:46:50.443 4d3d Delete type=2 #1119
+2026/02/01-17:46:50.714 4d44 Compacting 1@1 + 3@2 files
+2026/02/01-17:46:50.777 4d44 Generated table #1122@1: 61557 keys, 2277277 bytes
+2026/02/01-17:46:50.818 4d44 Generated table #1123@1: 63076 keys, 2204004 bytes
+2026/02/01-17:46:50.840 4d44 Generated table #1124@1: 40823 keys, 1113999 bytes
+2026/02/01-17:46:50.840 4d44 Compacted 1@1 + 3@2 files => 5595280 bytes
+2026/02/01-17:46:50.843 4d44 compacted to: files[ 0 1 18 0 0 0 0 ]
+2026/02/01-17:46:50.843 4d44 Delete type=2 #1121
+2026/02/01-17:46:50.843 4d44 Delete type=2 #1103
+2026/02/01-17:46:50.843 4d44 Delete type=2 #1104
+2026/02/01-17:46:50.843 4d44 Delete type=2 #1102
+2026/02/01-17:46:53.070 4d3d Compacting 1@1 + 2@2 files
+2026/02/01-17:46:53.117 4d3d Generated table #1125@1: 46883 keys, 2205222 bytes
+2026/02/01-17:46:53.150 4d3d Generated table #1126@1: 30799 keys, 2103003 bytes
+2026/02/01-17:46:53.150 4d3d Compacted 1@1 + 2@2 files => 4308225 bytes
+2026/02/01-17:46:53.153 4d3d compacted to: files[ 0 0 18 0 0 0 0 ]
+2026/02/01-17:46:53.153 4d3d Delete type=2 #1106
+2026/02/01-17:46:53.153 4d3d Delete type=2 #1120
+2026/02/01-17:46:53.153 4d3d Delete type=2 #1107
+2026/02/01-17:47:05.949 4d3d Level-0 table #1128: started
+2026/02/01-17:47:05.969 4d3d Level-0 table #1128: 1580857 bytes OK
+2026/02/01-17:47:05.973 4d3d Delete type=0 #1118
+2026/02/01-17:47:05.975 4d3d Compacting 1@0 + 0@1 files
+2026/02/01-17:47:05.991 4d3d Generated table #1129@0: 10139 keys, 999121 bytes
+2026/02/01-17:47:06.002 4d3d Generated table #1130@0: 7034 keys, 409737 bytes
+2026/02/01-17:47:06.002 4d3d Compacted 1@0 + 0@1 files => 1408858 bytes
+2026/02/01-17:47:06.006 4d3d compacted to: files[ 0 2 18 0 0 0 0 ]
+2026/02/01-17:47:06.006 4d3d Delete type=2 #1128
+2026/02/01-17:47:06.010 4d3d Compacting 1@1 + 8@2 files
+2026/02/01-17:47:06.040 4d3d Generated table #1131@1: 2570 keys, 2140965 bytes
+2026/02/01-17:47:06.083 4d3d Generated table #1132@1: 26776 keys, 2206104 bytes
+2026/02/01-17:47:06.083 4d3d Level-0 table #1134: started
+2026/02/01-17:47:06.101 4d3d Level-0 table #1134: 1957312 bytes OK
+2026/02/01-17:47:06.105 4d3d Delete type=0 #1127
+2026/02/01-17:47:06.148 4d3d Generated table #1135@1: 27752 keys, 2274776 bytes
+2026/02/01-17:47:06.203 4d3d Generated table #1136@1: 32215 keys, 2256485 bytes
+2026/02/01-17:47:06.220 4d3d Level-0 table #1139: started
+2026/02/01-17:47:06.239 4d3d Level-0 table #1139: 1864145 bytes OK
+2026/02/01-17:47:06.243 4d3d Delete type=0 #1133
+2026/02/01-17:47:06.270 4d3d Generated table #1137@1: 61407 keys, 2248245 bytes
+2026/02/01-17:47:06.309 4d3d Generated table #1140@1: 24340 keys, 2222056 bytes
+2026/02/01-17:47:06.358 4d3d Generated table #1141@1: 93826 keys, 2244060 bytes
+2026/02/01-17:47:06.368 4d3d Generated table #1142@1: 10431 keys, 421052 bytes
+2026/02/01-17:47:06.368 4d3d Compacted 1@1 + 8@2 files => 16013743 bytes
+2026/02/01-17:47:06.372 4d3d compacted to: files[ 2 1 18 0 0 0 0 ]
+2026/02/01-17:47:06.373 4d3d Delete type=2 #1101
+2026/02/01-17:47:06.373 4d3d Delete type=2 #1130
+2026/02/01-17:47:06.373 4d3d Delete type=2 #1117
+2026/02/01-17:47:06.373 4d3d Delete type=2 #1122
+2026/02/01-17:47:06.373 4d3d Delete type=2 #1100
+2026/02/01-17:47:06.373 4d3d Delete type=2 #1123
+2026/02/01-17:47:06.373 4d3d Delete type=2 #1099
+2026/02/01-17:47:06.373 4d3d Delete type=2 #1098
+2026/02/01-17:47:06.373 4d3d Delete type=2 #1124
+2026/02/01-17:47:06.378 4d44 Level-0 table #1144: started
+2026/02/01-17:47:06.395 4d44 Level-0 table #1144: 1826272 bytes OK
+2026/02/01-17:47:06.404 4d44 Delete type=0 #1138
+2026/02/01-17:47:06.407 4d3d Compacting 3@0 + 1@1 files
+2026/02/01-17:47:06.430 4d3d Generated table #1145@0: 11939 keys, 2134665 bytes
+2026/02/01-17:47:06.456 4d3d Generated table #1146@0: 11904 keys, 2149714 bytes
+2026/02/01-17:47:06.468 4d3d Generated table #1147@0: 1389 keys, 1311817 bytes
+2026/02/01-17:47:06.485 4d3d Generated table #1148@0: 9527 keys, 1023884 bytes
+2026/02/01-17:47:06.485 4d3d Compacted 3@0 + 1@1 files => 6620080 bytes
+2026/02/01-17:47:06.488 4d3d compacted to: files[ 0 4 18 0 0 0 0 ]
+2026/02/01-17:47:06.489 4d3d Delete type=2 #1139
+2026/02/01-17:47:06.489 4d3d Delete type=2 #1134
+2026/02/01-17:47:06.489 4d3d Delete type=2 #1129
+2026/02/01-17:47:06.489 4d3d Delete type=2 #1144
+2026/02/01-17:47:06.491 4d3d Compacting 1@1 + 7@2 files
+2026/02/01-17:47:06.506 4d3d Level-0 table #1151: started
+2026/02/01-17:47:06.525 4d3d Level-0 table #1151: 1604106 bytes OK
+2026/02/01-17:47:06.529 4d3d Delete type=0 #1143
+2026/02/01-17:47:06.538 4d3d Generated table #1149@1: 2570 keys, 2141339 bytes
+2026/02/01-17:47:06.586 4d3d Generated table #1152@1: 26776 keys, 2206119 bytes
+2026/02/01-17:47:06.636 4d3d Generated table #1153@1: 27776 keys, 2274019 bytes
+2026/02/01-17:47:06.681 4d3d Generated table #1154@1: 32877 keys, 2254602 bytes
+2026/02/01-17:47:06.710 4d3d Level-0 table #1157: started
+2026/02/01-17:47:06.727 4d3d Level-0 table #1157: 1349319 bytes OK
+2026/02/01-17:47:06.732 4d3d Delete type=0 #1150
+2026/02/01-17:47:06.754 4d3d Generated table #1155@1: 42080 keys, 2235514 bytes
+2026/02/01-17:47:06.803 4d3d Generated table #1158@1: 46872 keys, 2258062 bytes
+2026/02/01-17:47:06.849 4d3d Generated table #1159@1: 81107 keys, 2226166 bytes
+2026/02/01-17:47:06.858 4d3d Generated table #1160@1: 13444 keys, 302937 bytes
+2026/02/01-17:47:06.858 4d3d Compacted 1@1 + 7@2 files => 15898758 bytes
+2026/02/01-17:47:06.861 4d3d compacted to: files[ 2 3 19 0 0 0 0 ]
+2026/02/01-17:47:06.861 4d3c Compacting 2@0 + 3@1 files
+2026/02/01-17:47:06.910 4d3c Generated table #1161@0: 19901 keys, 2146901 bytes
+2026/02/01-17:47:06.937 4d3c Generated table #1162@0: 9522 keys, 2130155 bytes
+2026/02/01-17:47:06.961 4d3c Generated table #1163@0: 8328 keys, 2160066 bytes
+2026/02/01-17:47:06.972 4d3c Generated table #1164@0: 1149 keys, 1067311 bytes
+2026/02/01-17:47:06.990 4d3c Generated table #1165@0: 8997 keys, 1021378 bytes
+2026/02/01-17:47:06.990 4d3c Compacted 2@0 + 3@1 files => 8525811 bytes
+2026/02/01-17:47:06.994 4d3c compacted to: files[ 0 5 19 0 0 0 0 ]
+2026/02/01-17:47:06.995 4d3c Delete type=2 #1141
+2026/02/01-17:47:06.995 4d3c Delete type=2 #1140
+2026/02/01-17:47:06.995 4d3c Delete type=2 #1135
+2026/02/01-17:47:06.995 4d3c Delete type=2 #1132
+2026/02/01-17:47:06.995 4d3c Delete type=2 #1136
+2026/02/01-17:47:06.995 4d3c Delete type=2 #1137
+2026/02/01-17:47:06.995 4d3c Delete type=2 #1148
+2026/02/01-17:47:06.995 4d3c Delete type=2 #1131
+2026/02/01-17:47:07.001 4d3c Compacting 1@1 + 9@2 files
+2026/02/01-17:47:07.027 4d3c Generated table #1166@1: 2598 keys, 2141084 bytes
+2026/02/01-17:47:07.066 4d3c Generated table #1167@1: 23808 keys, 2181932 bytes
+2026/02/01-17:47:07.122 4d3c Generated table #1168@1: 28559 keys, 2272757 bytes
+2026/02/01-17:47:07.170 4d3c Generated table #1169@1: 32580 keys, 2256634 bytes
+2026/02/01-17:47:07.232 4d3c Generated table #1170@1: 29712 keys, 2253100 bytes
+2026/02/01-17:47:07.272 4d3c Level-0 table #1173: started
+2026/02/01-17:47:07.290 4d3c Level-0 table #1173: 913694 bytes OK
+2026/02/01-17:47:07.293 4d3c Delete type=2 #1147
+2026/02/01-17:47:07.294 4d3c Delete type=2 #1151
+2026/02/01-17:47:07.294 4d3c Delete type=0 #1156
+2026/02/01-17:47:07.294 4d3c Delete type=2 #1157
+2026/02/01-17:47:07.294 4d3c Delete type=2 #1145
+2026/02/01-17:47:07.294 4d3c Delete type=2 #1146
+2026/02/01-17:47:07.324 4d3c Generated table #1171@1: 63937 keys, 2273826 bytes
+2026/02/01-17:47:07.359 4d3c Generated table #1174@1: 50497 keys, 2195245 bytes
+2026/02/01-17:47:07.387 4d3c Generated table #1175@1: 59803 keys, 1534731 bytes
+2026/02/01-17:47:07.387 4d3c Compacted 1@1 + 9@2 files => 17109309 bytes
+2026/02/01-17:47:07.390 4d3c compacted to: files[ 1 4 18 0 0 0 0 ]
+2026/02/01-17:47:07.535 4d50 Compacting 1@0 + 4@1 files
+2026/02/01-17:47:07.635 4d50 Generated table #1176@0: 67544 keys, 2232073 bytes
+2026/02/01-17:47:07.669 4d50 Generated table #1177@0: 1680 keys, 1388959 bytes
+2026/02/01-17:47:07.677 4d50 Generated table #1178@0: 10535 keys, 208107 bytes
+2026/02/01-17:47:07.677 4d50 Compacted 1@0 + 4@1 files => 3829139 bytes
+2026/02/01-17:47:07.679 4d50 compacted to: files[ 0 3 18 0 0 0 0 ]
+2026/02/01-17:47:07.680 4d50 Delete type=2 #1164
+2026/02/01-17:47:07.680 4d50 Delete type=2 #1142
+2026/02/01-17:47:07.680 4d50 Delete type=2 #1154
+2026/02/01-17:47:07.680 4d50 Delete type=2 #1152
+2026/02/01-17:47:07.680 4d50 Delete type=2 #1173
+2026/02/01-17:47:07.680 4d50 Delete type=2 #1162
+2026/02/01-17:47:07.680 4d50 Delete type=2 #1165
+2026/02/01-17:47:07.680 4d50 Delete type=2 #1161
+2026/02/01-17:47:07.681 4d50 Delete type=2 #1158
+2026/02/01-17:47:07.681 4d50 Delete type=2 #1163
+2026/02/01-17:47:07.681 4d50 Delete type=2 #1153
+2026/02/01-17:47:07.681 4d50 Delete type=2 #1160
+2026/02/01-17:47:07.681 4d50 Delete type=2 #1159
+2026/02/01-17:47:07.681 4d50 Delete type=2 #1149
+2026/02/01-17:47:07.681 4d50 Delete type=2 #1155
+2026/02/01-17:47:07.696 4d3d Compacting 1@1 + 8@2 files
+2026/02/01-17:47:07.718 4d3d Generated table #1179@1: 2607 keys, 2143695 bytes
+2026/02/01-17:47:07.748 4d3d Generated table #1180@1: 23561 keys, 2179263 bytes
+2026/02/01-17:47:07.789 4d3d Generated table #1181@1: 28618 keys, 2272620 bytes
+2026/02/01-17:47:07.828 4d3d Generated table #1182@1: 32236 keys, 2257254 bytes
+2026/02/01-17:47:07.889 4d3d Generated table #1183@1: 29255 keys, 2252145 bytes
+2026/02/01-17:47:07.938 4d3d Generated table #1184@1: 74204 keys, 2273110 bytes
+2026/02/01-17:47:07.968 4d3d Generated table #1185@1: 42632 keys, 2199683 bytes
+2026/02/01-17:47:08.010 4d3d Generated table #1186@1: 68906 keys, 1738185 bytes
+2026/02/01-17:47:08.010 4d3d Compacted 1@1 + 8@2 files => 17315955 bytes
+2026/02/01-17:47:08.014 4d3d compacted to: files[ 0 2 18 0 0 0 0 ]
+2026/02/01-17:47:08.015 4d3d Delete type=2 #1169
+2026/02/01-17:47:08.015 4d3d Delete type=2 #1166
+2026/02/01-17:47:08.015 4d3d Delete type=2 #1175
+2026/02/01-17:47:08.015 4d3d Delete type=2 #1167
+2026/02/01-17:47:08.015 4d3d Delete type=2 #1178
+2026/02/01-17:47:08.015 4d3d Delete type=2 #1168
+2026/02/01-17:47:08.015 4d3d Delete type=2 #1174
+2026/02/01-17:47:08.015 4d3d Delete type=2 #1171
+2026/02/01-17:47:08.015 4d3d Delete type=2 #1170
+2026/02/01-17:47:08.183 4d3c Compacting 1@1 + 9@2 files
+2026/02/01-17:47:08.230 4d3c Generated table #1187@1: 46748 keys, 2208523 bytes
+2026/02/01-17:47:08.273 4d3c Generated table #1188@1: 31014 keys, 2191499 bytes
+2026/02/01-17:47:08.298 4d3c Generated table #1189@1: 2180 keys, 2156546 bytes
+2026/02/01-17:47:08.323 4d3c Generated table #1190@1: 1666 keys, 2141518 bytes
+2026/02/01-17:47:08.345 4d3c Generated table #1191@1: 1644 keys, 2141477 bytes
+2026/02/01-17:47:08.365 4d3c Generated table #1192@1: 1628 keys, 2144072 bytes
+2026/02/01-17:47:08.386 4d3c Generated table #1193@1: 1287 keys, 2150240 bytes
+2026/02/01-17:47:08.415 4d3c Generated table #1194@1: 2117 keys, 2150087 bytes
+2026/02/01-17:47:08.438 4d3c Generated table #1195@1: 3027 keys, 2147802 bytes
+2026/02/01-17:47:08.442 4d3c Generated table #1196@1: 198 keys, 125075 bytes
+2026/02/01-17:47:08.442 4d3c Compacted 1@1 + 9@2 files => 19556839 bytes
+2026/02/01-17:47:08.446 4d3c compacted to: files[ 0 1 19 0 0 0 0 ]
+2026/02/01-17:47:08.447 4d3c Delete type=2 #1109
+2026/02/01-17:47:08.447 4d3c Delete type=2 #1110
+2026/02/01-17:47:08.447 4d3c Delete type=2 #1176
+2026/02/01-17:47:08.447 4d3c Delete type=2 #1113
+2026/02/01-17:47:08.447 4d3c Delete type=2 #1125
+2026/02/01-17:47:08.447 4d3c Delete type=2 #1111
+2026/02/01-17:47:08.447 4d3c Delete type=2 #1108
+2026/02/01-17:47:08.447 4d3c Delete type=2 #1112
+2026/02/01-17:47:08.447 4d3c Delete type=2 #1114
+2026/02/01-17:47:08.447 4d3c Delete type=2 #1126
+2026/02/01-17:47:26.694 4d3c Compacting 1@1 + 3@2 files
+2026/02/01-17:47:26.716 4d3c Generated table #1197@1: 3047 keys, 2148309 bytes
+2026/02/01-17:47:26.737 4d3c Generated table #1198@1: 2985 keys, 2148708 bytes
+2026/02/01-17:47:26.747 4d3c Generated table #1199@1: 586 keys, 618131 bytes
+2026/02/01-17:47:26.747 4d3c Compacted 1@1 + 3@2 files => 4915148 bytes
+2026/02/01-17:47:26.750 4d3c compacted to: files[ 0 0 19 0 0 0 0 ]
+2026/02/01-17:47:26.945 4d3d Level-0 table #1201: started
+2026/02/01-17:47:26.966 4d3d Level-0 table #1201: 1267098 bytes OK
+2026/02/01-17:47:26.976 4d3d Delete type=2 #1116
+2026/02/01-17:47:26.977 4d3d Delete type=0 #1172
+2026/02/01-17:47:26.977 4d3d Delete type=2 #1195
+2026/02/01-17:47:26.977 4d3d Delete type=2 #1196
+2026/02/01-17:47:26.977 4d3d Delete type=2 #1177
+2026/02/01-17:47:26.983 4d3d Compacting 1@0 + 0@1 files
+2026/02/01-17:47:26.998 4d3d Generated table #1202@0: 11920 keys, 553363 bytes
+2026/02/01-17:47:27.009 4d3d Generated table #1203@0: 8247 keys, 523027 bytes
+2026/02/01-17:47:27.009 4d3d Compacted 1@0 + 0@1 files => 1076390 bytes
+2026/02/01-17:47:27.013 4d3d compacted to: files[ 0 2 19 0 0 0 0 ]
+2026/02/01-17:47:27.015 4d3d Compacting 1@1 + 8@2 files
+2026/02/01-17:47:27.048 4d3d Generated table #1204@1: 2596 keys, 2141809 bytes
+2026/02/01-17:47:27.086 4d3d Generated table #1205@1: 17938 keys, 2172089 bytes
+2026/02/01-17:47:27.137 4d3d Generated table #1206@1: 32552 keys, 2265516 bytes
+2026/02/01-17:47:27.145 4d3d Level-0 table #1209: started
+2026/02/01-17:47:27.164 4d3d Level-0 table #1209: 1346031 bytes OK
+2026/02/01-17:47:27.168 4d3d Delete type=2 #1201
+2026/02/01-17:47:27.168 4d3d Delete type=0 #1200
+2026/02/01-17:47:27.206 4d3d Generated table #1207@1: 31472 keys, 2262025 bytes
+2026/02/01-17:47:27.252 4d3d Generated table #1210@1: 31205 keys, 2257849 bytes
+2026/02/01-17:47:27.302 4d3d Generated table #1211@1: 74416 keys, 2254243 bytes
+2026/02/01-17:47:27.339 4d3d Level-0 table #1214: started
+2026/02/01-17:47:27.362 4d3d Level-0 table #1214: 1361281 bytes OK
+2026/02/01-17:47:27.366 4d3d Delete type=0 #1208
+2026/02/01-17:47:27.378 4d3d Generated table #1212@1: 27107 keys, 2210915 bytes
+2026/02/01-17:47:27.434 4d3d Generated table #1215@1: 91912 keys, 2240820 bytes
+2026/02/01-17:47:27.438 4d3d Generated table #1216@1: 1040 keys, 30110 bytes
+2026/02/01-17:47:27.438 4d3d Compacted 1@1 + 8@2 files => 17835376 bytes
+2026/02/01-17:47:27.442 4d3d compacted to: files[ 2 1 20 0 0 0 0 ]
+2026/02/01-17:47:27.442 4d3d Delete type=2 #1184
+2026/02/01-17:47:27.443 4d3d Delete type=2 #1179
+2026/02/01-17:47:27.443 4d3d Delete type=2 #1180
+2026/02/01-17:47:27.443 4d3d Delete type=2 #1181
+2026/02/01-17:47:27.443 4d3d Delete type=2 #1186
+2026/02/01-17:47:27.443 4d3d Delete type=2 #1183
+2026/02/01-17:47:27.443 4d3d Delete type=2 #1185
+2026/02/01-17:47:27.443 4d3d Delete type=2 #1203
+2026/02/01-17:47:27.443 4d3d Delete type=2 #1182
+2026/02/01-17:47:27.448 4d44 Compacting 2@0 + 1@1 files
+2026/02/01-17:47:27.478 4d44 Generated table #1217@0: 28104 keys, 1936458 bytes
+2026/02/01-17:47:27.502 4d44 Generated table #1218@0: 11018 keys, 1301773 bytes
+2026/02/01-17:47:27.502 4d44 Compacted 2@0 + 1@1 files => 3238231 bytes
+2026/02/01-17:47:27.505 4d44 compacted to: files[ 0 2 20 0 0 0 0 ]
+2026/02/01-17:47:27.506 4d44 Delete type=2 #1202
+2026/02/01-17:47:27.506 4d44 Delete type=2 #1209
+2026/02/01-17:47:27.506 4d44 Delete type=2 #1214
+2026/02/01-17:47:27.508 4d3d Compacting 1@1 + 6@2 files
+2026/02/01-17:47:27.527 4d3d Generated table #1219@1: 2611 keys, 2141162 bytes
+2026/02/01-17:47:27.527 4d3d Level-0 table #1221: started
+2026/02/01-17:47:27.543 4d3d Level-0 table #1221: 1405764 bytes OK
+2026/02/01-17:47:27.546 4d3d Delete type=0 #1213
+2026/02/01-17:47:27.567 4d3d Generated table #1222@1: 2934 keys, 2142306 bytes
+2026/02/01-17:47:27.611 4d3d Generated table #1223@1: 37719 keys, 2250106 bytes
+2026/02/01-17:47:27.662 4d3d Generated table #1224@1: 30212 keys, 2267712 bytes
+2026/02/01-17:47:27.713 4d3d Generated table #1225@1: 34928 keys, 2249055 bytes
+2026/02/01-17:47:27.720 4d3d Level-0 table #1228: started
+2026/02/01-17:47:27.745 4d3d Level-0 table #1228: 1091453 bytes OK
+2026/02/01-17:47:27.748 4d3d Delete type=0 #1220
+2026/02/01-17:47:27.793 4d3d Generated table #1226@1: 30317 keys, 2236364 bytes
+2026/02/01-17:47:27.836 4d3d Generated table #1229@1: 62476 keys, 1371398 bytes
+2026/02/01-17:47:27.837 4d3d Compacted 1@1 + 6@2 files => 14658103 bytes
+2026/02/01-17:47:27.839 4d3d compacted to: files[ 2 1 21 0 0 0 0 ]
+2026/02/01-17:47:27.840 4d3c Compacting 2@0 + 1@1 files
+2026/02/01-17:47:27.887 4d3c Generated table #1230@0: 42154 keys, 2193673 bytes
+2026/02/01-17:47:27.892 4d3c Generated table #1231@0: 260 keys, 205204 bytes
+2026/02/01-17:47:27.915 4d3c Generated table #1232@0: 9695 keys, 1054161 bytes
+2026/02/01-17:47:27.915 4d3c Compacted 2@0 + 1@1 files => 3453038 bytes
+2026/02/01-17:47:27.921 4d3c compacted to: files[ 0 3 21 0 0 0 0 ]
+2026/02/01-17:47:27.921 4d3c Delete type=2 #1207
+2026/02/01-17:47:27.921 4d3c Delete type=2 #1210
+2026/02/01-17:47:27.922 4d3c Delete type=2 #1218
+2026/02/01-17:47:27.922 4d3c Delete type=2 #1205
+2026/02/01-17:47:27.922 4d3c Delete type=2 #1204
+2026/02/01-17:47:27.922 4d3c Delete type=2 #1211
+2026/02/01-17:47:27.922 4d3c Delete type=2 #1217
+2026/02/01-17:47:27.922 4d3c Delete type=2 #1206
+2026/02/01-17:47:27.922 4d3c Delete type=2 #1228
+2026/02/01-17:47:27.922 4d3c Delete type=2 #1221
+2026/02/01-17:47:27.931 4d3d Compacting 1@1 + 9@2 files
+2026/02/01-17:47:27.966 4d3d Generated table #1233@1: 2601 keys, 2143582 bytes
+2026/02/01-17:47:27.998 4d3d Generated table #1234@1: 2782 keys, 2141329 bytes
+2026/02/01-17:47:28.047 4d3d Generated table #1235@1: 32361 keys, 2208999 bytes
+2026/02/01-17:47:28.100 4d3d Generated table #1236@1: 30215 keys, 2267710 bytes
+2026/02/01-17:47:28.166 4d3d Generated table #1237@1: 33400 keys, 2255875 bytes
+2026/02/01-17:47:28.222 4d3d Generated table #1238@1: 31960 keys, 2256152 bytes
+2026/02/01-17:47:28.269 4d3d Generated table #1239@1: 75325 keys, 2256333 bytes
+2026/02/01-17:47:28.301 4d3d Generated table #1240@1: 21159 keys, 2211490 bytes
+2026/02/01-17:47:28.360 4d3d Generated table #1241@1: 96991 keys, 2247539 bytes
+2026/02/01-17:47:28.365 4d3d Generated table #1242@1: 3115 keys, 166336 bytes
+2026/02/01-17:47:28.365 4d3d Compacted 1@1 + 9@2 files => 20155345 bytes
+2026/02/01-17:47:28.368 4d3d compacted to: files[ 0 2 22 0 0 0 0 ]
+2026/02/01-17:47:28.431 4d3d Expanding@1 1+10 (2193673+21580979 bytes) to 2+10 (2398877+21580979 bytes)
+2026/02/01-17:47:28.432 4d3d Compacting 2@1 + 10@2 files
+2026/02/01-17:47:28.479 4d3d Generated table #1243@1: 47681 keys, 2208906 bytes
+2026/02/01-17:47:28.516 4d3d Generated table #1244@1: 31867 keys, 2194652 bytes
+2026/02/01-17:47:28.546 4d3d Generated table #1245@1: 2187 keys, 2151095 bytes
+2026/02/01-17:47:28.574 4d3d Generated table #1246@1: 1668 keys, 2141919 bytes
+2026/02/01-17:47:28.599 4d3d Generated table #1247@1: 1649 keys, 2142010 bytes
+2026/02/01-17:47:28.626 4d3d Generated table #1248@1: 1641 keys, 2144649 bytes
+2026/02/01-17:47:28.647 4d3d Generated table #1249@1: 1282 keys, 2142028 bytes
+2026/02/01-17:47:28.670 4d3d Generated table #1250@1: 2090 keys, 2149460 bytes
+2026/02/01-17:47:28.695 4d3d Generated table #1251@1: 2992 keys, 2150008 bytes
+2026/02/01-17:47:28.719 4d3d Generated table #1252@1: 3171 keys, 2145137 bytes
+2026/02/01-17:47:28.743 4d3d Generated table #1253@1: 2789 keys, 2071101 bytes
+2026/02/01-17:47:28.743 4d3d Compacted 2@1 + 10@2 files => 23640965 bytes
+2026/02/01-17:47:28.747 4d3d compacted to: files[ 0 0 23 0 0 0 0 ]
+2026/02/01-17:47:28.747 4d3d Delete type=2 #1192
+2026/02/01-17:47:28.747 4d3d Delete type=2 #1215
+2026/02/01-17:47:28.748 4d3d Delete type=2 #1231
+2026/02/01-17:47:28.748 4d3d Delete type=2 #1212
+2026/02/01-17:47:28.748 4d3d Delete type=2 #1188
+2026/02/01-17:47:28.748 4d3d Delete type=2 #1226
+2026/02/01-17:47:28.748 4d3d Delete type=2 #1230
+2026/02/01-17:47:28.748 4d3d Delete type=2 #1189
+2026/02/01-17:47:28.748 4d3d Delete type=2 #1190
+2026/02/01-17:47:28.748 4d3d Delete type=2 #1229
+2026/02/01-17:47:28.748 4d3d Delete type=2 #1191
+2026/02/01-17:47:28.748 4d3d Delete type=2 #1193
+2026/02/01-17:47:28.748 4d3d Delete type=2 #1219
+2026/02/01-17:47:28.748 4d3d Delete type=2 #1194
+2026/02/01-17:47:28.748 4d3d Delete type=2 #1187
+2026/02/01-17:47:28.748 4d3d Delete type=2 #1223
+2026/02/01-17:47:28.748 4d3d Delete type=2 #1232
+2026/02/01-17:47:28.748 4d3d Delete type=2 #1225
+2026/02/01-17:47:28.749 4d3d Delete type=2 #1224
+2026/02/01-17:47:28.749 4d3d Delete type=2 #1198
+2026/02/01-17:47:28.749 4d3d Delete type=2 #1222
+2026/02/01-17:47:28.749 4d3d Delete type=2 #1197
+2026/02/01-17:47:37.278 4d44 Level-0 table #1255: started
+2026/02/01-17:47:37.295 4d44 Level-0 table #1255: 872936 bytes OK
+2026/02/01-17:47:37.298 4d44 Delete type=0 #1227
+2026/02/01-17:47:38.299 4d44 Compacting 1@0 + 0@1 files
+2026/02/01-17:47:38.314 4d44 Generated table #1256@0: 22269 keys, 207893 bytes
+2026/02/01-17:47:38.322 4d44 Generated table #1257@0: 13792 keys, 234570 bytes
+2026/02/01-17:47:38.322 4d44 Compacted 1@0 + 0@1 files => 442463 bytes
+2026/02/01-17:47:38.325 4d44 compacted to: files[ 0 2 23 0 0 0 0 ]
+2026/02/01-17:47:38.326 4d44 Delete type=2 #1255
+2026/02/01-17:47:39.323 4d3c Compacting 1@1 + 11@2 files
+2026/02/01-17:47:39.351 4d3c Generated table #1258@1: 2600 keys, 2142586 bytes
+2026/02/01-17:47:39.375 4d3c Generated table #1259@1: 2781 keys, 2142127 bytes
+2026/02/01-17:47:39.405 4d3c Generated table #1260@1: 32355 keys, 2209434 bytes
+2026/02/01-17:47:39.451 4d3c Generated table #1261@1: 30219 keys, 2268109 bytes
+2026/02/01-17:47:39.498 4d3c Generated table #1262@1: 33398 keys, 2255881 bytes
+2026/02/01-17:47:39.547 4d3c Generated table #1263@1: 31976 keys, 2256324 bytes
+2026/02/01-17:47:39.591 4d3c Generated table #1264@1: 81679 keys, 2260609 bytes
+2026/02/01-17:47:39.846 4d3c Generated table #1265@1: 15038 keys, 2207434 bytes
+2026/02/01-17:47:39.896 4d3c Generated table #1266@1: 102098 keys, 2253191 bytes
+2026/02/01-17:47:39.904 4d3c Generated table #1267@1: 9022 keys, 389048 bytes
+2026/02/01-17:47:39.904 4d3c Compacted 1@1 + 11@2 files => 20384743 bytes
+2026/02/01-17:47:39.908 4d3c compacted to: files[ 0 1 22 0 0 0 0 ]
+2026/02/01-17:47:39.908 4d3c Delete type=2 #1235
+2026/02/01-17:47:39.908 4d3c Delete type=2 #1237
+2026/02/01-17:47:39.909 4d3c Delete type=2 #1236
+2026/02/01-17:47:39.909 4d3c Delete type=2 #1238
+2026/02/01-17:47:39.909 4d3c Delete type=2 #1241
+2026/02/01-17:47:39.909 4d3c Delete type=2 #1257
+2026/02/01-17:47:39.909 4d3c Delete type=2 #1240
+2026/02/01-17:47:39.909 4d3c Delete type=2 #1234
+2026/02/01-17:47:39.909 4d3c Delete type=2 #1233
+2026/02/01-17:47:39.909 4d3c Delete type=2 #1242
+2026/02/01-17:47:39.909 4d3c Delete type=2 #1239
+2026/02/01-17:47:39.909 4d3c Delete type=2 #1216
+2026/02/01-17:47:40.737 4d3d Level-0 table #1269: started
+2026/02/01-17:47:40.756 4d3d Level-0 table #1269: 1363245 bytes OK
+2026/02/01-17:47:40.760 4d3d Delete type=0 #1254
+2026/02/01-17:47:40.762 4d3d Compacting 1@0 + 1@1 files
+2026/02/01-17:47:40.786 4d3d Generated table #1270@0: 31388 keys, 759585 bytes
+2026/02/01-17:47:40.802 4d3d Generated table #1271@0: 6778 keys, 755534 bytes
+2026/02/01-17:47:40.804 4d3d Generated table #1272@0: 61 keys, 1305 bytes
+2026/02/01-17:47:40.804 4d3d Compacted 1@0 + 1@1 files => 1516424 bytes
+2026/02/01-17:47:40.808 4d3d compacted to: files[ 0 3 22 0 0 0 0 ]
+2026/02/01-17:47:40.811 4d3d Compacting 1@1 + 11@2 files
+2026/02/01-17:47:40.836 4d3d Generated table #1273@1: 2901 keys, 2149039 bytes
+2026/02/01-17:47:40.859 4d3d Generated table #1274@1: 2322 keys, 2140456 bytes
+2026/02/01-17:47:40.882 4d3d Generated table #1275@1: 2780 keys, 2142740 bytes
+2026/02/01-17:47:40.898 4d3d Level-0 table #1278: started
+2026/02/01-17:47:40.920 4d3d Level-0 table #1278: 1495399 bytes OK
+2026/02/01-17:47:40.924 4d3d Delete type=2 #1256
+2026/02/01-17:47:40.924 4d3d Delete type=0 #1268
+2026/02/01-17:47:40.924 4d3d Delete type=2 #1269
+2026/02/01-17:47:40.940 4d3d Generated table #1276@1: 11471 keys, 2161340 bytes
+2026/02/01-17:47:40.982 4d3d Generated table #1279@1: 38341 keys, 2255793 bytes
+2026/02/01-17:47:41.032 4d3d Generated table #1280@1: 29943 keys, 2268123 bytes
+2026/02/01-17:47:41.032 4d3d Level-0 table #1282: started
+2026/02/01-17:47:41.052 4d3d Level-0 table #1282: 1748214 bytes OK
+2026/02/01-17:47:41.057 4d3d Delete type=0 #1277
+2026/02/01-17:47:41.108 4d3d Generated table #1283@1: 36074 keys, 2246751 bytes
+2026/02/01-17:47:41.163 4d3d Generated table #1284@1: 30397 keys, 2240743 bytes
+2026/02/01-17:47:41.221 4d3d Generated table #1285@1: 76787 keys, 2289784 bytes
+2026/02/01-17:47:41.267 4d3d Generated table #1286@1: 50929 keys, 2195121 bytes
+2026/02/01-17:47:41.306 4d3d Generated table #1287@1: 60348 keys, 1360706 bytes
+2026/02/01-17:47:41.306 4d3d Compacted 1@1 + 11@2 files => 23450596 bytes
+2026/02/01-17:47:41.310 4d3d compacted to: files[ 2 2 22 0 0 0 0 ]
+2026/02/01-17:47:41.310 4d3d Compacting 2@0 + 1@1 files
+2026/02/01-17:47:41.358 4d3d Generated table #1288@0: 43017 keys, 2202456 bytes
+2026/02/01-17:47:41.373 4d3d Generated table #1289@0: 1002 keys, 843481 bytes
+2026/02/01-17:47:41.394 4d3d Generated table #1290@0: 8082 keys, 940708 bytes
+2026/02/01-17:47:41.395 4d3d Compacted 2@0 + 1@1 files => 3986645 bytes
+2026/02/01-17:47:41.397 4d3d compacted to: files[ 0 4 22 0 0 0 0 ]
+2026/02/01-17:47:41.464 4d3d Compacting 1@1 + 7@2 files
+2026/02/01-17:47:41.510 4d3d Generated table #1291@1: 48147 keys, 2209254 bytes
+2026/02/01-17:47:41.557 4d3d Generated table #1292@1: 46652 keys, 2210889 bytes
+2026/02/01-17:47:41.580 4d3d Generated table #1293@1: 2255 keys, 2154251 bytes
+2026/02/01-17:47:41.607 4d3d Generated table #1294@1: 1794 keys, 2143830 bytes
+2026/02/01-17:47:41.636 4d3d Generated table #1295@1: 1561 keys, 2140783 bytes
+2026/02/01-17:47:41.665 4d3d Generated table #1296@1: 1664 keys, 2141331 bytes
+2026/02/01-17:47:41.690 4d3d Generated table #1297@1: 1502 keys, 2146496 bytes
+2026/02/01-17:47:41.717 4d3d Generated table #1298@1: 1135 keys, 1938591 bytes
+2026/02/01-17:47:41.718 4d3d Compacted 1@1 + 7@2 files => 17085425 bytes
+2026/02/01-17:47:41.725 4d3d compacted to: files[ 0 3 23 0 0 0 0 ]
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1262
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1244
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1266
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1247
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1261
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1249
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1265
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1245
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1243
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1282
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1278
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1263
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1271
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1270
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1248
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1260
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1199
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1259
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1258
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1264
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1246
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1253
+2026/02/01-17:47:41.726 4d3d Delete type=2 #1288
+2026/02/01-17:47:41.738 4d44 Level-0 table #1300: started
+2026/02/01-17:47:41.754 4d44 Level-0 table #1300: 833776 bytes OK
+2026/02/01-17:47:41.758 4d44 Delete type=0 #1281
+2026/02/01-17:47:41.869 4d3c Compacting 1@0 + 3@1 files
+2026/02/01-17:47:41.890 4d3c Generated table #1301@0: 30032 keys, 919181 bytes
+2026/02/01-17:47:41.915 4d3c Generated table #1302@0: 15348 keys, 1446891 bytes
+2026/02/01-17:47:41.917 4d3c Generated table #1303@0: 311 keys, 7912 bytes
+2026/02/01-17:47:41.917 4d3c Compacted 1@0 + 3@1 files => 2373984 bytes
+2026/02/01-17:47:41.921 4d3c compacted to: files[ 0 3 23 0 0 0 0 ]
+2026/02/01-17:47:41.961 4d44 Compacting 1@1 + 10@2 files
+2026/02/01-17:47:42.008 4d44 Generated table #1304@1: 44846 keys, 2206977 bytes
+2026/02/01-17:47:42.043 4d44 Generated table #1305@1: 33966 keys, 2196254 bytes
+2026/02/01-17:47:42.068 4d44 Generated table #1306@1: 2194 keys, 2150600 bytes
+2026/02/01-17:47:42.088 4d44 Generated table #1307@1: 1635 keys, 2150225 bytes
+2026/02/01-17:47:42.108 4d44 Generated table #1308@1: 1648 keys, 2148677 bytes
+2026/02/01-17:47:42.127 4d44 Generated table #1309@1: 1637 keys, 2144914 bytes
+2026/02/01-17:47:42.146 4d44 Generated table #1310@1: 1435 keys, 2144743 bytes
+2026/02/01-17:47:42.165 4d44 Generated table #1311@1: 1174 keys, 2147769 bytes
+2026/02/01-17:47:42.190 4d44 Generated table #1312@1: 2490 keys, 2153528 bytes
+2026/02/01-17:47:42.217 4d44 Generated table #1313@1: 2775 keys, 1961341 bytes
+2026/02/01-17:47:42.217 4d44 Compacted 1@1 + 10@2 files => 21405028 bytes
+2026/02/01-17:47:42.221 4d44 compacted to: files[ 0 2 23 0 0 0 0 ]
+2026/02/01-17:47:42.222 4d44 Delete type=2 #1300
+2026/02/01-17:47:42.222 4d44 Delete type=2 #1290
+2026/02/01-17:47:42.222 4d44 Delete type=2 #1289
+2026/02/01-17:47:42.222 4d44 Delete type=2 #1272
+2026/02/01-17:47:42.369 4d44 Compacting 1@1 + 10@2 files
+2026/02/01-17:47:42.396 4d44 Generated table #1314@1: 3168 keys, 2145703 bytes
+2026/02/01-17:47:42.419 4d44 Generated table #1315@1: 3050 keys, 2148004 bytes
+2026/02/01-17:47:42.446 4d44 Generated table #1316@1: 2242 keys, 2140905 bytes
+2026/02/01-17:47:42.468 4d44 Generated table #1317@1: 2737 keys, 2142323 bytes
+2026/02/01-17:47:42.496 4d44 Generated table #1318@1: 2744 keys, 2140761 bytes
+2026/02/01-17:47:42.533 4d44 Generated table #1319@1: 37785 keys, 2232444 bytes
+2026/02/01-17:47:42.582 4d44 Generated table #1320@1: 31000 keys, 2266220 bytes
+2026/02/01-17:47:42.623 4d44 Generated table #1321@1: 32956 keys, 2255709 bytes
+2026/02/01-17:47:42.664 4d44 Generated table #1322@1: 31636 keys, 2255482 bytes
+2026/02/01-17:47:42.710 4d44 Generated table #1323@1: 68180 keys, 2252438 bytes
+2026/02/01-17:47:42.742 4d44 Generated table #1324@1: 33848 keys, 1512086 bytes
+2026/02/01-17:47:42.743 4d44 Compacted 1@1 + 10@2 files => 23492075 bytes
+2026/02/01-17:47:42.746 4d44 compacted to: files[ 0 1 24 0 0 0 0 ]
+2026/02/01-17:47:42.746 4d44 Delete type=2 #1296
+2026/02/01-17:47:42.746 4d44 Delete type=2 #1291
+2026/02/01-17:47:42.746 4d44 Delete type=2 #1301
+2026/02/01-17:47:42.746 4d44 Delete type=2 #1292
+2026/02/01-17:47:42.746 4d44 Delete type=2 #1295
+2026/02/01-17:47:42.747 4d44 Delete type=2 #1250
+2026/02/01-17:47:42.747 4d44 Delete type=2 #1294
+2026/02/01-17:47:42.747 4d44 Delete type=2 #1251
+2026/02/01-17:47:42.747 4d44 Delete type=2 #1293
+2026/02/01-17:47:42.747 4d44 Delete type=2 #1297
+2026/02/01-17:47:42.747 4d44 Delete type=2 #1298
+2026/02/01-17:47:43.389 4d3d Compacting 1@1 + 3@2 files
+2026/02/01-17:47:43.427 4d3d Generated table #1325@1: 50847 keys, 2193942 bytes
+2026/02/01-17:47:43.461 4d3d Generated table #1326@1: 69761 keys, 1758220 bytes
+2026/02/01-17:47:43.461 4d3d Compacted 1@1 + 3@2 files => 3952162 bytes
+2026/02/01-17:47:43.466 4d3d compacted to: files[ 0 0 23 0 0 0 0 ]
+2026/02/01-17:47:43.466 4d3d Delete type=2 #1285
+2026/02/01-17:47:43.466 4d3d Delete type=2 #1280
+2026/02/01-17:47:43.466 4d3d Delete type=2 #1279
+2026/02/01-17:47:43.466 4d3d Delete type=2 #1273
+2026/02/01-17:47:43.466 4d3d Delete type=2 #1284
+2026/02/01-17:47:43.466 4d3d Delete type=2 #1283
+2026/02/01-17:47:43.466 4d3d Delete type=2 #1276
+2026/02/01-17:47:43.466 4d3d Delete type=2 #1274
+2026/02/01-17:47:43.466 4d3d Delete type=2 #1275
+2026/02/01-17:47:43.466 4d3d Delete type=2 #1302
+2026/02/01-17:47:43.466 4d3d Delete type=2 #1252
+2026/02/01-17:47:46.008 4d44 Level-0 table #1328: started
+2026/02/01-17:47:46.035 4d44 Level-0 table #1328: 1055527 bytes OK
+2026/02/01-17:47:46.039 4d44 Delete type=2 #1303
+2026/02/01-17:47:46.039 4d44 Delete type=0 #1299
+2026/02/01-17:47:46.039 4d44 Delete type=2 #1267
+2026/02/01-17:47:46.039 4d44 Delete type=2 #1286
+2026/02/01-17:47:46.039 4d44 Delete type=2 #1287
+2026/02/01-17:47:46.468 4d3d Compacting 1@0 + 0@1 files
+2026/02/01-17:47:46.479 4d3d Generated table #1329@0: 12762 keys, 249990 bytes
+2026/02/01-17:47:46.486 4d3d Generated table #1330@0: 4803 keys, 249733 bytes
+2026/02/01-17:47:46.486 4d3d Compacted 1@0 + 0@1 files => 499723 bytes
+2026/02/01-17:47:46.489 4d3d compacted to: files[ 0 2 23 0 0 0 0 ]
+2026/02/01-17:47:46.490 4d3d Delete type=2 #1328
+2026/02/01-17:47:47.486 4d3c Compacting 1@1 + 4@2 files
+2026/02/01-17:47:47.530 4d3c Generated table #1331@1: 68177 keys, 2252603 bytes
+2026/02/01-17:47:47.569 4d3c Generated table #1332@1: 39262 keys, 2251107 bytes
+2026/02/01-17:47:47.604 4d3c Generated table #1333@1: 76687 keys, 2220563 bytes
+2026/02/01-17:47:47.625 4d3c Generated table #1334@1: 41340 keys, 1117970 bytes
+2026/02/01-17:47:47.625 4d3c Compacted 1@1 + 4@2 files => 7842243 bytes
+2026/02/01-17:47:47.628 4d3c compacted to: files[ 0 1 23 0 0 0 0 ]
+2026/02/01-17:47:47.628 4d3c Delete type=2 #1324
+2026/02/01-17:47:47.628 4d3c Delete type=2 #1330
+2026/02/01-17:47:47.628 4d3c Delete type=2 #1326
+2026/02/01-17:47:47.628 4d3c Delete type=2 #1323
+2026/02/01-17:47:47.628 4d3c Delete type=2 #1325
+2026/02/01-17:47:50.443 4d3d Compacting 1@1 + 2@2 files
+2026/02/01-17:47:50.480 4d3d Generated table #1335@1: 46479 keys, 2208852 bytes
+2026/02/01-17:47:50.508 4d3d Generated table #1336@1: 31250 keys, 2106171 bytes
+2026/02/01-17:47:50.508 4d3d Compacted 1@1 + 2@2 files => 4315023 bytes
+2026/02/01-17:47:50.511 4d3d compacted to: files[ 0 0 23 0 0 0 0 ]
+2026/02/01-17:47:50.512 4d3d Delete type=2 #1304
+2026/02/01-17:47:50.512 4d3d Delete type=2 #1305
+2026/02/01-17:47:50.512 4d3d Delete type=2 #1329
+2026/02/01-17:48:24.946 4d3d Level-0 table #1338: started
+2026/02/01-17:48:24.973 4d3d Level-0 table #1338: 1106104 bytes OK
+2026/02/01-17:48:24.976 4d3d Delete type=0 #1327
+2026/02/01-17:48:25.982 4d3d Compacting 1@0 + 0@1 files
+2026/02/01-17:48:25.997 4d3d Generated table #1339@0: 20170 keys, 187923 bytes
+2026/02/01-17:48:26.008 4d3d Generated table #1340@0: 12504 keys, 355829 bytes
+2026/02/01-17:48:26.014 4d3d Generated table #1341@0: 4884 keys, 106014 bytes
+2026/02/01-17:48:26.014 4d3d Compacted 1@0 + 0@1 files => 649766 bytes
+2026/02/01-17:48:26.017 4d3d compacted to: files[ 0 3 23 0 0 0 0 ]
+2026/02/01-17:48:27.015 4d3c Compacting 1@1 + 10@2 files
+2026/02/01-17:48:27.039 4d3c Generated table #1342@1: 2243 keys, 2140972 bytes
+2026/02/01-17:48:27.063 4d3c Generated table #1343@1: 2737 keys, 2142323 bytes
+2026/02/01-17:48:27.083 4d3c Generated table #1344@1: 2744 keys, 2140761 bytes
+2026/02/01-17:48:27.120 4d3c Generated table #1345@1: 37786 keys, 2231748 bytes
+2026/02/01-17:48:27.173 4d3c Generated table #1346@1: 30989 keys, 2265050 bytes
+2026/02/01-17:48:27.213 4d3c Generated table #1347@1: 32949 keys, 2255692 bytes
+2026/02/01-17:48:27.251 4d3c Generated table #1348@1: 31637 keys, 2255791 bytes
+2026/02/01-17:48:27.294 4d3c Generated table #1349@1: 68302 keys, 2252380 bytes
+2026/02/01-17:48:27.344 4d3c Generated table #1350@1: 37293 keys, 2247942 bytes
+2026/02/01-17:48:27.393 4d3c Generated table #1351@1: 72390 keys, 2213922 bytes
+2026/02/01-17:48:27.401 4d3c Generated table #1352@1: 14822 keys, 335423 bytes
+2026/02/01-17:48:27.401 4d3c Compacted 1@1 + 10@2 files => 22482004 bytes
+2026/02/01-17:48:27.405 4d3c compacted to: files[ 0 2 24 0 0 0 0 ]
+2026/02/01-17:48:27.406 4d3c Delete type=2 #1321
+2026/02/01-17:48:27.406 4d3c Delete type=2 #1318
+2026/02/01-17:48:27.406 4d3c Delete type=2 #1316
+2026/02/01-17:48:27.406 4d3c Delete type=2 #1320
+2026/02/01-17:48:27.406 4d3c Delete type=2 #1319
+2026/02/01-17:48:27.406 4d3c Delete type=2 #1332
+2026/02/01-17:48:27.406 4d3c Delete type=2 #1317
+2026/02/01-17:48:27.406 4d3c Delete type=2 #1331
+2026/02/01-17:48:27.406 4d3c Delete type=2 #1333
+2026/02/01-17:48:27.406 4d3c Delete type=2 #1322
+2026/02/01-17:48:27.406 4d3c Delete type=2 #1340
+2026/02/01-17:48:27.406 4d3c Delete type=2 #1338
+2026/02/01-17:48:28.034 4d3d Compacting 1@1 + 1@2 files
+2026/02/01-17:48:28.065 4d3d Generated table #1353@1: 46221 keys, 1229714 bytes
+2026/02/01-17:48:28.066 4d3d Compacted 1@1 + 1@2 files => 1229714 bytes
+2026/02/01-17:48:28.069 4d3d compacted to: files[ 0 1 24 0 0 0 0 ]
