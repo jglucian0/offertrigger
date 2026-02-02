@@ -1,19 +1,19 @@
 class MessageFormatter {
   static format(product) {
-    const shippingText = product.freeShipping ? '🚚 *FRETE GRÁTIS!*' : '';
-    const discountText = product.discount ? `(${product.discount})` : '';
+    const shippingText = product.freeShipping ? `\n\`🚚 FRETE GRÁTIS!\`` : '';
+    const discountText = product.discount ? `\n\`🎟️ ${product.discount}\`` : '';
 
-    return `🔥 *${product.title}*
+    const oldPriceText = product.oldPrice
+      ? `De ~~${product.oldPrice}~~ | *${product.price}* 💵`
+      : `Por apenas *${product.price}*`
 
-💰 ~~${product.oldPrice || ''}~~ por apenas:
-✅ *${product.price}* ${discountText}
+    return `${product.title}
 
-${shippingText}
+${oldPriceText}
+${shippingText}${discountText}
 
-👉 *Compre aqui:* ${product.link}
-
----
-⚠️ _Oferta sujeita a alteração de preço a qualquer momento_`;
+Achado no Mercado Livre
+${product.link}`;
   }
 }
 

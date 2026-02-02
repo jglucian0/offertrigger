@@ -2,6 +2,7 @@ const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
 
+
 class ScraperService {
   async fetchProducts(url) {
     const browser = await puppeteer.launch({
@@ -18,8 +19,10 @@ class ScraperService {
       // Espera o container principal carregar para evitar pegar a página vazia
       await page.waitForSelector('.aff-social-lists__container', { timeout: 10000 });
 
+
       const products = await page.evaluate(() => {
         const cards = Array.from(document.querySelectorAll('.aff-social-polycard__container'));
+
 
         return cards.map(card => {
           // 1. Título e Link (Tentativa em múltiplos seletores comuns nessas listas)
@@ -47,8 +50,8 @@ class ScraperService {
           return {
             title: title || "Produto sem título", // Fallback para não vir vazio
             link: link || null,
-            oldPrice: oldPrice ? `R$ ${oldPrice}` : null,
-            price: currentPrice ? `R$ ${currentPrice}` : null,
+            oldPrice: oldPrice ? `R$ ${oldPrice},00` : null,
+            price: currentPrice ? `R$ ${currentPrice},00` : null,
             discount: discount || null,
             freeShipping: isFreeShipping,
             image: image || null

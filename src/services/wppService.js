@@ -104,18 +104,21 @@ class WppService {
     throw new Error('WhatsApp não está conectado para este usuário');
   }
 
-  async sendImage(userId, to, imagePath, caption) {
+  async sendImage(userId, to, imageUrl, caption) {
     const session = this.sessionManager.getSession(userId);
     if (session && session.client) {
-      // O WppConnect aceita URL direta ou Base64
+      // Garante o formato correto do destino (@g.us ou @c.us)
+      const destination = to.includes('@') ? to : (to.length > 15 ? `${to}@g.us` : `${to}@c.us`);
+
+      console.log(`[WppService] Enviando imagem para: ${destination}`);
       return await session.client.sendImage(
-        to.includes('@') ? to : `${to}@c.us`,
-        imagePath, // URL da imagem que veio do Scraper
-        'imagem-produto', // Nome do arquivo
-        caption // O texto formatado (Título + Preço + Link)
+        destination,
+        imageUrl,
+        'produto.jpg',
+        caption
       );
     }
-    throw new Error('Sessão não iniciada');
+    throw new Error('Sessão não conectada ou cliente offline');
   }
 }
 
