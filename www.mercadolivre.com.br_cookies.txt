@@ -1,0 +1,44 @@
+# Netscape HTTP Cookie File
+# https://curl.haxx.se/rfc/cookie_spec.html
+# This is a generated file! Do not edit.
+
+.mercadolivre.com.br	TRUE	/	TRUE	1801525820	_hjSessionUser_720738	eyJpZCI6IjBmMzM0NmNiLTI4ZDMtNTRkNC1iODllLTk0YWVkYmZiZGFjMCIsImNyZWF0ZWQiOjE3MzI0OTQ5MzUwNDgsImV4aXN0aW5nIjp0cnVlfQ==
+.mercadolivre.com.br	TRUE	/	TRUE	1801545921	cookiesPreferencesNotLogged	%7B%22categories%22%3A%7B%22advertising%22%3Atrue%2C%22functionality%22%3Atrue%2C%22performance%22%3Atrue%2C%22traceability%22%3Atrue%7D%7D
+.mercadolivre.com.br	TRUE	/	FALSE	1803675510	_ttp	01JZ8P2EJTSW5AYJY5N6MT5MSZ_.tt.2
+.mercadolivre.com.br	TRUE	/	FALSE	1790961646	_ga_NDJFKMJ2PD	GS2.1.s1756401600$o9$g0$t1756401645$j15$l0$h0
+www.mercadolivre.com.br	FALSE	/	FALSE	1799626116	tooltip	true
+www.mercadolivre.com.br	FALSE	/	FALSE	1792112745	modal-configuration	{"cbt_modal":{"view_cnt":2,"close_cnt":0,"view_time":1760576745,"close_time":0}}
+.mercadolivre.com.br	TRUE	/	TRUE	0	main_domain	
+.mercadolivre.com.br	TRUE	/	TRUE	0	categories	
+.mercadolivre.com.br	TRUE	/	TRUE	0	backend_dejavu_info	j%3A%7B%7D
+.mercadolivre.com.br	TRUE	/	FALSE	1774730488	_gcl_au	1.1.657295931.1766954488
+.www.mercadolivre.com.br	TRUE	/	TRUE	1769995014	c_Zfwxvk	1
+.mercadolivre.com.br	TRUE	/	FALSE	1804545470	_ga	GA1.3.979116767.1750108936
+www.mercadolivre.com.br	FALSE	/	TRUE	1800009919	__rtbh.uid	%7B%22eventType%22%3A%22uid%22%2C%22id%22%3A%22757601996%22%2C%22expiryDate%22%3A%222027-01-15T10%3A45%3A19.727Z%22%7D
+www.mercadolivre.com.br	FALSE	/	TRUE	1800009919	__rtbh.lid	%7B%22eventType%22%3A%22lid%22%2C%22id%22%3A%22EE6FYqP8OJ2ddq4V5dGB%22%2C%22expiryDate%22%3A%222027-01-15T10%3A45%3A19.727Z%22%7D
+www.mercadolivre.com.br	FALSE	/	TRUE	0	x-bf-session-v6	fdd07b4e010a4458a71081970b851a27
+.www.mercadolivre.com.br	TRUE	/	TRUE	1771950597	c_ui-navigation	6.8.0
+.mercadolivre.com.br	TRUE	/	TRUE	0	category	
+.www.mercadolivre.com.br	TRUE	/	TRUE	1772207751	c_Z1laz4H	1
+.mercadolivre.com.br	TRUE	/	TRUE	0	navigation_items	MLB3269837602%7C01022026163018%7CMLB21361292%7CMLB21361291
+www.mercadolivre.com.br	FALSE	/	FALSE	1801499360	tooltips-configuration	{"compats_highlight_tooltip":{"view_cnt":7,"close_cnt":0,"view_time":1769963360,"close_time":0}}
+.www.mercadolivre.com.br	TRUE	/	TRUE	1772555372	c_deals	11.64.0-rc-3
+.www.mercadolivre.com.br	TRUE	/	TRUE	1772571507	c_mercado-puntos-meliplus	4.151.1-hotfix-4
+.mercadolivre.com.br	TRUE	/	FALSE	1803675510	ttcsid_C9SJ5SBC77UADFMAH8T0	1769979510335::5iFzFEST8OaZKjKk5YRD.15.1769979510338.0
+.mercadolivre.com.br	TRUE	/	FALSE	1801515510	_derived_epik	dj0yJnU9RVI4T2R0Y3hoelRzSmxxSmV1cXZuajdLRlpOdXc5aVUmbj1QWU9OaUZ1WUQ1dTc5S0VsSEh6aTBBJm09NyZ0PUFBQUFBR2xfdnE0JnJtPTEmcnQ9QUFBQUFHamNVLU0mc3A9Mg
+.mercadolivre.com.br	TRUE	/	FALSE	1803675511	ttcsid	1769979510336::JFIL862O8OR3YLQBIOn7.49.1769979511154.0
+.mercadolivre.com.br	TRUE	/	FALSE	1803675511	ttcsid_CFVSC2JC77U0ARCJTCJ0	1769979510336::bxxzMGfxcGDOGjQ39qeH.14.1769979511154.0
+.mercadolivre.com.br	TRUE	/	TRUE	1804539623	orgnickp	ACHADINHOSMELIBR
+.mercadolivre.com.br	TRUE	/	TRUE	1804539623	orguseridp	757601996
+.mercadolivre.com.br	TRUE	/	TRUE	1804539623	ssid	ghy-020117-8iHkJoQtfXQaQNQJctHyS9HrIVEMgQ-__-757601996-__-1864674078574--RRR_0-RRR_0
+.mercadolivre.com.br	TRUE	/	TRUE	1804539623	orguserid	th99h9td044t
+.mercadolivre.com.br	TRUE	/	TRUE	0	ml_cart-quantity	2
+.mercadolivre.com.br	TRUE	/	TRUE	1769990821	cookiesPreferencesLogged	%7B%22userId%22%3A757601996%2C%22categories%22%3A%7B%22advertising%22%3Atrue%2C%22functionality%22%3Atrue%2C%22performance%22%3Atrue%2C%22traceability%22%3Atrue%7D%7D
+.mercadolivre.com.br	TRUE	/	TRUE	1804549435	_d2id	8b86aec1-0669-4da3-923c-69b7f72d75f9
+www.mercadolivre.com.br	FALSE	/	TRUE	0	_csrf	eGDBgAzFovLMuunanq_ZnAuv
+.mercadolivre.com.br	TRUE	/	TRUE	1769991621	_mldataSessionId	fcdaf70b-08c7-4dbe-b30f-f4d05f0a4727
+.mercadolivre.com.br	TRUE	/	TRUE	1769990036	hide-cookie-banner	757601996-COOKIE_PREFERENCES_ALREADY_SET
+.mercadolivre.com.br	TRUE	/	TRUE	1772581436	cp	85260000
+.mercadolivre.com.br	TRUE	/	TRUE	1769991413	_hjSession_720738	eyJpZCI6IjQ2MTgyMGQyLWE4NDgtNDZmMS1hYzNjLWYzYTQ5ZGQxMDRmOCIsImMiOjE3Njk5ODk0MzcxODAsInMiOjAsInIiOjAsInNiIjowLCJzciI6MCwic2UiOjAsImZzIjowLCJzcCI6MX0=
+.mercadolivre.com.br	TRUE	/	TRUE	1804549821	nsa_rotok	eyJhbGciOiJSUzI1NiIsImtpZCI6IjMiLCJ0eXAiOiJKV1QifQ.eyJpZGVudGlmaWVyIjoiZTNjYjFlNTEtNGFhZC00YzY3LWFiOWEtMzg0MGZiOWU1NDZhIiwicm90YXRpb25faWQiOiJjZDVmMzQ1Zi03NDRhLTQ3MmQtODhmNy0xMTA5ZmExYmEwMzEiLCJwbGF0Zm9ybSI6Ik1MIiwicm90YXRpb25fZGF0ZSI6MTc2OTk5MDQ3NSwiZXhwIjoxNzcyNTgxODc1LCJqdGkiOiIyNTkyNDE0Zi1kYTM4LTRkN2QtYmRkOC0wMzQ2YjczMTZlM2IiLCJpYXQiOjE3Njk5ODk4NzUsInN1YiI6ImUzY2IxZTUxLTRhYWQtNGM2Ny1hYjlhLTM4NDBmYjllNTQ2YSJ9.JQPv4M04NN2ju9GB-74egiluN8o62OEmny7YWyMgwZCZ3AsU5P_kFPvYoBojfpVfa7jHFsl-wu-0mYzT1ahyWrkNQHP7FAzTmxVivUFPEShun7KTQfk0whFkFecr4X1k0adVv1HYq-1Pay55WFH-e1URV4I1ZwjRDJfvH7UAIpsb6dyW0yW0oWoYvaeGWwYpuiEZaSIDnJRzQmvINzVhlnJVQV6cFbpY0RntvKTXNI69lTSK7jCg2SwcN3ppHjfB-P1pYV-nG02mfiRjql0Njc_NwDgbyYTPq3xE1q_yoDn7Y_HcfLTqCCvQSmOh_QDILi-TJE-eXizswvh3pnt4vQ
+www.mercadolivre.com.br	FALSE	/	TRUE	1803082231	p_edsid	eb1e7a66-9f67-3d52-b248-02e0324b3d03-1768522174116
