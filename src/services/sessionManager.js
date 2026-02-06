@@ -1,11 +1,11 @@
 class SessionManager {
   constructor() {
     this.sessions = new Map();
-    this.MAX_SESSIONS = 5;
+    this.MAX_SESSIONS = 2;
   }
 
   createSession(userId) {
-    // Regra de negócio: Limite de 5 instâncias para controle de custo (RAM)
+    // Regra de negócio: Limite de 2 instâncias para controle de custo (RAM)
     if (this.sessions.size >= this.MAX_SESSIONS) {
       console.log('Limite de sessões atingido');
       return false;
@@ -14,7 +14,7 @@ class SessionManager {
     const sessionData = {
       id: userId,
       status: 'starting',
-      client: null, // Aqui entrará a instância do WPPConnect depois
+      client: null,
       qrcode: null
     };
 

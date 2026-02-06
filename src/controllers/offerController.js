@@ -8,7 +8,7 @@ class OfferController {
     this.wppService = wppService;
     this.scraper = new ScraperService();
     this.affiliate = new AffiliateService();
-    this.db = db; // Sua base de dados
+    this.db = db;
   }
 
   async handleOffer(req, res) {

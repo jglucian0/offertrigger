@@ -6,7 +6,6 @@ const path = require('path');
 puppeteer.use(StealthPlugin());
 
 class AffiliateService {
-  // Função auxiliar para converter o arquivo TXT em Cookies utilizáveis
   async loadCookiesFromFile() {
     try {
       const filePath = path.resolve(__dirname, '../../www.mercadolivre.com.br_cookies.txt');
@@ -16,7 +15,6 @@ class AffiliateService {
       const lines = content.split('\n');
 
       lines.forEach(line => {
-        // Pula comentários e linhas vazias
         if (!line.trim() || line.startsWith('#')) return;
 
         const parts = line.split('\t');
@@ -32,7 +30,6 @@ class AffiliateService {
         }
       });
 
-      // Filtramos apenas os 4 essenciais que identificamos antes para não sobrecarregar
       const essentialNames = ['ssid', '_d2id', '_dsid', 'cp'];
       return cookies.filter(c => essentialNames.includes(c.name));
     } catch (error) {
@@ -58,7 +55,6 @@ class AffiliateService {
       const page = await browser.newPage();
       await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
 
-      // Injeta os cookies lidos do arquivo
       await page.setCookie(...cookiesToInject);
 
       await page.goto('https://www.mercadolivre.com.br/afiliados/linkbuilder#hub', {

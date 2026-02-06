@@ -1,4 +1,5 @@
 const wppconnect = require('@wppconnect-team/wppconnect');
+const AffiliateService = require('../services/affiliateService');
 
 class WppService {
   constructor(sessionManager) {
@@ -7,16 +8,17 @@ class WppService {
 
   async initSession(userId) {
     try {
-      // Adicionamos o log para debug no WSL
       console.log(`[WppService] Iniciando instância para: ${userId}`);
 
       const client = await wppconnect.create({
         session: userId,
         executablePath: '/usr/bin/google-chrome',
         catchQR: (base64Qr) => {
-          // Check de segurança: só atualiza se o manager ainda existir (evita erro no Jest)
           if (this.sessionManager) {
-            this.sessionManager.updateSession(userId, { qrcode: base64Qr, status: 'qrcode' });
+            this.sessionManager.updateSession(userId, {
+              qrcode: base64Qr,
+              status: 'qrcode'
+            });
           }
         },
         statusFind: (statusSession, session) => {
@@ -27,22 +29,21 @@ class WppService {
         },
         autoClose: 0,
         waitForLogin: false,
-        headless: true, // No WSL deve ser true a menos que tenha X11 configurado
+        headless: true,
         useChrome: false,
         puppeteerOptions: {
           args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage', // Ajuda na memória do WSL/Docker
+            '--disable-dev-shm-usage',
             '--disable-accelerated-2d-canvas',
             '--no-first-run',
             '--no-zygote',
-            '--single-process' // Ajuda a evitar processos órfãos no fechamento do teste
+            '--single-process'
           ],
         },
       });
 
-      // Se o manager ainda estiver ativo, salva o cliente conectado
       if (this.sessionManager) {
         this.sessionManager.updateSession(userId, {
           client: client,
@@ -50,6 +51,26 @@ class WppService {
           qrcode: null
         });
       }
+
+      client.onMessage(async (message) => {
+        if (message.fromMe) return;
+
+        const body = message.body || '';
+        const affiliate = new AffiliateService();
+
+        if (body.startsWith('https://produto.mercadolivre.com.br/')) {
+          console.log(`[Bot] Link do ML detectado de ${message.from}.`);
+
+          try {
+            console.log('[Controller] Convertendo link no Affiliate Builder...');
+            const linkAfiliado = await affiliate.generateAffiliateLink(body);
+
+            await client.sendText(message.from, linkAfiliado);
+          } catch (err) {
+            console.error('[Bot] Erro ao responder mensagem:', err);
+          }
+        }
+      });
 
       return client;
     } catch (error) {
@@ -63,12 +84,11 @@ class WppService {
   async getAllGroups(userId) {
     const session = this.sessionManager.getSession(userId);
     if (session && session.client) {
-      // Busca todos os chats e filtra apenas os que são grupos
       const chats = await session.client.listChats();
       const groups = chats.filter(chat => chat.isGroup);
 
       return groups.map(group => ({
-        id: group.id._serialized, // O ID que usaremos para enviar mensagens (@g.us)
+        id: group.id._serialized,
         name: group.name || group.contact.name,
         unreadCount: group.unreadCount
       }));
@@ -80,23 +100,18 @@ class WppService {
     const session = this.sessionManager.getSession(userId);
 
     if (session && session.client) {
-      // 1. Tratamento do número: remove espaços, traços e garante o sufixo
-      let destination = to.replace(/\D/g, ''); // Mantém apenas números
+      let destination = to.replace(/\D/g, '');
 
-      // Se não tiver o sufixo, adiciona. 
-      // Grupos geralmente já vem com @g.us, se não, assumimos @c.us
       if (!destination.includes('@')) {
-        const isGroup = destination.length > 15; // IDs de grupo são longos
+        const isGroup = destination.length > 15;
         destination = isGroup ? `${destination}@g.us` : `${destination}@c.us`;
       }
 
       console.log(`[WppService] Tentando envio robusto para: ${destination}`);
 
-      // 2. Usar o checkContact antes de enviar (evita o erro de LID)
       try {
         return await session.client.sendText(destination, message);
       } catch (err) {
-        // Se falhar, tentamos uma segunda vez limpando o cache de contatos
         console.warn(`[WppService] Primeira tentativa falhou, tentando fallback...`);
         return await session.client.sendText(destination, message);
       }
@@ -108,7 +123,6 @@ class WppService {
   async sendImage(userId, to, imageUrl, caption) {
     const session = this.sessionManager.getSession(userId);
     if (session && session.client) {
-      // Garante o formato correto do destino (@g.us ou @c.us)
       const destination = to.includes('@') ? to : (to.length > 15 ? `${to}@g.us` : `${to}@c.us`);
 
       console.log(`[WppService] Enviando imagem para: ${destination}`);
