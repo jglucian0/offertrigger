@@ -1,21 +1,25 @@
-const ScraperService = require('./services/scraperService');
-const AffiliateService = require('./services/affiliateService');
-const MessageFormatter = require('./services/messageFormatter');
-const WppService = require('./services/wppService');
-// Assumindo que você tem um SessionManager para gerenciar os estados
-const SessionManager = require('./services/sessionManager');
+const ScraperService = require('./services/scraperService'); // Function de scraper
+const AffiliateService = require('./services/affiliateService'); // Function convert link
+const MessageFormatter = require('./services/messageFormatter'); // Function de formatação
+const WppService = require('./services/wppService'); // Function para conectar o WhatsApp
+const SessionManager = require('./services/sessionManager'); // Function que controla as conexões do WhatsApp
+const SessionController = require('./controllers/sessionController');
 
 async function dispararOferta(urlMeli, userId, groupId) {
-  // 1. Inicializa os serviços
   const sessionManager = new SessionManager();
-  const wppService = new WppService(sessionManager);
+  const wppService = new WppService(sessionManager); // Recebe o session para saber qual conexão usar
+  const sessionController = new SessionController();
   const scraper = new ScraperService();
   const affiliate = new AffiliateService();
 
   try {
-    // 2. Inicia a sessão do WhatsApp (Gera QR Code se necessário)
     console.log(`[Status] Iniciando sessão para o usuário: ${userId}...`);
     await wppService.initSession(userId);
+    const status = await sessionController.checkStatus(userId);
+
+    if (status === 'inChat') {
+      console.log("CONECTADOOOOOOO")
+    }
 
     // Pequena pausa para garantir que o cliente conectou
     await new Promise(r => setTimeout(r, 5000));
