@@ -12,6 +12,7 @@ class WppService {
 
       const client = await wppconnect.create({
         session: userId,
+        executablePath: '/usr/bin/google-chrome',
         catchQR: (base64Qr) => {
           // Check de segurança: só atualiza se o manager ainda existir (evita erro no Jest)
           if (this.sessionManager) {
