@@ -34,7 +34,6 @@ exports.sendMessage = async (req, res) => {
 
     const mensagemFormatada = MessageFormatter.format(item);
 
-    // Envia a IMAGEM + TEXTO usando a sessão ativa
     await wppService.sendImage(userId, to, item.image, mensagemFormatada);
 
     return res.status(200).json({

@@ -1,9 +1,12 @@
 const wppconnect = require('@wppconnect-team/wppconnect');
 const AffiliateService = require('../services/affiliateService');
+const BotService = require('./botService');
 
 class WppService {
   constructor(sessionManager) {
     this.sessionManager = sessionManager;
+    const affiliateService = new AffiliateService();
+    this.botService = new BotService(affiliateService);
   }
 
   async initSession(userId) {
@@ -53,23 +56,7 @@ class WppService {
       }
 
       client.onMessage(async (message) => {
-        if (message.fromMe) return;
-
-        const body = message.body || '';
-        const affiliate = new AffiliateService();
-
-        if (body.startsWith('https://produto.mercadolivre.com.br/')) {
-          console.log(`[Bot] Link do ML detectado de ${message.from}.`);
-
-          try {
-            console.log('[Controller] Convertendo link no Affiliate Builder...');
-            const linkAfiliado = await affiliate.generateAffiliateLink(body);
-
-            await client.sendText(message.from, linkAfiliado);
-          } catch (err) {
-            console.error('[Bot] Erro ao responder mensagem:', err);
-          }
-        }
+        await this.botService.processIncomingMessage(client, message);
       });
 
       return client;

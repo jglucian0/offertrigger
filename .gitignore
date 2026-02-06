@@ -1,2 +1,4 @@
 node_modules
 quarentena
+.env
+/src/generated/prisma

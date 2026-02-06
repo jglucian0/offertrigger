@@ -1,3 +1,3 @@
-2026/02/06-00:57:54.292 101c5 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2026/02/06-00:57:54.292 101c5 Recovering log #17
-2026/02/06-00:57:54.311 101c5 Reusing old log /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/000017.log 
+2026/02/06-02:06:28.388 1400e Reusing MANIFEST /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/02/06-02:06:28.389 1400e Recovering log #25
+2026/02/06-02:06:28.408 1400e Reusing old log /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/000025.log 

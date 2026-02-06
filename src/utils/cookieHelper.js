@@ -4,6 +4,12 @@ const path = require('path');
 async function loadCookies() {
   try {
     const filePath = path.resolve(__dirname, '../../www.mercadolivre.com.br_cookies.txt');
+
+    if (!fs.existsSync(filePath)) {
+      console.warn('[CookieHelper] Arquivo de cookies não encontrado em:', filePath);
+      return [];
+    }
+
     const content = fs.readFileSync(filePath, 'utf-8');
     const cookies = [];
     const lines = content.split('\n');
@@ -23,10 +29,11 @@ async function loadCookies() {
       }
     });
 
+    // Filtra apenas os cookies essenciais para evitar sobrecarga ou bloqueios
     const essentialNames = ['ssid', '_d2id', '_dsid', 'cp'];
     return cookies.filter(c => essentialNames.includes(c.name));
   } catch (error) {
-    console.error('Erro ao ler cookies:', error.message);
+    console.error('[CookieHelper] Erro ao processar cookies:', error.message);
     return [];
   }
 }

@@ -1,3 +1,3 @@
-2026/02/06-00:57:45.738 101d2 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/jgluciano/Default/shared_proto_db/metadata/MANIFEST-000001
-2026/02/06-00:57:45.739 101d2 Recovering log #3
-2026/02/06-00:57:45.740 101d2 Reusing old log /home/jgluciano/offertrigger/tokens/jgluciano/Default/shared_proto_db/metadata/000003.log 
+2026/02/06-02:06:16.776 14022 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/jgluciano/Default/shared_proto_db/metadata/MANIFEST-000001
+2026/02/06-02:06:16.776 14022 Recovering log #3
+2026/02/06-02:06:16.777 14022 Reusing old log /home/jgluciano/offertrigger/tokens/jgluciano/Default/shared_proto_db/metadata/000003.log 
