@@ -1,3 +1,6 @@
-2026/02/07-01:36:59.306 14055 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/jgluciano/Default/Local Storage/leveldb/MANIFEST-000001
-2026/02/07-01:36:59.307 14055 Recovering log #4
-2026/02/07-01:36:59.308 14055 Reusing old log /home/jgluciano/offertrigger/tokens/jgluciano/Default/Local Storage/leveldb/000004.log 
+2026/02/07-02:13:24.729 16781 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/jgluciano/Default/Local Storage/leveldb/MANIFEST-000001
+2026/02/07-02:13:24.730 16781 Recovering log #8
+2026/02/07-02:13:24.730 16781 Reusing old log /home/jgluciano/offertrigger/tokens/jgluciano/Default/Local Storage/leveldb/000008.log 
+2026/02/07-02:28:58.263 1677c Level-0 table #11: started
+2026/02/07-02:28:58.266 1677c Level-0 table #11: 17977 bytes OK
+2026/02/07-02:28:58.270 1677c Delete type=0 #8

@@ -1,14 +1,14 @@
-2026/02/07-01:29:36.478 13839 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2026/02/07-01:29:36.478 13839 Recovering log #24
-2026/02/07-01:29:36.507 13839 Reusing old log /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/000024.log 
-2026/02/07-01:30:41.555 13827 Level-0 table #30: started
-2026/02/07-01:30:41.585 13827 Level-0 table #30: 1355270 bytes OK
-2026/02/07-01:30:41.590 13827 Delete type=0 #24
-2026/02/07-01:30:51.667 13829 Compacting 1@1 + 2@2 files
-2026/02/07-01:30:51.708 13829 Generated table #31@1: 42408 keys, 2194070 bytes
-2026/02/07-01:30:51.721 13829 Generated table #32@1: 26688 keys, 494112 bytes
-2026/02/07-01:30:51.721 13829 Compacted 1@1 + 2@2 files => 2688182 bytes
-2026/02/07-01:30:51.724 13829 compacted to: files[ 0 0 2 0 0 0 0 ]
-2026/02/07-01:30:51.724 13829 Delete type=2 #30
-2026/02/07-01:30:51.724 13829 Delete type=2 #26
-2026/02/07-01:30:51.724 13829 Delete type=2 #27
+2026/02/07-02:09:49.418 15eae Reusing MANIFEST /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/02/07-02:09:49.418 15eae Recovering log #29
+2026/02/07-02:09:49.448 15eae Reusing old log /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/000029.log 
+2026/02/07-02:09:58.953 15eae Level-0 table #35: started
+2026/02/07-02:09:58.970 15eae Level-0 table #35: 1534526 bytes OK
+2026/02/07-02:09:58.974 15eae Delete type=0 #29
+2026/02/07-02:10:28.301 15eb5 Compacting 1@1 + 2@2 files
+2026/02/07-02:10:28.342 15eb5 Generated table #36@1: 44259 keys, 2196468 bytes
+2026/02/07-02:10:28.369 15eb5 Generated table #37@1: 30403 keys, 762317 bytes
+2026/02/07-02:10:28.369 15eb5 Compacted 1@1 + 2@2 files => 2958785 bytes
+2026/02/07-02:10:28.372 15eb5 compacted to: files[ 0 0 2 0 0 0 0 ]
+2026/02/07-02:10:28.373 15eb5 Delete type=2 #31
+2026/02/07-02:10:28.373 15eb5 Delete type=2 #35
+2026/02/07-02:10:28.373 15eb5 Delete type=2 #32

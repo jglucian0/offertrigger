@@ -74,43 +74,90 @@ class BotService {
     });
   }
 
+  async sendPreview(client, chatId, state) {
+
+    const mensagem = MessageFormatter.format({
+      ...state.produto,
+      link: 'link de afiliado', // mascara o link
+      ...state.config
+    });
+
+    await client.sendText(chatId,
+      `🛠️ Preview editável:
+
+${mensagem}
+    
+[1] - \`✅ Enviar\`
+[2] - \`✏️ Editar título\`
+[3] - \`💰 Editar preço\`
+[4] - \`💸 Remover preço antigo\`
+[5] - \`☠️ Remover emoji\`
+[0] - \`❌ Cancelar\``);
+  }
+
   async handleApprovalResponse(client, message) {
-    const session = this.pendingApprovals.get(message.from);
-    if (!session) return;
+    const state = this.pendingApprovals.get(message.from);
+    if (!state) return;
 
     const text = (message.body || '').trim();
 
-    switch (text) {
-      case '1':
-        await client.sendText(message.from, '✅ Produto aprovado e salvo para envio futuro.');
+    if (state.etapa === 'menu') {
+      if (text === '1') {
+        const mensagem = MessageFormatter.format({
+          ...state.produto,
+          link: state.link,
+          ...state.config
+        });
+
+        await client.sendText(message.from, '✅ Oferta aprovada! (aqui futuramente enviará aos grupos)');
+        console.log('[Bot] Oferta final:\n', mensagem);
+
         this.pendingApprovals.delete(message.from);
-        break;
+        return;
+      }
 
-      case '2':
-        session.step = 'edit_text';
-        await client.sendText(message.from, '✏️ Envie o texto corrigido.');
-        break;
+      if (text === '2') {
+        state.etapa = 'edit_title';
+        await client.sendText(message.from, '✏️ Digite o novo título:');
+        return;
+      }
 
-      case '3':
-        session.step = 'edit_price';
-        await client.sendText(message.from, '💰 Envie o novo preço (ex: 89,90)');
-        break;
+      if (text === '3') {
+        state.etapa = 'edit_price';
+        await client.sendText(message.from, '💰 Digite o novo preço (ex: 89,90)');
+        return;
+      }
 
-      case '4':
-        await client.sendText(message.from, '❌ Operação cancelada.');
+      if (text === '4') {
+        state.config.removerPrecoAntigo = true;
+        return this.sendPreview(client, message.from, state);
+      }
+
+      if (text === '5') {
+        state.config.semEmoji = true;
+        return this.sendPreview(client, message.from, state);
+      }
+
+      if (text === '0') {
         this.pendingApprovals.delete(message.from);
-        break;
+        await client.sendText(message.from, '❌ Cancelado.');
+        return;
+      }
 
-      default:
-        await client.sendText(
-          message.from,
-          `Opção inválida! Envie apenas o dígito correspondente a ação desejada:
+      await client.sendText(message.from, 'Envie uma opção válida.');
+      return;
+    }
 
-[1] - \`✅ Aprovar envio\`
-[2] - \`✏️ Corrigir texto\`
-[3] - \`💰 Alterar preço\`
-[4] - \`❌ Cancelar\``
-        );
+    if (state.etapa === 'edit_title') {
+      state.config.tituloCustom = text;
+      state.etapa = 'menu';
+      return this.sendPreview(client, message.from, state);
+    }
+
+    if (state.etapa === 'edit_price') {
+      state.config.precoCustom = text;
+      state.etapa = 'menu';
+      return this.sendPreview(client, message.from, state);
     }
   }
 
@@ -223,21 +270,26 @@ class BotService {
           );
 
           this.pendingApprovals.set(message.from, {
-            product: dadosScraper,
+            etapa: 'menu',
+            produto: dadosScraper,
             link: linkAfiliado,
-            createdAt: Date.now(),
-            step: 'awaiting_approval'
+            config: {
+              tituloCustom: null,
+              precoCustom: null,
+              removerPrecoAntigo: false,
+              semEmoji: false
+            }
           });
 
-          await client.sendText(
-            message.from,
+          await client.sendText(message.from,
             `O que deseja fazer?
 
-[1] - \`✅ Aprovar envio\`
-[2] - \`✏️ Corrigir texto\`
-[3] - \`💰 Alterar preço\`
-[4] - \`❌ Cancelar\``
-          );
+[1] - \`✅ Enviar\`
+[2] - \`✏️ Editar título\`
+[3] - \`💰 Editar preço\`
+[4] - \`💸 Remover preço antigo\`
+[5] - \`☠️ Remover emoji\`
+[0] - \`❌ Cancelar\``);
 
           if (fotoCaminhoLocal) {
             fs.unlink(fotoCaminhoLocal, () => { });

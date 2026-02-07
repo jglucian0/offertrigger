@@ -11,31 +11,42 @@ class MessageFormatter {
     return 'na internet';
   }
 
+  static formatPrice(reais, cents) {
+    if (!reais) return null;
+    return `R$ ${reais},${cents || '00'}`;
+  }
+
 
   static format(product) {
-    const price = product.currentPriceValue
-      ? `R$ ${product.currentPriceReais},${product.currentPriceCents}`
-      : null;
+    const titulo = product.tituloCustom || product.title;
 
-    const oldPrice = product.oldPriceValue
-      ? `R$ ${product.oldPriceReais},${product.oldPriceCents}`
-      : null;
+    let price = product.precoCustom
+      ? `R$ ${product.precoCustom}`
+      : this.formatPrice(product.currentPriceReais, product.currentPriceCents);
+
+    let oldPrice = product.removerPrecoAntigo
+      ? null
+      : this.formatPrice(product.oldPriceReais, product.oldPriceCents);
+
+    const emojiMoney = product.semEmoji ? '' : ' 💵';
+    const emojiDiscount = product.semEmoji ? '' : '🎟️ ';
+    const emojiShipping = product.semEmoji ? '' : '🚚 ';
 
     const shippingText = product.shipping
-      ? `\n\`🚚 FRETE GRÁTIS!\`` //${product.shipping}
+      ? `\n\`${emojiShipping}${product.shipping}\``
       : '';
 
     const discountText = product.discountPercent
-      ? `\n\`🎟️ ${product.discountPercent}% OFF\``
+      ? `\n\`${emojiDiscount}${product.discountPercent}% OFF\``
       : '';
 
     const oldPriceText = oldPrice
-      ? `De ~${oldPrice}~ | Por *${price}* 💵`
-      : `Por apenas *${price}* 💵`;
+      ? `De ~${oldPrice}~ | Por *${price}*${emojiMoney}`
+      : `Por apenas *${price}*${emojiMoney}`;
 
     const storeName = this.detectStore(product.link);
 
-    return `${product.title}
+    return `${titulo}
 
 ${oldPriceText}
 ${shippingText}${discountText}
