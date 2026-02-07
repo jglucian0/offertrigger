@@ -1,9 +1,11 @@
 const fs = require('fs');
 const path = require('path');
+const ScraperService = require('./scraperService')
 
 class BotService {
   constructor(affiliateService) {
     this.affiliateService = affiliateService;
+    this.scraperService = new ScraperService();
     this.nichosValidos = ['academia', 'eletronicos', 'moda'];
 
     this.uploadPath = path.resolve(__dirname, '../../uploads');
@@ -78,10 +80,31 @@ class BotService {
             console.log(`[Bot] Foto salva em: ${fotoCaminhoLocal}`);
           }
 
+          const dadosScraper = await this.scraperService.fetchProducts(urlDetectada, false);
+
+          const precoAtualFormatado = dadosScraper.currentPriceValue
+            ? `R$ ${dadosScraper.currentPriceReais},${dadosScraper.currentPriceCents}`
+            : 'Preço atual não encontrado';
+
+          const precoAntigoFormatado = dadosScraper.oldPriceValue
+            ? `R$ ${dadosScraper.oldPriceReais},${dadosScraper.oldPriceCents}`
+            : 'Sem preço antigo';
+
           console.log(`[Bot] Nicho detectado: ${nichosIdentificados.join(', ')}`);
           console.log(`[Bot] URL detectada: ${urlDetectada}`);
           console.log(`[Bot] URL affiliado: ${linkAfiliado}`);
-          console.log(`Foto Local: ${fotoCaminhoLocal || 'Sem foto'}`);
+          console.log(`[Bot] Título: ${dadosScraper.title}`);
+          console.log(`[Bot] Preço Atual: ${precoAtualFormatado}`);
+          console.log(`[Bot] Valor Atual Numérico: ${dadosScraper.currentPriceValue}`);
+
+          console.log(`[Bot] Preço Antigo: ${precoAntigoFormatado}`);
+          console.log(`[Bot] Valor Antigo Numérico: ${dadosScraper.oldPriceValue}`);
+          console.log(`[Bot] Desconto Calculado: ${dadosScraper.discountPercent}%`);
+
+
+          console.log(`[Bot] Frete: ${dadosScraper.shipping}`);
+
+          console.log(`[Bot] Foto Local: ${fotoCaminhoLocal || 'Sem foto'}`);
           console.log(`[Bot] Enviado por: ${message.from}`);
         } catch (err) {
           console.error('[Bot] Erro no processamento:', err.message);
