@@ -142,7 +142,6 @@ class ScraperService {
 
             const t = normalize(text);
 
-            // queremos só vantagens reais
             return (
               t.includes('frete grátis') ||
               t.includes('frete gratis') ||
@@ -180,11 +179,55 @@ class ScraperService {
           return null;
         };
 
+        const extractPrimaryImage = () => {
+
+          const isValidImage = (url) => {
+            if (!url) return false;
+
+            const u = url.toLowerCase();
+
+            // não queremos thumbs ou placeholders
+            if (u.includes('sprite')) return false;
+            if (u.includes('gif')) return false;
+            if (u.includes('loading')) return false;
+            if (u.includes('video')) return false;
+
+            return (
+              u.includes('.jpg') ||
+              u.includes('.jpeg') ||
+              u.includes('.png') ||
+              u.includes('.webp')
+            );
+          };
+
+          const figures = Array.from(
+            document.querySelectorAll('.ui-pdp-gallery__figure')
+          );
+
+          for (const figure of figures) {
+
+            if (figure.querySelector('.clip-wrapper')) continue;
+
+            const zoomImg = figure.querySelector('img[data-zoom]');
+            if (zoomImg) {
+              const zoomUrl = zoomImg.getAttribute('data-zoom');
+              if (isValidImage(zoomUrl)) return zoomUrl;
+            }
+
+            const img = figure.querySelector('img');
+            if (img) {
+              const src = img.getAttribute('src');
+              if (isValidImage(src)) return src;
+            }
+          }
+
+          return null;
+        };
+
         const oldPrice = extractOldPriceSemantic();
         const currentPrice = extractCurrentPriceSemantic();
         const shipping = extractShippingInfo();
-
-        console.log(`O VALOR DE FRETE: ${shipping}`)
+        const imageUrl = extractPrimaryImage();
 
         let discountPercent = null;
         if (oldPrice?.value && currentPrice?.value) {
@@ -209,6 +252,7 @@ class ScraperService {
 
           discountPercent,
           shipping,
+          imageUrl,
 
           url: window.location.href
         };

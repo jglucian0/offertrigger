@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
 const ScraperService = require('./scraperService')
 const MessageFormatter = require('./messageFormatter');
 
@@ -8,6 +9,7 @@ class BotService {
     this.affiliateService = affiliateService;
     this.scraperService = new ScraperService();
     this.nichosValidos = ['academia', 'eletronicos', 'moda'];
+    this.pendingApprovals = new Map();
 
     this.uploadPath = path.resolve(__dirname, '../../uploads');
 
@@ -33,8 +35,91 @@ class BotService {
     );
   }
 
+  async downloadImageToTemp(url) {
+    return new Promise((resolve, reject) => {
+      try {
+        const fileName = `scraped_${Date.now()}.jpg`;
+        const filePath = path.join(this.uploadPath, fileName);
+
+        const options = {
+          headers: {
+            'User-Agent': 'Mozilla/5.0',
+            'Accept': 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8'
+          }
+        };
+
+        https.get(url, options, (res) => {
+
+          if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+            return resolve(this.downloadImageToTemp(res.headers.location));
+          }
+
+          if (res.statusCode !== 200) {
+            return reject(new Error(`Falha ao baixar imagem: ${res.statusCode}`));
+          }
+
+          const fileStream = fs.createWriteStream(filePath);
+          res.pipe(fileStream);
+
+          fileStream.on('finish', () => {
+            fileStream.close();
+            resolve(filePath);
+          });
+
+        }).on('error', reject);
+
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
+
+  async handleApprovalResponse(client, message) {
+    const session = this.pendingApprovals.get(message.from);
+    if (!session) return;
+
+    const text = (message.body || '').trim();
+
+    switch (text) {
+      case '1':
+        await client.sendText(message.from, '✅ Produto aprovado e salvo para envio futuro.');
+        this.pendingApprovals.delete(message.from);
+        break;
+
+      case '2':
+        session.step = 'edit_text';
+        await client.sendText(message.from, '✏️ Envie o texto corrigido.');
+        break;
+
+      case '3':
+        session.step = 'edit_price';
+        await client.sendText(message.from, '💰 Envie o novo preço (ex: 89,90)');
+        break;
+
+      case '4':
+        await client.sendText(message.from, '❌ Operação cancelada.');
+        this.pendingApprovals.delete(message.from);
+        break;
+
+      default:
+        await client.sendText(
+          message.from,
+          `Opção inválida! Envie apenas o dígito correspondente a ação desejada:
+
+[1] - \`✅ Aprovar envio\`
+[2] - \`✏️ Corrigir texto\`
+[3] - \`💰 Alterar preço\`
+[4] - \`❌ Cancelar\``
+        );
+    }
+  }
+
   async processIncomingMessage(client, message) {
     if (message.fromMe) return;
+
+    if (this.pendingApprovals.has(message.from)) {
+      return this.handleApprovalResponse(client, message);
+    }
 
     const body = message.caption || message.body || '';
     const lines = body.split('\n').map(l => l.trim()).filter(l => l !== '');
@@ -50,6 +135,7 @@ class BotService {
         l.startsWith('https://www.mercadolivre.com.br/') ||
         l.startsWith('https://mercadolivre.com/sec/')
       );
+
 
       if (urlDetectada && nichosIdentificados.length > 0) {
         try {
@@ -98,6 +184,7 @@ class BotService {
           console.log(`[Bot] Preço Atual: ${precoAtualFormatado}`);
           console.log(`[Bot] Valor Atual Numérico: ${dadosScraper.currentPriceValue}`);
 
+
           console.log(`[Bot] Preço Antigo: ${precoAntigoFormatado}`);
           console.log(`[Bot] Valor Antigo Numérico: ${dadosScraper.oldPriceValue}`);
           console.log(`[Bot] Desconto Calculado: ${dadosScraper.discountPercent}%`);
@@ -105,6 +192,7 @@ class BotService {
 
           console.log(`[Bot] Frete: ${dadosScraper.shipping}`);
 
+          console.log(`[Bot] Foto Scraping: ${dadosScraper.imageUrl}`);
           console.log(`[Bot] Foto Local: ${fotoCaminhoLocal || 'Sem foto'}`);
           console.log(`[Bot] Enviado por: ${message.from}`);
 
@@ -114,20 +202,49 @@ class BotService {
             link: linkAfiliado
           });
 
-          if (fotoCaminhoLocal) {
-            await client.sendImage(
-              message.from,
-              fotoCaminhoLocal,
-              'produto.jpg',
-              mensagem
-            );
+          let imagemParaEnviar = null;
+          let imagemTemporaria = false;
 
+          if (fotoCaminhoLocal) {
+            imagemParaEnviar = fotoCaminhoLocal;
+          } else if (dadosScraper.imageUrl) {
+            console.log('[Bot] Baixando imagem do scraping...');
+            imagemParaEnviar = await this.downloadImageToTemp(dadosScraper.imageUrl);
+            imagemTemporaria = true;
           } else {
-            await client.sendText(message.from, mensagem);
+            throw new Error('Nenhuma imagem disponível para envio');
           }
+
+          await client.sendImage(
+            message.from,
+            imagemParaEnviar,
+            'produto.jpg',
+            mensagem,
+          );
+
+          this.pendingApprovals.set(message.from, {
+            product: dadosScraper,
+            link: linkAfiliado,
+            createdAt: Date.now(),
+            step: 'awaiting_approval'
+          });
+
+          await client.sendText(
+            message.from,
+            `O que deseja fazer?
+
+[1] - \`✅ Aprovar envio\`
+[2] - \`✏️ Corrigir texto\`
+[3] - \`💰 Alterar preço\`
+[4] - \`❌ Cancelar\``
+          );
 
           if (fotoCaminhoLocal) {
             fs.unlink(fotoCaminhoLocal, () => { });
+          }
+
+          if (imagemTemporaria && imagemParaEnviar) {
+            fs.unlink(imagemParaEnviar, () => { });
           }
         } catch (err) {
           console.error('[Bot] Erro no processamento:', err.message);
