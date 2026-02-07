@@ -1,14 +1,3 @@
-2026/02/06-23:13:22.881 b086 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2026/02/06-23:13:22.881 b086 Recovering log #102
-2026/02/06-23:13:22.913 b086 Reusing old log /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/000102.log 
-2026/02/06-23:13:32.474 b07f Level-0 table #109: started
-2026/02/06-23:13:32.492 b07f Level-0 table #109: 1223385 bytes OK
-2026/02/06-23:13:32.496 b07f Delete type=0 #102
-2026/02/06-23:13:59.319 b085 Compacting 1@1 + 2@2 files
-2026/02/06-23:13:59.377 b085 Generated table #110@1: 46313 keys, 2198087 bytes
-2026/02/06-23:13:59.390 b085 Generated table #111@1: 22668 keys, 435719 bytes
-2026/02/06-23:13:59.390 b085 Compacted 1@1 + 2@2 files => 2633806 bytes
-2026/02/06-23:13:59.394 b085 compacted to: files[ 0 0 3 0 0 0 0 ]
-2026/02/06-23:13:59.394 b085 Delete type=2 #106
-2026/02/06-23:13:59.394 b085 Delete type=2 #109
-2026/02/06-23:13:59.394 b085 Delete type=2 #105
+2026/02/06-23:50:50.410 de2c Reusing MANIFEST /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/02/06-23:50:50.411 de2c Recovering log #15
+2026/02/06-23:50:50.422 de2c Reusing old log /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/000015.log 

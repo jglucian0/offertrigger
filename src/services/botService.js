@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const ScraperService = require('./scraperService')
+const MessageFormatter = require('./messageFormatter');
 
 class BotService {
   constructor(affiliateService) {
@@ -106,9 +107,33 @@ class BotService {
 
           console.log(`[Bot] Foto Local: ${fotoCaminhoLocal || 'Sem foto'}`);
           console.log(`[Bot] Enviado por: ${message.from}`);
+
+
+          const mensagem = MessageFormatter.format({
+            ...dadosScraper,
+            link: linkAfiliado
+          });
+
+          if (fotoCaminhoLocal) {
+            await client.sendImage(
+              message.from,
+              fotoCaminhoLocal,
+              'produto.jpg',
+              mensagem
+            );
+
+          } else {
+            await client.sendText(message.from, mensagem);
+          }
+
+          if (fotoCaminhoLocal) {
+            fs.unlink(fotoCaminhoLocal, () => { });
+          }
         } catch (err) {
           console.error('[Bot] Erro no processamento:', err.message);
         }
+
+
         // No futuro, aqui chamaremos o Scraper e o Prisma
         // Por enquanto, apenas o log como solicitado.
 

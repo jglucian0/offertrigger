@@ -1,18 +1,31 @@
 class MessageFormatter {
   static format(product) {
-    const shippingText = product.freeShipping ? `\n\`🚚 FRETE GRÁTIS!\`` : '';
-    const discountText = product.discount ? `\n\`🎟️ ${product.discount}\`` : '';
+    const price = product.currentPriceValue
+      ? `R$ ${product.currentPriceReais},${product.currentPriceCents}`
+      : null;
 
-    const oldPriceText = product.oldPrice
-      ? `De ~~${product.oldPrice}~~ | *${product.price}* 💵`
-      : `Por apenas *${product.price}*`
+    const oldPrice = product.oldPriceValue
+      ? `R$ ${product.oldPriceReais},${product.oldPriceCents}`
+      : null;
+
+    const shippingText = product.shipping
+      ? `\n\`🚚 ${product.shipping}!\``
+      : '';
+
+    const discountText = product.discountPercent
+      ? `\n\`🎟️ ${product.discountPercent}% OFF\``
+      : '';
+
+    const oldPriceText = oldPrice
+      ? `De ~~${oldPrice}~~ | *${price}* 💵`
+      : `Por apenas *${price}*`;
 
     return `${product.title}
 
 ${oldPriceText}
 ${shippingText}${discountText}
 
-Achado no Mercado Livre
+Achado no Mercado Livre:
 ${product.link}`;
   }
 }
