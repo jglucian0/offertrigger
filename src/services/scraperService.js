@@ -37,6 +37,10 @@ class ScraperService {
       // Aguarda apenas a presença da tag h1 ou da classe de título
       await page.waitForSelector('.ui-pdp-title, h1', { timeout: 10000 });
 
+      await page.waitForSelector('.ui-pdp-header__subtitle', { timeout: 8000 }).catch(() => { });
+
+      await page.waitForSelector('#coupon-awareness-row-label', { timeout: 5000 }).catch(() => { });
+
       await page.waitForFunction(() =>
         document.querySelector('#price [data-testid="price-part"] .andes-money-amount__fraction')
       );
@@ -224,10 +228,76 @@ class ScraperService {
           return null;
         };
 
+        const extractSoldQuantity = () => {
+
+          const subtitleContainer = document.querySelector('.ui-pdp-header__subtitle');
+          if (!subtitleContainer) return null;
+
+          const span = subtitleContainer.querySelector('.ui-pdp-subtitle');
+          if (!span) return null;
+
+          const aria = span.getAttribute('aria-label') || span.textContent;
+          if (!aria) return null;
+
+          const match = aria.match(/(\+?\s*[\d\.]+\s*(mil|k|milhão|milhões)?\s*vendidos)/i);
+
+          if (!match) return null;
+
+          return match[1]
+            .replace(/\s+/g, ' ')
+            .replace('Mais de ', '+')
+            .trim();
+        };
+
+        const extractCoupon = () => {
+
+          const label = document.getElementById('coupon-awareness-row-label');
+          if (!label) return null;
+
+          let text = label.innerText || label.textContent;
+          if (!text) return null;
+
+          text = text.replace(/\s+/g, ' ').trim();
+
+          text = text.replace(/^aplicar\s*/i, '');
+
+          text = text.replace(/\.$/, '');
+
+          text = text.replace(/no carrinho/i, '');
+          text = text.replace(/de desconto/i, 'OFF');
+
+          return text.trim();
+        };
+
+        const applyCouponDiscount = (currentPrice, couponText) => {
+          if (!currentPrice?.value || !couponText) return currentPrice;
+
+          const match = couponText.match(/(\d+)\s*%/);
+          if (!match) return currentPrice;
+
+          const percent = Number(match[1]);
+          if (!percent || percent <= 0) return currentPrice;
+
+          const newValue = Number((currentPrice.value * (1 - percent / 100)).toFixed(2));
+
+          const [reais, cents = '00'] = newValue.toFixed(2).split('.');
+
+          return {
+            ...currentPrice,
+            value: newValue,
+            reais,
+            cents
+          };
+        };
+
         const oldPrice = extractOldPriceSemantic();
-        const currentPrice = extractCurrentPriceSemantic();
+        let currentPrice = extractCurrentPriceSemantic();
         const shipping = extractShippingInfo();
         const imageUrl = extractPrimaryImage();
+        const soldQuantity = extractSoldQuantity();
+        const coupon = extractCoupon();
+
+        currentPrice = applyCouponDiscount(currentPrice, coupon);
 
         let discountPercent = null;
         if (oldPrice?.value && currentPrice?.value) {
@@ -238,7 +308,7 @@ class ScraperService {
 
         return {
           title: getTitle(),
-          priceText: price?.raw || null,
+          priceText: currentPrice?.raw || null,
 
           currentPriceText: currentPrice?.raw || null,
           currentPriceValue: currentPrice?.value || null,
@@ -252,6 +322,8 @@ class ScraperService {
 
           discountPercent,
           shipping,
+          soldQuantity,
+          coupon,
           imageUrl,
 
           url: window.location.href

@@ -236,8 +236,8 @@ ${mensagem}
           console.log(`[Bot] Valor Antigo Numérico: ${dadosScraper.oldPriceValue}`);
           console.log(`[Bot] Desconto Calculado: ${dadosScraper.discountPercent}%`);
 
-
           console.log(`[Bot] Frete: ${dadosScraper.shipping}`);
+          console.log(`[Bot] Quantidade de vendas: ${dadosScraper.soldQuantity}`);
 
           console.log(`[Bot] Foto Scraping: ${dadosScraper.imageUrl}`);
           console.log(`[Bot] Foto Local: ${fotoCaminhoLocal || 'Sem foto'}`);
