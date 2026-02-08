@@ -148,6 +148,7 @@ class ScraperService {
 
             return (
               t.includes('frete grátis') ||
+              t.includes('chegará grátis') ||
               t.includes('frete gratis') ||
               t.includes('grátis') ||
               t.includes('gratis') ||
@@ -155,6 +156,19 @@ class ScraperService {
               t.includes('full')
             );
           };
+
+          const shippingSummary = document.querySelector('#shipping_summary');
+          if (shippingSummary) {
+            const greenText = shippingSummary.querySelector('.ui-pdp-color--GREEN');
+            if (greenText) {
+              const text = greenText.innerText;
+              if (isValidShippingText(text)) return text.trim();
+            }
+
+            // fallback: qualquer texto do bloco
+            const fullText = shippingSummary.innerText;
+            if (isValidShippingText(fullText)) return fullText.trim();
+          }
 
           // ---------- PRIORIDADE 1 (ID INTERNO DO ML) ----------
           const special = document.getElementById('special_event_shipping_summaryspecial_event_shipping_summary');
@@ -269,6 +283,38 @@ class ScraperService {
           return text.trim();
         };
 
+        const extractCouponMinimumPurchase = () => {
+
+          // ----- FORMATO 2 (novo layout ML)
+          const minNode = document.getElementById('coupon_summary-subtitles-style-label');
+          if (minNode) {
+            const pricePart = minNode.querySelector('[data-testid="price-part"]');
+            if (pricePart) {
+              const fraction = pricePart.querySelector('.andes-money-amount__fraction')?.textContent;
+              const cents = pricePart.querySelector('.andes-money-amount__cents')?.textContent || '00';
+              if (fraction) {
+                return Number(`${fraction}.${cents}`);
+              }
+            }
+
+            // fallback aria-label
+            const aria = minNode.innerText || minNode.textContent;
+            const match = aria?.match(/(\d+[.,]?\d*)\s*reais/i);
+            if (match) return Number(match[1].replace(',', '.'));
+          }
+
+          // ----- FORMATO 1 (texto comum do ML)
+          const couponLabel = document.getElementById('coupon-awareness-row-label');
+          if (couponLabel) {
+            const text = couponLabel.innerText || couponLabel.textContent;
+
+            const match = text?.match(/compras?\s+acima\s+de\s+r?\$?\s*(\d+[.,]?\d*)/i);
+            if (match) return Number(match[1].replace(',', '.'));
+          }
+
+          return null;
+        };
+
         const applyCouponDiscount = (currentPrice, couponText) => {
           if (!currentPrice?.value || !couponText) return currentPrice;
 
@@ -296,8 +342,22 @@ class ScraperService {
         const imageUrl = extractPrimaryImage();
         const soldQuantity = extractSoldQuantity();
         const coupon = extractCoupon();
+        const couponMinimum = extractCouponMinimumPurchase();
 
-        currentPrice = applyCouponDiscount(currentPrice, coupon);
+        let appliedCoupon = false;
+        if (coupon && currentPrice?.value) {
+
+          if (!couponMinimum || currentPrice.value >= couponMinimum) {
+            currentPrice = applyCouponDiscount(currentPrice, coupon);
+            appliedCoupon = true;
+          }
+
+        }
+
+        // let couponText = coupon;
+        // if (coupon && couponMinimum && currentPrice?.value < couponMinimum) {
+        //   couponText = `em compras acima de R$ ${couponMinimum.toFixed(2)}`;
+        // }
 
         let discountPercent = null;
         if (oldPrice?.value && currentPrice?.value) {
@@ -323,7 +383,9 @@ class ScraperService {
           discountPercent,
           shipping,
           soldQuantity,
-          coupon,
+          coupon: coupon,
+          couponMinimum,
+          couponApplied: appliedCoupon,
           imageUrl,
 
           url: window.location.href

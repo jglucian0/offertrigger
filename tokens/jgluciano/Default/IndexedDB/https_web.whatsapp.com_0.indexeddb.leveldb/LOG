@@ -1,14 +1,14 @@
-2026/02/07-14:18:07.251 8065 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2026/02/07-14:18:07.251 8065 Recovering log #19
-2026/02/07-14:18:07.278 8065 Reusing old log /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/000019.log 
-2026/02/07-14:19:24.207 805d Level-0 table #25: started
-2026/02/07-14:19:24.230 805d Level-0 table #25: 1555975 bytes OK
-2026/02/07-14:19:24.235 805d Delete type=0 #19
-2026/02/07-14:19:59.037 805d Compacting 1@1 + 2@2 files
-2026/02/07-14:19:59.071 805d Generated table #26@1: 39046 keys, 2193931 bytes
-2026/02/07-14:19:59.087 805d Generated table #27@1: 31956 keys, 621199 bytes
-2026/02/07-14:19:59.087 805d Compacted 1@1 + 2@2 files => 2815130 bytes
-2026/02/07-14:19:59.090 805d compacted to: files[ 0 0 2 0 0 0 0 ]
-2026/02/07-14:19:59.090 805d Delete type=2 #22
-2026/02/07-14:19:59.090 805d Delete type=2 #25
-2026/02/07-14:19:59.090 805d Delete type=2 #21
+2026/02/08-18:11:26.921 f1cb Reusing MANIFEST /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/02/08-18:11:26.922 f1cb Recovering log #36
+2026/02/08-18:11:26.962 f1cb Reusing old log /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/000036.log 
+2026/02/08-18:12:16.835 f1c0 Level-0 table #42: started
+2026/02/08-18:12:16.859 f1c0 Level-0 table #42: 1496502 bytes OK
+2026/02/08-18:12:16.865 f1c0 Delete type=0 #36
+2026/02/08-18:12:34.846 f1c1 Compacting 1@1 + 2@2 files
+2026/02/08-18:12:34.910 f1c1 Generated table #43@1: 46119 keys, 2211651 bytes
+2026/02/08-18:12:34.939 f1c1 Generated table #44@1: 20770 keys, 708132 bytes
+2026/02/08-18:12:34.939 f1c1 Compacted 1@1 + 2@2 files => 2919783 bytes
+2026/02/08-18:12:34.943 f1c1 compacted to: files[ 0 0 2 0 0 0 0 ]
+2026/02/08-18:12:34.943 f1c1 Delete type=2 #38
+2026/02/08-18:12:34.943 f1c1 Delete type=2 #42
+2026/02/08-18:12:34.943 f1c1 Delete type=2 #39

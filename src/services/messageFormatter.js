@@ -63,17 +63,36 @@ class MessageFormatter {
       ? `De ~${oldPrice}~ | Por *${price}*${emojiMoney}`
       : `Por apenas *${price}*${emojiMoney}`;
 
-    const couponFormatted = this.formatCouponText(product.coupon);
-    const couponText = couponFormatted
-      ? `\n\n\`${emojiCoupon}Ative o cupom: ${couponFormatted}\``
+    const extraInfoText = product.extraInfo
+      ? `\n\n\`${product.extraInfo}\``
       : '';
+
+    const couponFormatted = this.formatCouponText(product.coupon);
+    let couponText = '';
+    if (couponFormatted) {
+
+      // 1 — cupom já aplicado no preço
+      if (product.couponApplied) {
+        couponText = `\n\n\`${emojiCoupon}Ative o cupom: ${couponFormatted}\``;
+      }
+
+      // 2 — existe mínimo e não atingiu
+      else if (product.couponMinimum && product.currentPriceValue < product.couponMinimum) {
+        couponText = `\n\n\`${emojiCoupon}Ative o cupom: ${couponFormatted} em compras acima de R$ ${product.couponMinimum}\``;
+      }
+
+      // 3 — cupom normal ativável
+      else {
+        couponText = `\n\n\`${emojiCoupon}Ative o cupom: ${couponFormatted}\``;
+      }
+    }
 
     const storeName = this.detectStore(product.link);
 
     return `${titulo}
 
 ${oldPriceText}
-${shippingText}${discountText}${soldQuantity}${couponText}
+${shippingText}${discountText}${soldQuantity}${couponText}${extraInfoText}
 
 Achado ${storeName}:
 ${product.link}`;

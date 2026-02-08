@@ -3,6 +3,7 @@ const path = require('path');
 const https = require('https');
 const ScraperService = require('./scraperService')
 const MessageFormatter = require('./messageFormatter');
+const ImageService = require('./imageService');
 
 class BotService {
   constructor(affiliateService) {
@@ -92,6 +93,7 @@ ${mensagem}
 [3] - \`💰 Editar preço\`
 [4] - \`💸 Remover preço antigo\`
 [5] - \`☠️ Remover emoji\`
+[6] - \`📝 Adicionar informação\`
 [0] - \`❌ Cancelar\``);
   }
 
@@ -138,6 +140,13 @@ ${mensagem}
         return this.sendPreview(client, message.from, state);
       }
 
+      if (text === '6') {
+        state.etapa = 'edit_extra';
+        await client.sendText(message.from,
+          '📝 Digite a informação adicional que deseja inserir na oferta:');
+        return;
+      }
+
       if (text === '0') {
         this.pendingApprovals.delete(message.from);
         await client.sendText(message.from, '❌ Cancelado.');
@@ -156,6 +165,12 @@ ${mensagem}
 
     if (state.etapa === 'edit_price') {
       state.config.precoCustom = text;
+      state.etapa = 'menu';
+      return this.sendPreview(client, message.from, state);
+    }
+
+    if (state.etapa === 'edit_extra') {
+      state.config.extraInfo = text;
       state.etapa = 'menu';
       return this.sendPreview(client, message.from, state);
     }
@@ -262,12 +277,16 @@ ${mensagem}
             throw new Error('Nenhuma imagem disponível para envio');
           }
 
+          const imagemComMarca = await ImageService.applyWatermark(imagemParaEnviar);
+
           await client.sendImage(
             message.from,
-            imagemParaEnviar,
+            imagemComMarca,
             'produto.jpg',
             mensagem,
           );
+
+          fs.unlink(imagemComMarca, () => { }); // delete imagem
 
           this.pendingApprovals.set(message.from, {
             etapa: 'menu',
@@ -277,7 +296,8 @@ ${mensagem}
               tituloCustom: null,
               precoCustom: null,
               removerPrecoAntigo: false,
-              semEmoji: false
+              semEmoji: false,
+              extraInfo: null
             }
           });
 
@@ -289,6 +309,7 @@ ${mensagem}
 [3] - \`💰 Editar preço\`
 [4] - \`💸 Remover preço antigo\`
 [5] - \`☠️ Remover emoji\`
+[6] - \`📝 Adicionar informação\`
 [0] - \`❌ Cancelar\``);
 
           if (fotoCaminhoLocal) {

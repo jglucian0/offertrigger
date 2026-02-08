@@ -1,3 +1,3 @@
-2026/02/07-14:18:02.662 805d Reusing MANIFEST /home/jgluciano/offertrigger/tokens/jgluciano/Default/Sync Data/LevelDB/MANIFEST-000001
-2026/02/07-14:18:02.703 805d Recovering log #3
-2026/02/07-14:18:02.703 805d Reusing old log /home/jgluciano/offertrigger/tokens/jgluciano/Default/Sync Data/LevelDB/000003.log 
+2026/02/08-18:11:18.156 f1c1 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/jgluciano/Default/Sync Data/LevelDB/MANIFEST-000001
+2026/02/08-18:11:18.163 f1c1 Recovering log #3
+2026/02/08-18:11:18.163 f1c1 Reusing old log /home/jgluciano/offertrigger/tokens/jgluciano/Default/Sync Data/LevelDB/000003.log 
