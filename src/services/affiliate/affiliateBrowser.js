@@ -1,10 +1,10 @@
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-const { loadCookies } = require('../utils/cookieHelper');
+const { loadCookies } = require('../../utils/cookieHelper');
 
 puppeteer.use(StealthPlugin());
 
-class AffiliateService {
+class AffiliateBrowser {
   async generateAffiliateLink(originalLink) {
     console.log('[AffiliateService] Lendo cookies do arquivo...');
     const cookiesToInject = await loadCookies();
@@ -51,4 +51,4 @@ class AffiliateService {
   }
 }
 
-module.exports = AffiliateService;
+module.exports = AffiliateBrowser;

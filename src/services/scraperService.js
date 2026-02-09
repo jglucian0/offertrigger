@@ -253,78 +253,132 @@ class ScraperService {
           const aria = span.getAttribute('aria-label') || span.textContent;
           if (!aria) return null;
 
-          const match = aria.match(/(\+?\s*[\d\.]+\s*(mil|k|milhão|milhões)?\s*vendidos)/i);
+          const match = aria.match(/(\+?\s*[\d\.]+\s*(mil|k|M|milhão|milhões)?\s*vendidos)/i);
 
           if (!match) return null;
 
-          return match[1]
+          let text = match[1]
+            .replace(/Mais de\s*/i, '')
             .replace(/\s+/g, ' ')
-            .replace('Mais de ', '+')
             .trim();
+
+          if (!text.startsWith('+')) text = '+' + text;
+
+          text = text
+            // 10mil -> 10 mil
+            .replace(/(\d)(mil)/i, '$1 mil')
+
+            // k -> mil
+            .replace(/(\d+)\s*k\b/i, '$1 mil')
+
+            // M -> milhão/milhões
+            .replace(/(\d+)\s*M\b/i, (_, num) => {
+              return Number(num) === 1
+                ? `${num} milhão`
+                : `${num} milhões`;
+            });
+
+          return text;
         };
 
         const extractCoupon = () => {
 
-          const label = document.getElementById('coupon-awareness-row-label');
+          const label =
+            document.getElementById('coupon-awareness-row-label') ||
+            document.querySelector('#coupon_summary-main-title') ||
+            document.querySelector('[data-testid="coupon-label"]');
+
+
           if (!label) return null;
 
           let text = label.innerText || label.textContent;
           if (!text) return null;
 
-          text = text.replace(/\s+/g, ' ').trim();
+          text = text.replace(/\s+/g, ' ').trim().toLowerCase();
 
-          text = text.replace(/^aplicar\s*/i, '');
+          let percentMatch = text.match(/(\d{1,3})\s*%/);
+          if (percentMatch) {
+            return {
+              type: 'percent',
+              value: Number(percentMatch[1]),
+              raw: text
+            };
+          }
 
-          text = text.replace(/\.$/, '');
+          let moneyMatch = text.match(/r\$\s*(\d+[.,]?\d*)/);
+          if (moneyMatch && text.includes('off')) {
+            return {
+              type: 'money',
+              value: Number(moneyMatch[1].replace(',', '.')),
+              raw: text
+            };
+          }
 
-          text = text.replace(/no carrinho/i, '');
-          text = text.replace(/de desconto/i, 'OFF');
+          return null;
 
-          return text.trim();
+          // text = text.replace(/^aplicar\s*/i, '');
+
+          // text = text.replace(/\.$/, '');
+
+          // text = text.replace(/no carrinho/i, '');
+          // text = text.replace(/de desconto/i, 'OFF');
+
+          // return text.trim();
         };
 
         const extractCouponMinimumPurchase = () => {
 
-          // ----- FORMATO 2 (novo layout ML)
           const minNode = document.getElementById('coupon_summary-subtitles-style-label');
+
           if (minNode) {
-            const pricePart = minNode.querySelector('[data-testid="price-part"]');
-            if (pricePart) {
-              const fraction = pricePart.querySelector('.andes-money-amount__fraction')?.textContent;
-              const cents = pricePart.querySelector('.andes-money-amount__cents')?.textContent || '00';
-              if (fraction) {
-                return Number(`${fraction}.${cents}`);
-              }
+
+            // preço estruturado (mais confiável)
+            const fraction = minNode.querySelector('.andes-money-amount__fraction')?.textContent;
+            const cents = minNode.querySelector('.andes-money-amount__cents')?.textContent || '00';
+
+            if (fraction) {
+              return Number(`${fraction}.${cents}`);
             }
 
-            // fallback aria-label
+            // fallback aria-label (ex: "80 reais")
             const aria = minNode.innerText || minNode.textContent;
             const match = aria?.match(/(\d+[.,]?\d*)\s*reais/i);
             if (match) return Number(match[1].replace(',', '.'));
           }
 
-          // ----- FORMATO 1 (texto comum do ML)
-          const couponLabel = document.getElementById('coupon-awareness-row-label');
-          if (couponLabel) {
-            const text = couponLabel.innerText || couponLabel.textContent;
+          const label = document.getElementById('coupon-awareness-row-label');
 
-            const match = text?.match(/compras?\s+acima\s+de\s+r?\$?\s*(\d+[.,]?\d*)/i);
+          if (label) {
+            const text = label.innerText || label.textContent;
+
+            // acima de R$100
+            let match = text?.match(/(acima|superior)\s+(de|a)\s+r?\$\s*(\d+[.,]?\d*)/i);
+            if (match) return Number(match[3].replace(',', '.'));
+
+            // acima de 100 reais
+            match = text?.match(/(\d+[.,]?\d*)\s*reais/i);
             if (match) return Number(match[1].replace(',', '.'));
           }
 
           return null;
         };
 
-        const applyCouponDiscount = (currentPrice, couponText) => {
-          if (!currentPrice?.value || !couponText) return currentPrice;
+        const applyCouponDiscount = (currentPrice, coupon) => {
+          if (!currentPrice?.value || !coupon) return currentPrice;
 
-          const match = couponText.match(/(\d+)\s*%/);
-          if (!match) return currentPrice;
+          let newValue = currentPrice.value;
 
-          const percent = Number(match[1]);
-          if (!percent || percent <= 0) return currentPrice;
+          if (coupon.type === 'percent') {
+            newValue = currentPrice.value * (1 - coupon.value / 100);
+          }
 
-          const newValue = Number((currentPrice.value * (1 - percent / 100)).toFixed(2));
+          if (coupon.type === 'money') {
+            newValue = currentPrice.value - coupon.value;
+          }
+
+          if (newValue <= 0) return currentPrice;
+
+          newValue = Number(newValue.toFixed(2));
 
           const [reais, cents = '00'] = newValue.toFixed(2).split('.');
 
@@ -332,12 +386,13 @@ class ScraperService {
             ...currentPrice,
             value: newValue,
             reais,
-            cents
+            cents,
+            raw: `${reais}.${cents}`
           };
         };
 
-        const oldPrice = extractOldPriceSemantic();
         let currentPrice = extractCurrentPriceSemantic();
+        const oldPrice = extractOldPriceSemantic(currentPrice?.value);
         const shipping = extractShippingInfo();
         const imageUrl = extractPrimaryImage();
         const soldQuantity = extractSoldQuantity();

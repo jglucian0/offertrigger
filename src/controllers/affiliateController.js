@@ -1,4 +1,4 @@
-const AffiliateService = require('../services/affiliateService');
+const AffiliateService = require('../services/affiliate/affiliateService');
 const affiliateService = new AffiliateService();
 
 exports.generateLink = async (req, res) => {

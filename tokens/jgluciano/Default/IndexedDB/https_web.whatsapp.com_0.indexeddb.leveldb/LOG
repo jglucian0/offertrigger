@@ -1,14 +1,22 @@
-2026/02/08-18:11:26.921 f1cb Reusing MANIFEST /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2026/02/08-18:11:26.922 f1cb Recovering log #36
-2026/02/08-18:11:26.962 f1cb Reusing old log /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/000036.log 
-2026/02/08-18:12:16.835 f1c0 Level-0 table #42: started
-2026/02/08-18:12:16.859 f1c0 Level-0 table #42: 1496502 bytes OK
-2026/02/08-18:12:16.865 f1c0 Delete type=0 #36
-2026/02/08-18:12:34.846 f1c1 Compacting 1@1 + 2@2 files
-2026/02/08-18:12:34.910 f1c1 Generated table #43@1: 46119 keys, 2211651 bytes
-2026/02/08-18:12:34.939 f1c1 Generated table #44@1: 20770 keys, 708132 bytes
-2026/02/08-18:12:34.939 f1c1 Compacted 1@1 + 2@2 files => 2919783 bytes
-2026/02/08-18:12:34.943 f1c1 compacted to: files[ 0 0 2 0 0 0 0 ]
-2026/02/08-18:12:34.943 f1c1 Delete type=2 #38
-2026/02/08-18:12:34.943 f1c1 Delete type=2 #42
-2026/02/08-18:12:34.943 f1c1 Delete type=2 #39
+2026/02/09-04:40:43.666 2a14e Reusing MANIFEST /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/02/09-04:40:43.667 2a14e Recovering log #13
+2026/02/09-04:40:43.732 2a14e Reusing old log /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/000013.log 
+2026/02/09-04:41:03.593 2a147 Level-0 table #18: started
+2026/02/09-04:41:05.006 2a147 Level-0 table #18: 1237114 bytes OK
+2026/02/09-04:41:05.016 2a147 Delete type=0 #13
+2026/02/09-04:41:20.458 2a147 Compacting 1@1 + 1@2 files
+2026/02/09-04:41:20.520 2a147 Generated table #19@1: 52352 keys, 2148654 bytes
+2026/02/09-04:41:20.520 2a147 Compacted 1@1 + 1@2 files => 2148654 bytes
+2026/02/09-04:41:20.523 2a147 compacted to: files[ 0 0 1 0 0 0 0 ]
+2026/02/09-04:41:20.524 2a147 Delete type=2 #15
+2026/02/09-04:41:20.524 2a147 Delete type=2 #18
+2026/02/09-04:42:47.803 2a146 Level-0 table #21: started
+2026/02/09-04:42:47.833 2a146 Level-0 table #21: 1512127 bytes OK
+2026/02/09-04:42:47.840 2a146 Delete type=0 #17
+2026/02/09-04:42:47.845 2a146 Compacting 1@1 + 1@2 files
+2026/02/09-04:42:47.903 2a146 Generated table #22@1: 48726 keys, 2201884 bytes
+2026/02/09-04:42:47.910 2a146 Generated table #23@1: 8720 keys, 225932 bytes
+2026/02/09-04:42:47.910 2a146 Compacted 1@1 + 1@2 files => 2427816 bytes
+2026/02/09-04:42:47.913 2a146 compacted to: files[ 0 0 2 0 0 0 0 ]
+2026/02/09-04:42:47.913 2a146 Delete type=2 #19
+2026/02/09-04:42:47.913 2a146 Delete type=2 #21

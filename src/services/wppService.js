@@ -1,5 +1,5 @@
 const wppconnect = require('@wppconnect-team/wppconnect');
-const AffiliateService = require('../services/affiliateService');
+const AffiliateService = require('../services/affiliate/affiliateService');
 const BotService = require('./botService');
 
 class WppService {

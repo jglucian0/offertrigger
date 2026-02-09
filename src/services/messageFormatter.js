@@ -16,18 +16,20 @@ class MessageFormatter {
     return `R$ ${reais},${cents || '00'}`;
   }
 
-  static formatCouponText(couponText) {
-    if (!couponText) return null;
+  static formatCouponText(coupon) {
+    if (!coupon) return null;
 
-    const match = couponText.match(/(\d{1,3})\s*%/);
+    if (coupon.type === 'percent') {
+      if (!coupon.value || coupon.value <= 0) return null;
+      return `+${coupon.value}% OFF`;
+    }
 
-    if (!match) return null;
+    if (coupon.type === 'money') {
+      if (!coupon.value || coupon.value <= 0) return null;
+      return `+R$${coupon.value} OFF`;
+    }
 
-    const percent = Number(match[1]);
-
-    if (!percent || percent <= 0) return null;
-
-    return `+${percent}% OFF`;
+    return null;
   }
 
   static format(product) {
@@ -73,12 +75,12 @@ class MessageFormatter {
 
       // 1 — cupom já aplicado no preço
       if (product.couponApplied) {
-        couponText = `\n\n\`${emojiCoupon}Ative o cupom: ${couponFormatted}\``;
+        couponText = `\n\n\`${emojiCoupon}Cupom aplicado: ${couponFormatted}\``;
       }
 
       // 2 — existe mínimo e não atingiu
       else if (product.couponMinimum && product.currentPriceValue < product.couponMinimum) {
-        couponText = `\n\n\`${emojiCoupon}Ative o cupom: ${couponFormatted} em compras acima de R$ ${product.couponMinimum}\``;
+        couponText = `\n\n\`${emojiCoupon}Ative o cupom: ${couponFormatted} em compras acima de R$ ${product.couponMinimum.toFixed(2).replace('.', ',')}\``;
       }
 
       // 3 — cupom normal ativável

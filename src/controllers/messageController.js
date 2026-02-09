@@ -1,6 +1,6 @@
 const { manager, wppService } = require('./sessionController');
 const ScraperService = require('../services/scraperService');
-const AffiliateService = require('../services/affiliateService');
+const AffiliateService = require('../services/affiliate/affiliateService');
 const MessageFormatter = require('../services/messageFormatter');
 
 exports.sendMessage = async (req, res) => {

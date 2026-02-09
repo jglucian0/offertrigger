@@ -1,3 +1,12 @@
-2026/02/08-18:08:43.343 ece8 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2026/02/08-18:08:43.343 ece8 Recovering log #36
-2026/02/08-18:08:43.362 ece8 Reusing old log /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/000036.log 
+2026/02/09-04:30:06.357 29852 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/02/09-04:30:06.357 29852 Recovering log #9
+2026/02/09-04:30:06.428 29852 Reusing old log /home/jgluciano/offertrigger/tokens/jgluciano/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/000009.log 
+2026/02/09-04:30:10.369 29853 Level-0 table #14: started
+2026/02/09-04:30:10.391 29853 Level-0 table #14: 1129892 bytes OK
+2026/02/09-04:30:10.398 29853 Delete type=0 #9
+2026/02/09-04:30:10.401 29853 Compacting 1@1 + 1@2 files
+2026/02/09-04:30:10.455 29853 Generated table #15@1: 47678 keys, 1942467 bytes
+2026/02/09-04:30:10.455 29853 Compacted 1@1 + 1@2 files => 1942467 bytes
+2026/02/09-04:30:10.458 29853 compacted to: files[ 0 0 1 0 0 0 0 ]
+2026/02/09-04:30:10.458 29853 Delete type=2 #11
+2026/02/09-04:30:10.459 29853 Delete type=2 #14
