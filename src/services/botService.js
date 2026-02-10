@@ -286,7 +286,7 @@ ${mensagem}
             mensagem,
           );
 
-          fs.unlink(imagemComMarca, () => { }); // delete imagem
+          fs.unlink(imagemComMarca, () => { });
 
           this.pendingApprovals.set(message.from, {
             etapa: 'menu',
@@ -323,12 +323,6 @@ ${mensagem}
           console.error('[Bot] Erro no processamento:', err.message);
         }
 
-
-        // No futuro, aqui chamaremos o Scraper e o Prisma
-        // Por enquanto, apenas o log como solicitado.
-
-        // Exemplo de resposta simples para teste
-        // await client.sendText(message.from, `Processando item para o nicho: ${nichoIdentificado}...`);
       }
     }
   }

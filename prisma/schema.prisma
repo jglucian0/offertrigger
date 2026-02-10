@@ -10,15 +10,16 @@ datasource db {
 }
 
 model Product {
-  id           Int               @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   name         String?
   imageUrl     String
-  originalUrl  String
+  originalUrl  String   @unique
   affiliateUrl String
-  createdAt    DateTime          @default(now())
-  
-  // Relação muitos-para-muitos com Nichos
-  niches       NicheAssignment[]
+  createdAt    DateTime @default(now())
+  expiresAt    DateTime // createdAt + 5 dias
+
+  offers Offer[]
+  niches NicheAssignment[]
 }
 
 model Niche {
@@ -35,4 +36,38 @@ model NicheAssignment {
   niche     Niche   @relation(fields: [nicheId], references: [id])
 
   @@id([productId, nicheId])
+}
+
+model Offer {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  message   String
+  createdAt DateTime @default(now())
+
+  product Product @relation(fields: [productId], references: [id])
+  stats   OfferDispatch[]
+}
+
+model OfferDispatch {
+  id        Int      @id @default(autoincrement())
+  offerId   Int
+  nicheId   Int
+  sendCount Int      @default(0)
+  lastSentAt DateTime?
+  
+  offer Offer @relation(fields: [offerId], references: [id])
+  niche Niche @relation(fields: [nicheId], references: [id])
+
+  @@unique([offerId, nicheId])
+}
+
+model NicheSchedule {
+  id        Int      @id @default(autoincrement())
+  nicheId   Int
+  dayOfWeek Int      // 0=domingo ... 6=sabado
+  startTime String   // "16:00"
+  endTime   String   // "20:00"
+  interval  Int      // minutos entre disparos
+
+  niche Niche @relation(fields: [nicheId], references: [id])
 }

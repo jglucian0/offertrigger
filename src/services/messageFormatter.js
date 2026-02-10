@@ -73,17 +73,14 @@ class MessageFormatter {
     let couponText = '';
     if (couponFormatted) {
 
-      // 1 — cupom já aplicado no preço
       if (product.couponApplied) {
         couponText = `\n\n\`${emojiCoupon}Cupom aplicado: ${couponFormatted}\``;
       }
 
-      // 2 — existe mínimo e não atingiu
       else if (product.couponMinimum && product.currentPriceValue < product.couponMinimum) {
         couponText = `\n\n\`${emojiCoupon}Ative o cupom: ${couponFormatted} em compras acima de R$ ${product.couponMinimum.toFixed(2).replace('.', ',')}\``;
       }
 
-      // 3 — cupom normal ativável
       else {
         couponText = `\n\n\`${emojiCoupon}Ative o cupom: ${couponFormatted}\``;
       }

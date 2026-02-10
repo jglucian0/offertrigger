@@ -1,3 +1,42 @@
-2026/02/09-04:40:39.108 2a147 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/jgluciano/Default/Local Storage/leveldb/MANIFEST-000001
-2026/02/09-04:40:39.133 2a147 Recovering log #3
-2026/02/09-04:40:39.137 2a147 Reusing old log /home/jgluciano/offertrigger/tokens/jgluciano/Default/Local Storage/leveldb/000003.log 
+2026/02/09-20:30:54.022 1febe Reusing MANIFEST /home/jgluciano/offertrigger/tokens/jgluciano/Default/Local Storage/leveldb/MANIFEST-000001
+2026/02/09-20:30:54.042 1febe Recovering log #334
+2026/02/09-20:30:54.043 1febe Reusing old log /home/jgluciano/offertrigger/tokens/jgluciano/Default/Local Storage/leveldb/000334.log 
+2026/02/09-20:34:13.412 1feb6 Level-0 table #338: started
+2026/02/09-20:34:13.415 1feb6 Level-0 table #338: 35281 bytes OK
+2026/02/09-20:34:13.419 1feb6 Delete type=0 #334
+2026/02/09-20:36:27.943 1feb7 Level-0 table #340: started
+2026/02/09-20:36:27.946 1feb7 Level-0 table #340: 32826 bytes OK
+2026/02/09-20:36:27.949 1feb7 Delete type=0 #337
+2026/02/09-20:36:27.950 1feb7 Compacting 4@0 + 1@1 files
+2026/02/09-20:36:27.953 1feb7 Generated table #341@0: 40 keys, 21559 bytes
+2026/02/09-20:36:27.953 1feb7 Compacted 4@0 + 1@1 files => 21559 bytes
+2026/02/09-20:36:27.956 1feb7 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/02/09-20:36:27.956 1feb7 Delete type=2 #338
+2026/02/09-20:36:27.956 1feb7 Delete type=2 #340
+2026/02/09-20:36:27.956 1feb7 Delete type=2 #333
+2026/02/09-20:36:27.956 1feb7 Delete type=2 #335
+2026/02/09-20:36:27.956 1feb7 Delete type=2 #331
+2026/02/09-20:38:42.281 1feb7 Level-0 table #343: started
+2026/02/09-20:38:42.287 1feb7 Level-0 table #343: 32934 bytes OK
+2026/02/09-20:38:42.289 1feb7 Delete type=0 #339
+2026/02/09-20:40:53.035 1feb7 Level-0 table #345: started
+2026/02/09-20:40:53.038 1feb7 Level-0 table #345: 33073 bytes OK
+2026/02/09-20:40:53.041 1feb7 Delete type=0 #342
+2026/02/09-20:43:07.372 1feb7 Level-0 table #347: started
+2026/02/09-20:43:07.378 1feb7 Level-0 table #347: 33288 bytes OK
+2026/02/09-20:43:07.380 1feb7 Delete type=0 #344
+2026/02/09-20:45:21.709 1feb7 Level-0 table #349: started
+2026/02/09-20:45:21.715 1feb7 Level-0 table #349: 33292 bytes OK
+2026/02/09-20:45:21.717 1feb7 Delete type=0 #346
+2026/02/09-20:45:21.718 1feb7 Compacting 4@0 + 1@1 files
+2026/02/09-20:45:21.720 1feb7 Generated table #350@0: 40 keys, 21810 bytes
+2026/02/09-20:45:21.720 1feb7 Compacted 4@0 + 1@1 files => 21810 bytes
+2026/02/09-20:45:21.724 1feb7 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/02/09-20:45:21.724 1feb7 Delete type=2 #347
+2026/02/09-20:45:21.724 1feb7 Delete type=2 #349
+2026/02/09-20:45:21.724 1feb7 Delete type=2 #345
+2026/02/09-20:45:21.724 1feb7 Delete type=2 #343
+2026/02/09-20:45:21.724 1feb7 Delete type=2 #341
+2026/02/09-20:47:32.463 1feb7 Level-0 table #352: started
+2026/02/09-20:47:32.466 1feb7 Level-0 table #352: 33400 bytes OK
+2026/02/09-20:47:32.469 1feb7 Delete type=0 #348

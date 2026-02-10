@@ -24,7 +24,7 @@ class ImageService {
       .png()
       .toBuffer();
 
-    const left = Math.round(metadata.width * 0.05); // 20% esquerda
+    const left = Math.round(metadata.width * 0.05);
     const top = 0;
 
     const parsed = path.parse(inputPath);

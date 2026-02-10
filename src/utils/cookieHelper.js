@@ -29,7 +29,6 @@ async function loadCookies() {
       }
     });
 
-    // Filtra apenas os cookies essenciais para evitar sobrecarga ou bloqueios
     const essentialNames = ['ssid', '_d2id', '_dsid', 'cp'];
     return cookies.filter(c => essentialNames.includes(c.name));
   } catch (error) {
