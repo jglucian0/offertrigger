@@ -7,7 +7,10 @@
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "test": "jest --runInBand --verbose",
-    "test:watch": "jest --watchAll --runInBand --verbose"
+    "test:watch": "jest --watchAll --runInBand --verbose",
+    "dispatcher": "node src/workers/dispatcher.js",
+    "bot": "node src/server.js",
+    "worker": "node src/worker.js"
   },
   "repository": {
     "type": "git",
@@ -26,6 +29,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.2.4",
     "express": "^5.2.1",
+    "pg": "^8.18.0",
     "puppeteer": "^24.36.1",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
