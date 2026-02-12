@@ -9,6 +9,14 @@ class WppService {
     this.botService = new BotService(affiliateService);
   }
 
+  getClient(userId) {
+    const session = this.sessionManager.getSession(userId);
+    if (!session || !session.client) {
+      return null
+    }
+    return session.client;
+  }
+
   async initSession(userId) {
     try {
       console.log(`[WppService] Iniciando instância para: ${userId}`);

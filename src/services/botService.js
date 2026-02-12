@@ -1,9 +1,11 @@
+require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
 const ScraperService = require('./scraperService')
 const MessageFormatter = require('./messageFormatter');
 const ImageService = require('./imageService');
+const DispatchQueueRepository = require('../repositories/dispatchQueueRepository')
 
 class BotService {
   constructor(affiliateService) {
@@ -14,7 +16,6 @@ class BotService {
 
     this.uploadPath = path.resolve(__dirname, '../../uploads');
 
-    // Cria a pasta caso não exista
     if (!fs.existsSync(this.uploadPath)) {
       fs.mkdirSync(this.uploadPath, { recursive: true });
     }
@@ -23,7 +24,7 @@ class BotService {
   normalizeText(text) {
     return text
       .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "") // Remove acentos
+      .replace(/[\u0300-\u036f]/g, "")
       .toLowerCase()
       .trim();
   }
@@ -31,8 +32,8 @@ class BotService {
   identificarNicho(termo) {
     const termoNormalizado = this.normalizeText(termo);
 
-    return this.nichosValidos.find(nicho =>
-      nicho.substring(0, 4) === termoNormalizado.substring(0, 4)
+    return this.nichosValidos.find(niche =>
+      niche.substring(0, 4) === termoNormalizado.substring(0, 4)
     );
   }
 
@@ -79,7 +80,7 @@ class BotService {
 
     const mensagem = MessageFormatter.format({
       ...state.produto,
-      link: 'link de afiliado', // mascara o link
+      link: 'link de afiliado',
       ...state.config
     });
 
@@ -111,8 +112,32 @@ ${mensagem}
           ...state.config
         });
 
-        await client.sendText(message.from, '✅ Oferta aprovada! (aqui futuramente enviará aos grupos)');
-        console.log('[Bot] Oferta final:\n', mensagem);
+        const offersPath = path.resolve(__dirname, '../../storage/offers');
+        if (!fs.existsSync(offersPath)) {
+          fs.mkdirSync(offersPath, { recursive: true });
+        }
+
+        const tempImage = await this.downloadImageToTemp(state.produto.imageUrl);
+        const finalImage = await ImageService.applyWatermark(tempImage);
+
+        const finalName = `offer_${Date.now()}.jpg`;
+        const finalPath = path.join(offersPath, finalName);
+
+        fs.renameSync(finalImage, finalPath);
+        fs.unlink(tempImage, () => { });
+
+        for (const niche of state.niches) {
+          await DispatchQueueRepository.enqueue({
+            title: state.produto.title,
+            message: mensagem,
+            imagePath: finalPath,
+            affiliateUrl: state.link,
+            niche
+          })
+        }
+
+        await client.sendText(message.from,
+          `📦 Produto salvo na fila de disparo para: ${state.niches.join(", ")}`);
 
         this.pendingApprovals.delete(message.from);
         return;
@@ -186,9 +211,11 @@ ${mensagem}
     const body = message.caption || message.body || '';
     const lines = body.split('\n').map(l => l.trim()).filter(l => l !== '');
 
+    let nichosIdentificados = [];
+
     if (lines.length >= 2) {
       const nichosRaw = lines[0].split(',');
-      const nichosIdentificados = nichosRaw
+      nichosIdentificados = nichosRaw
         .map(n => this.identificarNicho(n))
         .filter(n => n !== undefined);
 
@@ -292,6 +319,8 @@ ${mensagem}
             etapa: 'menu',
             produto: dadosScraper,
             link: linkAfiliado,
+            linkOriginal: urlDetectada,
+            niches: nichosIdentificados,
             config: {
               tituloCustom: null,
               precoCustom: null,
