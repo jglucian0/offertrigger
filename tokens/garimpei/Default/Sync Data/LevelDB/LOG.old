@@ -1,3 +1,2 @@
-2026/02/11-22:21:20.657 7ade Reusing MANIFEST /home/jgluciano/offertrigger/tokens/garimpei/Default/Sync Data/LevelDB/MANIFEST-000001
-2026/02/11-22:21:20.667 7ade Recovering log #3
-2026/02/11-22:21:20.669 7ade Reusing old log /home/jgluciano/offertrigger/tokens/garimpei/Default/Sync Data/LevelDB/000003.log 
+2026/02/12-00:55:23.205 108a7 Creating DB /home/jgluciano/offertrigger/tokens/garimpei/Default/Sync Data/LevelDB since it was missing.
+2026/02/12-00:55:23.218 108a7 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/garimpei/Default/Sync Data/LevelDB/MANIFEST-000001

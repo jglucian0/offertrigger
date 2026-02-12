@@ -25,6 +25,8 @@ app.get('/session/groups/:userId', sessionController.getGroups);
 
 app.post('/affiliate/generate', affiliateController.generateLink);
 
+app.use('/dispatch-config', require('./routes/dispatch'));
+
 //app.post('/dispatch/send', dispatchController.send);
 
 module.exports = app;

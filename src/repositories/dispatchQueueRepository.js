@@ -23,6 +23,28 @@ class DispatchQueueRepository {
     return res.rows[0];
   }
 
+  async getNext(niche) {
+    const q = `
+    SELECT *
+    FROM dispatch_queue
+    WHERE niche = $1
+      AND send_count = 0
+    ORDER BY created_at ASC
+    LIMIT 1
+  `;
+
+    const r = await db.query(q, [niche]);
+    return r.rows[0];
+  }
+
+  async markSent(id) {
+    await db.query(`
+    UPDATE dispatch_queue
+    SET send_count = send_count + 1
+    WHERE id = $1
+  `, [id]);
+  }
+
 }
 
 module.exports = new DispatchQueueRepository();

@@ -1,3 +1,2 @@
-2026/02/11-22:21:25.435 7ae7 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/garimpei/Default/GCM Store/MANIFEST-000001
-2026/02/11-22:21:25.452 7ae7 Recovering log #3
-2026/02/11-22:21:25.460 7ae7 Reusing old log /home/jgluciano/offertrigger/tokens/garimpei/Default/GCM Store/000003.log 
+2026/02/12-00:55:32.423 108a7 Creating DB /home/jgluciano/offertrigger/tokens/garimpei/Default/GCM Store since it was missing.
+2026/02/12-00:55:32.432 108a7 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/garimpei/Default/GCM Store/MANIFEST-000001

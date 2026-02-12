@@ -1,3 +1,2 @@
-2026/02/11-22:21:21.167 7add Reusing MANIFEST /home/jgluciano/offertrigger/tokens/garimpei/Default/Session Storage/MANIFEST-000001
-2026/02/11-22:21:21.167 7add Recovering log #3
-2026/02/11-22:21:21.167 7add Reusing old log /home/jgluciano/offertrigger/tokens/garimpei/Default/Session Storage/000003.log 
+2026/02/12-00:55:23.245 108c0 Creating DB /home/jgluciano/offertrigger/tokens/garimpei/Default/Session Storage since it was missing.
+2026/02/12-00:55:23.266 108c0 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/garimpei/Default/Session Storage/MANIFEST-000001

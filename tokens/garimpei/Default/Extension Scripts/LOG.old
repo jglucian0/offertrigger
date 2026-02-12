@@ -1,3 +1,2 @@
-2026/02/11-22:21:20.739 7add Reusing MANIFEST /home/jgluciano/offertrigger/tokens/garimpei/Default/Extension Scripts/MANIFEST-000001
-2026/02/11-22:21:20.739 7add Recovering log #3
-2026/02/11-22:21:20.740 7add Reusing old log /home/jgluciano/offertrigger/tokens/garimpei/Default/Extension Scripts/000003.log 
+2026/02/12-00:55:23.269 108b3 Creating DB /home/jgluciano/offertrigger/tokens/garimpei/Default/Extension Scripts since it was missing.
+2026/02/12-00:55:23.283 108b3 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/garimpei/Default/Extension Scripts/MANIFEST-000001

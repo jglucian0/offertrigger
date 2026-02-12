@@ -67,6 +67,19 @@ class WppService {
         await this.botService.processIncomingMessage(client, message);
       });
 
+      client.onInterfaceChange((state) => {
+        state?.mod
+        console.log(`[WPP] Interface ${userId}:`, state);
+
+        if (state?.mode === 'MAIN') {
+          const session = this.sessionManager.getSession(userId);
+
+          if (!session.interfaceReady) {
+            this.sessionManager.updateSession(userId, { interfaceReady: true });
+          }
+        }
+      });
+
       return client;
     } catch (error) {
       console.error(`Erro ao iniciar sessão ${userId}:`, error);

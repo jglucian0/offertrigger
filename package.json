@@ -9,8 +9,7 @@
     "test": "jest --runInBand --verbose",
     "test:watch": "jest --watchAll --runInBand --verbose",
     "dispatcher": "node src/workers/dispatcher.js",
-    "bot": "node src/server.js",
-    "worker": "node src/worker.js"
+    "bot": "node src/server.js"
   },
   "repository": {
     "type": "git",

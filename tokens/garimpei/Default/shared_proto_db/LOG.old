@@ -1,3 +1,2 @@
-2026/02/11-22:21:20.791 7add Reusing MANIFEST /home/jgluciano/offertrigger/tokens/garimpei/Default/shared_proto_db/MANIFEST-000001
-2026/02/11-22:21:20.791 7add Recovering log #3
-2026/02/11-22:21:20.792 7add Reusing old log /home/jgluciano/offertrigger/tokens/garimpei/Default/shared_proto_db/000003.log 
+2026/02/12-00:55:23.379 108b0 Creating DB /home/jgluciano/offertrigger/tokens/garimpei/Default/shared_proto_db since it was missing.
+2026/02/12-00:55:23.389 108b0 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/garimpei/Default/shared_proto_db/MANIFEST-000001
