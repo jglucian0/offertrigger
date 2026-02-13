@@ -28,6 +28,11 @@ function dentroHorario(cfg) {
   return nowMinutes >= startMinutes || nowMinutes <= endMinutes;
 }
 
+function withJitter(base, percent = 0.2) {
+  const delta = base * percent;
+  return base + (Math.random() * delta * 2 - delta);
+}
+
 console.log("🚀 Dispatcher carregado, aguardando sessão cliente1...");
 
 const waitSession = setInterval(() => {
@@ -72,13 +77,15 @@ function startDispatchLoops() {
       if (!cfg) return;
 
       if (!dentroHorario(cfg)) {
-        console.log(`[${niche}] fora do horário`);
+        //console.log(`[${niche}] fora do horário`);
         return;
       }
 
       const now = Date.now();
 
-      if (now - lastSent < cfg.interval) return;
+      const realInterval = withJitter(cfg.interval, 0.25); // 25%
+
+      if (now - lastSent < realInterval) return;
 
       lastSent = now;
 
@@ -87,7 +94,7 @@ function startDispatchLoops() {
         const offer = await DispatchQueue.getNext(niche);
 
         if (!offer) {
-          console.log(`[${niche}] fila vazia`);
+          //console.log(`[${niche}] fila vazia`);
           return;
         }
 

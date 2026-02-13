@@ -5,6 +5,7 @@ const https = require('https');
 const ScraperService = require('./scraperService')
 const MessageFormatter = require('./messageFormatter');
 const ImageService = require('./imageService');
+const nicheGroups = require('../config/nicheGroups');
 const DispatchQueueRepository = require('../repositories/dispatchQueueRepository')
 
 class BotService {
@@ -13,6 +14,7 @@ class BotService {
     this.scraperService = new ScraperService();
     this.nichosValidos = ['academia', 'eletronicos', 'moda'];
     this.pendingApprovals = new Map();
+    this.pendingBroadcast = new Map();
 
     this.uploadPath = path.resolve(__dirname, '../../uploads');
 
@@ -95,6 +97,8 @@ ${mensagem}
 [4] - \`💸 Remover preço antigo\`
 [5] - \`☠️ Remover emoji\`
 [6] - \`📝 Adicionar informação\`
+[7] - \`⚡ Disparo instantâneo\`
+[8] - \`📌 Inserir antetítulo\`
 [0] - \`❌ Cancelar\``);
   }
 
@@ -172,6 +176,48 @@ ${mensagem}
         return;
       }
 
+      if (text === '7') {
+
+        const mensagem = MessageFormatter.format({
+          ...state.produto,
+          link: state.link,
+          ...state.config
+        });
+
+        let tempImage = await this.downloadImageToTemp(state.produto.imageUrl);
+        const finalImage = await ImageService.applyWatermark(tempImage);
+
+        for (const niche of state.niches) {
+
+          const groupId = nicheGroups[niche];
+
+          if (!groupId) continue;
+
+          console.log(`[Bot] Disparo instantâneo → ${niche}`);
+
+          await client.sendImage(
+            groupId,
+            finalImage,
+            'produto.jpg',
+            mensagem
+          );
+        }
+
+        fs.unlink(finalImage, () => { });
+        fs.unlink(tempImage, () => { });
+
+        await client.sendText(message.from, '⚡ Disparo instantâneo concluído.');
+
+        this.pendingApprovals.delete(message.from);
+        return;
+      }
+
+      if (text === '8') {
+        state.etapa = 'edit_ante';
+        await client.sendText(message.from, '📌 Digite o antetítulo (ex: Loja oficial da Nike!)');
+        return;
+      }
+
       if (text === '0') {
         this.pendingApprovals.delete(message.from);
         await client.sendText(message.from, '❌ Cancelado.');
@@ -199,6 +245,12 @@ ${mensagem}
       state.etapa = 'menu';
       return this.sendPreview(client, message.from, state);
     }
+
+    if (state.etapa === 'edit_ante') {
+      state.config.anteTitulo = text;
+      state.etapa = 'menu';
+      return this.sendPreview(client, message.from, state);
+    }
   }
 
   async processIncomingMessage(client, message) {
@@ -208,8 +260,110 @@ ${mensagem}
       return this.handleApprovalResponse(client, message);
     }
 
+    if (this.pendingBroadcast.has(message.from)) {
+
+      const bodyRaw = (message.body || '').trim();
+      const state = this.pendingBroadcast.get(message.from);
+
+      if (state.etapa === 'aguardando_mensagem') {
+
+        if (message.isMedia || message.type === 'image') {
+
+          const buffer = await client.decryptFile(message);
+
+          const fileName = `aviso_${Date.now()}.jpg`;
+          const filePath = path.join(this.uploadPath, fileName);
+
+          fs.writeFileSync(filePath, buffer);
+
+          state.imagePath = filePath;
+          state.texto = message.caption || '';
+
+        } else {
+          state.texto = bodyRaw;
+        }
+
+        state.etapa = 'menu';
+
+        await client.sendText(message.from,
+          `🛠️ Preview do aviso:
+
+${state.texto || '[imagem]'}
+
+Escolha o nicho:
+
+[1] - Academia
+[2] - Moda
+[3] - Eletrônicos
+[0] - Cancelar`);
+
+        return;
+      }
+
+      if (state.etapa === 'menu') {
+
+        if (bodyRaw === '0') {
+          this.pendingBroadcast.delete(message.from);
+          await client.sendText(message.from, '❌ Cancelado.');
+          return;
+        }
+
+        if (bodyRaw === '1') state.niche = 'academia';
+        if (bodyRaw === '2') state.niche = 'moda';
+        if (bodyRaw === '3') state.niche = 'eletronicos';
+
+        if (!state.niche) {
+          await client.sendText(message.from, 'Opção inválida.');
+          return;
+        }
+
+        const groupId = nicheGroups[state.niche];
+
+        if (!groupId) {
+          await client.sendText(message.from, 'Grupo não configurado.');
+          this.pendingBroadcast.delete(message.from);
+          return;
+        }
+
+        console.log(`[Bot] Aviso enviado para ${state.niche}`);
+
+        if (state.imagePath) {
+
+          await client.sendImage(
+            groupId,
+            state.imagePath,
+            'aviso.jpg',
+            state.texto || ''
+          );
+
+          fs.unlink(state.imagePath, () => { });
+
+        } else {
+          await client.sendText(groupId, state.texto);
+        }
+
+        await client.sendText(message.from, '✅ Aviso enviado.');
+
+        this.pendingBroadcast.delete(message.from);
+        return;
+      }
+    }
+
     const body = message.caption || message.body || '';
     const lines = body.split('\n').map(l => l.trim()).filter(l => l !== '');
+
+    if (body.trim() === '/aviso') {
+
+      this.pendingBroadcast.set(message.from, {
+        etapa: 'aguardando_mensagem',
+        texto: null,
+        niche: null,
+        imagePath: null
+      });
+
+      await client.sendText(message.from, '📢 Envie o texto do aviso:');
+      return;
+    }
 
     let nichosIdentificados = [];
 
@@ -322,6 +476,7 @@ ${mensagem}
             linkOriginal: urlDetectada,
             niches: nichosIdentificados,
             config: {
+              anteTitulo: null,
               tituloCustom: null,
               precoCustom: null,
               removerPrecoAntigo: false,
@@ -339,6 +494,8 @@ ${mensagem}
 [4] - \`💸 Remover preço antigo\`
 [5] - \`☠️ Remover emoji\`
 [6] - \`📝 Adicionar informação\`
+[7] - \`⚡ Disparo instantâneo\`
+[8] - \`📌 Inserir antetítulo\`
 [0] - \`❌ Cancelar\``);
 
           if (fotoCaminhoLocal) {

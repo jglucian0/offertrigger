@@ -1,2 +1,5 @@
-2026/02/12-00:55:23.204 108ae Creating DB /home/jgluciano/offertrigger/tokens/garimpei/Default/Local Storage/leveldb since it was missing.
-2026/02/12-00:55:23.218 108ae Reusing MANIFEST /home/jgluciano/offertrigger/tokens/garimpei/Default/Local Storage/leveldb/MANIFEST-000001
+2026/02/12-20:30:35.608 2bca Reusing MANIFEST /home/jgluciano/offertrigger/tokens/garimpei/Default/Local Storage/leveldb/MANIFEST-000001
+2026/02/12-20:30:35.652 2bca Recovering log #62
+2026/02/12-20:30:35.654 2bca Level-0 table #65: started
+2026/02/12-20:30:35.662 2bca Level-0 table #65: 25435 bytes OK
+2026/02/12-20:30:35.671 2bca Delete type=0 #62

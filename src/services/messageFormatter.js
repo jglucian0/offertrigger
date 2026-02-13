@@ -33,7 +33,13 @@ class MessageFormatter {
   }
 
   static format(product) {
-    const titulo = product.tituloCustom || product.title;
+    const tituloBase = product.tituloCustom || product.title;
+
+    const anteTitulo = product.anteTitulo
+      ? `*${product.anteTitulo}*\n\n`
+      : '';
+
+    const titulo = `${anteTitulo}${tituloBase}`
 
     let price = product.precoCustom
       ? `R$ ${product.precoCustom}`
