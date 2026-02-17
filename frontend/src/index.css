@@ -1,0 +1,154 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 20% 7%;
+    --foreground: 40 10% 92%;
+
+    --card: 220 18% 10%;
+    --card-foreground: 40 10% 92%;
+
+    --popover: 220 18% 10%;
+    --popover-foreground: 40 10% 92%;
+
+    --primary: 43 100% 50%;
+    --primary-foreground: 220 20% 7%;
+
+    --secondary: 220 15% 15%;
+    --secondary-foreground: 40 10% 82%;
+
+    --muted: 220 15% 13%;
+    --muted-foreground: 220 10% 50%;
+
+    --accent: 32 80% 45%;
+    --accent-foreground: 40 10% 95%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 70% 45%;
+    --success-foreground: 142 70% 95%;
+
+    --border: 220 15% 16%;
+    --input: 220 15% 16%;
+    --ring: 32 95% 55%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 220 20% 5%;
+    --sidebar-foreground: 40 10% 75%;
+    --sidebar-primary: 32 95% 55%;
+    --sidebar-primary-foreground: 220 20% 7%;
+    --sidebar-accent: 220 15% 12%;
+    --sidebar-accent-foreground: 40 10% 92%;
+    --sidebar-border: 220 15% 12%;
+    --sidebar-ring: 32 95% 55%;
+
+    --gradient-primary: linear-gradient(135deg, #ffb600, #ffb600);
+    --gradient-card: linear-gradient(180deg, hsl(220 18% 12%), hsl(220 18% 9%));
+    --gradient-glow: radial-gradient(
+      ellipse at top,
+      hsl(32 95% 55% / 0.08),
+      transparent 60%
+    );
+    --shadow-glow: 0 0 40px -10px hsl(32 95% 55% / 0.3);
+    --shadow-card: 0 4px 24px -4px hsl(0 0% 0% / 0.4);
+
+    font-family: "Inter", system-ui, sans-serif;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer components {
+  .stat-card {
+    @apply relative overflow-hidden rounded-xl border border-border bg-card p-5;
+    background: var(--gradient-card);
+    box-shadow: var(--shadow-card);
+  }
+
+  .stat-card::before {
+    content: "";
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+    background: var(--gradient-glow);
+  }
+
+  .stat-card:hover::before {
+    @apply opacity-100;
+  }
+
+  .glow-text {
+    @apply text-primary;
+    text-shadow: 0 0 20px hsl(32 95% 55% / 0.4);
+  }
+
+  .mono {
+    font-family: "JetBrains Mono", monospace;
+  }
+
+  .status-dot {
+    @apply inline-block h-2 w-2 rounded-full;
+  }
+
+  .status-dot-connected {
+    @apply bg-[hsl(142,70%,45%)];
+    box-shadow: 0 0 8px hsl(142 70% 45% / 0.5);
+  }
+
+  .status-dot-disconnected {
+    @apply bg-destructive;
+    box-shadow: 0 0 8px hsl(0 72% 51% / 0.5);
+  }
+
+  .status-dot-pending {
+    @apply bg-primary;
+    box-shadow: 0 0 8px hsl(32 95% 55% / 0.5);
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.4s ease-out forwards;
+}

@@ -121,7 +121,14 @@ ${mensagem}
           fs.mkdirSync(offersPath, { recursive: true });
         }
 
-        const tempImage = await this.downloadImageToTemp(state.produto.imageUrl);
+        let tempImage;
+
+        if (state.imagePath) {
+          tempImage = state.imagePath;
+        } else {
+          tempImage = await this.downloadImageToTemp(state.produto.imageUrl);
+        }
+
         const finalImage = await ImageService.applyWatermark(tempImage);
 
         const finalName = `offer_${Date.now()}.jpg`;
@@ -130,13 +137,24 @@ ${mensagem}
         fs.renameSync(finalImage, finalPath);
         fs.unlink(tempImage, () => { });
 
+        console.log({
+          original: state.original_price,
+          current: state.current_price,
+          discount: state.discount,
+          free: state.free_shipping
+        });
+
         for (const niche of state.niches) {
           await DispatchQueueRepository.enqueue({
             title: state.produto.title,
             message: mensagem,
             imagePath: finalPath,
             affiliateUrl: state.link,
-            niche
+            niche,
+            original_price: state.original_price,
+            current_price: state.current_price,
+            discount: state.discount,
+            free_shipping: state.free_shipping
           })
         }
 
@@ -184,7 +202,14 @@ ${mensagem}
           ...state.config
         });
 
-        let tempImage = await this.downloadImageToTemp(state.produto.imageUrl);
+        let tempImage;
+
+        if (state.imagePath) {
+          tempImage = state.imagePath;
+        } else {
+          tempImage = await this.downloadImageToTemp(state.produto.imageUrl);
+        }
+
         const finalImage = await ImageService.applyWatermark(tempImage);
 
         for (const niche of state.niches) {
@@ -460,14 +485,6 @@ Escolha o nicho:
 
           const imagemComMarca = await ImageService.applyWatermark(imagemParaEnviar);
 
-          await client.sendImage(
-            message.from,
-            imagemComMarca,
-            'produto.jpg',
-            mensagem,
-          );
-
-          fs.unlink(imagemComMarca, () => { });
 
           this.pendingApprovals.set(message.from, {
             etapa: 'menu',
@@ -475,6 +492,16 @@ Escolha o nicho:
             link: linkAfiliado,
             linkOriginal: urlDetectada,
             niches: nichosIdentificados,
+
+            imagePath: imagemParaEnviar,
+
+            original_price: dadosScraper.oldPriceValue || null,
+            current_price: dadosScraper.currentPriceValue || null,
+            discount: dadosScraper.discountPercent || 0,
+            free_shipping:
+              typeof dadosScraper.shipping === 'string' &&
+              /gratis|grátis/i.test(dadosScraper.shipping),
+
             config: {
               anteTitulo: null,
               tituloCustom: null,
@@ -484,6 +511,15 @@ Escolha o nicho:
               extraInfo: null
             }
           });
+
+          await client.sendImage(
+            message.from,
+            imagemComMarca,
+            'produto.jpg',
+            mensagem,
+          );
+
+          fs.unlink(imagemComMarca, () => { });
 
           await client.sendText(message.from,
             `O que deseja fazer?
@@ -498,13 +534,13 @@ Escolha o nicho:
 [8] - \`📌 Inserir antetítulo\`
 [0] - \`❌ Cancelar\``);
 
-          if (fotoCaminhoLocal) {
-            fs.unlink(fotoCaminhoLocal, () => { });
-          }
+          // if (fotoCaminhoLocal) {
+          //   fs.unlink(fotoCaminhoLocal, () => { });
+          // }
 
-          if (imagemTemporaria && imagemParaEnviar) {
-            fs.unlink(imagemParaEnviar, () => { });
-          }
+          // if (imagemTemporaria && imagemParaEnviar) {
+          //   fs.unlink(imagemParaEnviar, () => { });
+          // }
         } catch (err) {
           console.error('[Bot] Erro no processamento:', err.message);
         }

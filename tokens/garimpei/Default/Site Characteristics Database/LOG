@@ -1,3 +1,2 @@
-2026/02/12-20:34:27.240 2f9d Reusing MANIFEST /home/jgluciano/offertrigger/tokens/garimpei/Default/Site Characteristics Database/MANIFEST-000001
-2026/02/12-20:34:27.241 2f9d Recovering log #3
-2026/02/12-20:34:27.242 2f9d Reusing old log /home/jgluciano/offertrigger/tokens/garimpei/Default/Site Characteristics Database/000003.log 
+2026/02/17-01:03:13.606 57b7c Creating DB /home/jgluciano/offertrigger/tokens/garimpei/Default/Site Characteristics Database since it was missing.
+2026/02/17-01:03:13.645 57b7c Reusing MANIFEST /home/jgluciano/offertrigger/tokens/garimpei/Default/Site Characteristics Database/MANIFEST-000001
