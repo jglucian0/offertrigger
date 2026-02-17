@@ -9,16 +9,15 @@ class AffiliateService {
 
   async generateAffiliateLink(originalLink) {
     try {
-      const link = await this.request.generate(originalLink);
+      const link = await this.request.generate(originalLink)
+      console.log('[Affiliate] Link gerado via REQUEST')
+      return link
 
-      console.log('[Affiliate] Link gerado via REQUEST');
-      return link;
-
-    } catch (err) {
-      console.log('[Affiliate] Link gerado via BROWSER');
-      return await this.browser.generate(originalLink);
+    } catch {
+      console.log('[Affiliate] Link gerado via BROWSER')
+      return this.browser.generate(originalLink)
     }
   }
 }
 
-module.exports = AffiliateService;
+module.exports = AffiliateService

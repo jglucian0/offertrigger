@@ -5,7 +5,6 @@ const messageController = require('./controllers/messageController');
 const affiliateController = require('./controllers/affiliateController');
 const offerController = require('./controllers/offerController');
 const { manager, wppService } = require('./controllers/sessionController');
-//onst dispatchController = require('./controllers/dispatchController');
 
 manager.loadExistingSessions();
 

@@ -1,11 +1,10 @@
-const db = require('../infra/db');
+const db = require('../infra/db')
 
 class DispatchQueueRepository {
 
   async enqueue(offer) {
     const query = `
-    INSERT INTO dispatch_queue
-      (
+      INSERT INTO dispatch_queue (
         product_name,
         message_text,
         image_url,
@@ -16,10 +15,9 @@ class DispatchQueueRepository {
         discount,
         free_shipping
       )
-    VALUES
-      ($1,$2,$3,$4,$5,$6,$7,$8,$9)
-    RETURNING id
-  `;
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+      RETURNING id
+    `
 
     const values = [
       offer.title,
@@ -31,34 +29,36 @@ class DispatchQueueRepository {
       offer.current_price,
       offer.discount,
       offer.free_shipping
-    ];
+    ]
 
-    const res = await db.query(query, values);
-    return res.rows[0];
+    const { rows } = await db.query(query, values)
+    return rows[0]
   }
 
   async getNext(niche) {
-    const q = `
-    SELECT *
-    FROM dispatch_queue
-    WHERE niche = $1
-      AND send_count = 0
-    ORDER BY created_at ASC
-    LIMIT 1
-  `;
+    const query = `
+      SELECT *
+      FROM dispatch_queue
+      WHERE niche = $1
+        AND send_count = 0
+      ORDER BY created_at ASC
+      LIMIT 1
+    `
 
-    const r = await db.query(q, [niche]);
-    return r.rows[0];
+    const { rows } = await db.query(query, [niche])
+    return rows[0]
   }
 
   async markSent(id) {
-    await db.query(`
-    UPDATE dispatch_queue
-    SET send_count = send_count + 1
-    WHERE id = $1
-  `, [id]);
+    const query = `
+      UPDATE dispatch_queue
+      SET send_count = send_count + 1
+      WHERE id = $1
+    `
+
+    await db.query(query, [id])
   }
 
 }
 
-module.exports = new DispatchQueueRepository();
+module.exports = new DispatchQueueRepository()

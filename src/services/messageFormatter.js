@@ -1,94 +1,70 @@
 class MessageFormatter {
+
   static detectStore(link) {
     if (!link) return 'na internet';
-
-    if (link.startsWith('https://mercadolivre.com/sec/'))
-      return 'no Mercado Livre';
-
-    if (link.startsWith('https://amzn.to/'))
-      return 'na Amazon';
-
+    if (link.startsWith('https://mercadolivre.com/sec/')) return 'no Mercado Livre';
+    if (link.startsWith('https://amzn.to/')) return 'na Amazon';
     return 'na internet';
   }
 
-  static formatPrice(reais, cents) {
+  static formatPrice(reais, cents = '00') {
     if (!reais) return null;
-    return `R$ ${reais},${cents || '00'}`;
+    return `R$ ${reais},${cents}`;
   }
 
   static formatCouponText(coupon) {
-    if (!coupon) return null;
+    if (!coupon?.value || coupon.value <= 0) return null;
 
-    if (coupon.type === 'percent') {
-      if (!coupon.value || coupon.value <= 0) return null;
-      return `+${coupon.value}% OFF`;
-    }
-
-    if (coupon.type === 'money') {
-      if (!coupon.value || coupon.value <= 0) return null;
-      return `+R$${coupon.value} OFF`;
-    }
+    if (coupon.type === 'percent') return `+${coupon.value}% OFF`;
+    if (coupon.type === 'money') return `+R$${coupon.value} OFF`;
 
     return null;
   }
 
   static format(product) {
+
     const tituloBase = product.tituloCustom || product.title;
+    const anteTitulo = product.anteTitulo ? `*${product.anteTitulo}*\n\n` : '';
+    const titulo = `${anteTitulo}${tituloBase}`;
 
-    const anteTitulo = product.anteTitulo
-      ? `*${product.anteTitulo}*\n\n`
-      : '';
-
-    const titulo = `${anteTitulo}${tituloBase}`
-
-    let price = product.precoCustom
+    const price = product.precoCustom
       ? `R$ ${product.precoCustom}`
       : this.formatPrice(product.currentPriceReais, product.currentPriceCents);
 
-    let oldPrice = product.removerPrecoAntigo
+    const oldPrice = product.removerPrecoAntigo
       ? null
       : this.formatPrice(product.oldPriceReais, product.oldPriceCents);
 
-    const emojiMoney = product.semEmoji ? '' : ' 💵';
-    const emojiDiscount = product.semEmoji ? '' : '🎟️ ';
-    const emojiShipping = product.semEmoji ? '' : '🚚 ';
-    const emogiSQuantity = product.semEmoji ? '' : '🔥 ';
-    const emojiCoupon = product.semEmoji ? '' : '⚠️ ';
+    const emoji = product.semEmoji
+      ? { m: '', d: '', s: '', q: '', c: '' }
+      : { m: ' 💵', d: '🎟️ ', s: '🚚 ', q: '🔥 ', c: '⚠️ ' };
 
-    const shippingText = product.shipping
-      ? `\n\`${emojiShipping}FRETE GRÁTIS!\`` //${product.shipping}
-      : '';
-
-    const discountText = product.discountPercent
-      ? `\n\`${emojiDiscount}${product.discountPercent}% OFF\``
-      : '';
-
-    const soldQuantity = product.soldQuantity
-      ? `\n\`${emogiSQuantity}${product.soldQuantity}!\``
-      : '';
+    const shippingText = product.shipping ? `\n\`${emoji.s}FRETE GRÁTIS!\`` : '';
+    const discountText = product.discountPercent ? `\n\`${emoji.d}${product.discountPercent}% OFF\`` : '';
+    const soldQuantity = product.soldQuantity ? `\n\`${emoji.q}${product.soldQuantity}!\`` : '';
 
     const oldPriceText = oldPrice
-      ? `De ~${oldPrice}~ | Por *${price}*${emojiMoney}`
-      : `Por apenas *${price}*${emojiMoney}`;
+      ? `De ~${oldPrice}~ | Por *${price}*${emoji.m}`
+      : `Por apenas *${price}*${emoji.m}`;
 
-    const extraInfoText = product.extraInfo
-      ? `\n\n\`${product.extraInfo}\``
-      : '';
+    const extraInfoText = product.extraInfo ? `\n\n\`${product.extraInfo}\`` : '';
 
     const couponFormatted = this.formatCouponText(product.coupon);
     let couponText = '';
+
     if (couponFormatted) {
 
       if (product.couponApplied) {
-        couponText = `\n\n\`${emojiCoupon}Cupom aplicado: ${couponFormatted}\``;
+        couponText = `\n\n\`${emoji.c}Cupom aplicado: ${couponFormatted}\``;
       }
 
       else if (product.couponMinimum && product.currentPriceValue < product.couponMinimum) {
-        couponText = `\n\n\`${emojiCoupon}Ative o cupom: ${couponFormatted} em compras acima de R$ ${product.couponMinimum.toFixed(2).replace('.', ',')}\``;
+        couponText =
+          `\n\n\`${emoji.c}Ative o cupom: ${couponFormatted} em compras acima de R$ ${product.couponMinimum.toFixed(2).replace('.', ',')}\``;
       }
 
       else {
-        couponText = `\n\n\`${emojiCoupon}Ative o cupom: ${couponFormatted}\``;
+        couponText = `\n\n\`${emoji.c}Ative o cupom: ${couponFormatted}\``;
       }
     }
 

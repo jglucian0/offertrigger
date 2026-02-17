@@ -9,109 +9,98 @@ const USER_ID = "garimpei";
 
 let started = false;
 
-function dentroHorario(cfg) {
+console.log(`📦 Dispatcher rodando, aguardando conexão da sessão...`);
+
+function dentroHorario({ start, end }) {
   const now = new Date();
-
-  const [sh, sm] = cfg.start.split(":").map(Number);
-  const [eh, em] = cfg.end.split(":").map(Number);
-
   const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+  const [sh, sm] = start.split(":").map(Number);
+  const [eh, em] = end.split(":").map(Number);
+
   const startMinutes = sh * 60 + sm;
   const endMinutes = eh * 60 + em;
 
-  // Janela normal (ex: 09:00–18:00)
-  if (startMinutes < endMinutes) {
-    return nowMinutes >= startMinutes && nowMinutes <= endMinutes;
-  }
+  const overnight = startMinutes > endMinutes;
 
-  // Janela cruzando meia-noite (ex: 22:00–03:54)
-  return nowMinutes >= startMinutes || nowMinutes <= endMinutes;
+  return overnight
+    ? nowMinutes >= startMinutes || nowMinutes <= endMinutes
+    : nowMinutes >= startMinutes && nowMinutes <= endMinutes;
 }
 
 function withJitter(base, percent = 0.2) {
-  const delta = base * percent;
-  return base + (Math.random() * delta * 2 - delta);
+  const jitter = (Math.random() * 2 - 1) * base * percent;
+  return base + jitter;
 }
 
-console.log("🚀 Dispatcher carregado, aguardando conexão da sessão...");
+function isSessionReady(session) {
+  return (
+    session &&
+    session.client &&
+    session.status === 'connected' &&
+    session.interfaceReady
+  );
+}
 
-const waitSession = setInterval(() => {
+function waitForSession() {
+  const interval = setInterval(() => {
+    if (started) return;
 
-  if (started) return;
+    const session = manager.getSession(USER_ID);
 
-  const session = manager.getSession(USER_ID);
+    if (!isSessionReady(session)) {
+      return;
+    }
 
-  if (!session) {
-    return;
-  }
+    started = true;
+    clearInterval(interval);
 
-  if (!session?.client || session.status !== 'connected') {
-    console.log("Aguardando conexão da sessão...");
-    return;
-  }
-
-  if (!session.interfaceReady) {
-    return;
-  }
-
-  started = true;
-  clearInterval(waitSession);
-
-  startDispatchLoops();
-
-}, 3000);
+    startDispatchLoops();
+  }, 3000);
+}
 
 function startDispatchLoops() {
-
-  Object.keys(nicheGroups).forEach(niche => {
-
-
-    console.log(`📦 Dispatcher ativo para ${niche}`);
-
-    let lastSent = 0;
-
-    setInterval(async () => {
-
-      const cfg = getConfig()[niche];
-      if (!cfg) return;
-
-      if (!dentroHorario(cfg)) {
-        //console.log(`[${niche}] fora do horário`);
-        return;
-      }
-
-      const now = Date.now();
-
-      const realInterval = withJitter(cfg.interval, 0.25); // 25%
-
-      if (now - lastSent < realInterval) return;
-
-      lastSent = now;
-
-      try {
-
-        const offer = await DispatchQueue.getNext(niche);
-
-        if (!offer) {
-          //console.log(`[${niche}] fila vazia`);
-          return;
-        }
-
-        console.log(`[${niche}] enviando: ${offer.product_name}`);
-
-        await wppService.sendImage(
-          USER_ID,
-          nicheGroups[niche],
-          offer.image_url,
-          offer.message_text
-        );
-
-        await DispatchQueue.markSent(offer.id);
-
-      } catch (err) {
-        console.error(`[${niche}] erro:`, err.message);
-      }
-
-    }, 2000);
-  });
+  Object.keys(nicheGroups).forEach(startNicheDispatcher);
 }
+
+function startNicheDispatcher(niche) {
+  console.log(`📦 Dispatcher ativo para ${niche}`);
+
+  let lastSent = 0;
+
+  setInterval(() => dispatchNiche(niche, () => lastSent, v => lastSent = v), 2000);
+}
+
+async function dispatchNiche(niche, getLastSent, setLastSent) {
+  const cfg = getConfig()[niche];
+  if (!cfg) return;
+
+  if (!dentroHorario(cfg)) return;
+
+  const now = Date.now();
+  const interval = withJitter(cfg.interval);
+
+  if (now - getLastSent() < interval) return;
+
+  setLastSent(now);
+
+  try {
+    const offer = await DispatchQueue.getNext(niche);
+    if (!offer) return;
+
+    console.log(`[${niche}] enviando: ${offer.product_name}`);
+
+    await wppService.sendImage(
+      USER_ID,
+      nicheGroups[niche],
+      offer.image_url,
+      offer.message_text
+    );
+
+    await DispatchQueue.markSent(offer.id);
+  } catch (err) {
+    console.error(`[${niche}] erro:`, err.message);
+  }
+}
+
+waitForSession();

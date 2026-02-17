@@ -1,4 +1,4 @@
-const db = require('../infra/db');
+const db = require('../infra/db')
 
 async function listOffers(req, res) {
   const result = await db.query(`
@@ -16,40 +16,42 @@ async function listOffers(req, res) {
       send_count
     FROM dispatch_queue
     ORDER BY niche, created_at DESC
-  `);
+  `)
 
-  const grouped = {};
+  const grouped = {}
 
-  result.rows.forEach(o => {
-    if (!grouped[o.niche]) grouped[o.niche] = [];
+  result.rows.forEach(offer => {
+    if (!grouped[offer.niche]) {
+      grouped[offer.niche] = []
+    }
 
-    grouped[o.niche].push({
-      ...o,
-      sent: o.send_count > 0
-    });
-  });
+    grouped[offer.niche].push({
+      ...offer,
+      sent: offer.send_count > 0
+    })
+  })
 
-  res.json(
-    Object.entries(grouped).map(([niche, offers]) => ({
-      niche,
-      offers
-    }))
-  );
+  const payload = Object.entries(grouped).map(([niche, offers]) => ({
+    niche,
+    offers
+  }))
+
+  return res.json(payload)
 }
 
 async function deleteOffer(req, res) {
-  const { id } = req.params;
+  const { id } = req.params
 
   await db.query(
-    `DELETE FROM dispatch_queue WHERE id = $1`,
+    'DELETE FROM dispatch_queue WHERE id = $1',
     [id]
-  );
+  )
 
-  res.json({ success: true });
+  return res.json({ success: true })
 }
 
 async function updateOffer(req, res) {
-  const { id } = req.params;
+  const { id } = req.params
 
   const {
     product_name,
@@ -58,22 +60,22 @@ async function updateOffer(req, res) {
     discount,
     free_shipping,
     sent
-  } = req.body;
+  } = req.body
 
   await db.query(`
-  UPDATE dispatch_queue
-  SET
-    product_name = $1,
-    original_price = $2,
-    current_price = $3,
-    discount = $4,
-    free_shipping = $5,
-    send_count = CASE
-      WHEN $6 = false THEN 0
-      ELSE 1
-    END
-  WHERE id = $7
-`, [
+    UPDATE dispatch_queue
+    SET
+      product_name = $1,
+      original_price = $2,
+      current_price = $3,
+      discount = $4,
+      free_shipping = $5,
+      send_count = CASE
+        WHEN $6 = false THEN 0
+        ELSE 1
+      END
+    WHERE id = $7
+  `, [
     product_name,
     original_price,
     current_price,
@@ -81,9 +83,13 @@ async function updateOffer(req, res) {
     free_shipping,
     sent,
     id
-  ]);
+  ])
 
-  res.sendStatus(200);
+  return res.sendStatus(200)
 }
 
-module.exports = { listOffers, updateOffer, deleteOffer };
+module.exports = {
+  listOffers,
+  updateOffer,
+  deleteOffer
+}

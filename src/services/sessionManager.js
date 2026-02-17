@@ -1,6 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 
+const DEFAULT_SESSION_STATE = {
+  status: 'starting',
+  client: null,
+  qrcode: null,
+  interfaceReady: false
+};
+
 class SessionManager {
   constructor() {
     this.sessions = new Map();
@@ -10,47 +17,31 @@ class SessionManager {
   createSession(userId) {
     if (this.sessions.has(userId)) return true;
 
-    if (this.sessions.size >= this.MAX_SESSIONS) {
+    if (this.isLimitReached()) {
       console.log('Limite de sessões atingido');
       return false;
     }
 
-    this.sessions.set(userId, {
-      id: userId,
-      status: 'starting',
-      client: null,
-      qrcode: null,
-      interfaceReady: false
-    });
+    this.sessions.set(userId, this.createSessionState(userId));
 
     return true;
   }
 
   loadExistingSessions() {
-    const tokensPath = path.join(process.cwd(), 'tokens');
-
+    const tokensPath = this.getTokensPath();
     if (!fs.existsSync(tokensPath)) return;
 
     const users = fs.readdirSync(tokensPath);
 
-    for (const userId of users) {
-      console.log(`[Session] Restaurando sessão: ${userId}`);
-
-      this.sessions.set(userId, {
-        id: userId,
-        status: 'starting',
-        client: null,
-        qrcode: null,
-        interfaceReady: false
-      });
-    }
+    users.forEach(userId => {
+      this.sessions.set(userId, this.createSessionState(userId));
+    });
   }
 
   removeSession(userId) {
-    if (this.sessions.has(userId)) {
-      this.sessions.delete(userId);
-      console.log(`[Manager] Sessão removida: ${userId}`);
-    }
+    if (!this.sessions.has(userId)) return;
+
+    this.sessions.delete(userId);
   }
 
   getSession(userId) {
@@ -63,9 +54,24 @@ class SessionManager {
 
   updateSession(userId, data) {
     const session = this.sessions.get(userId);
-    if (session) {
-      this.sessions.set(userId, { ...session, ...data });
-    }
+    if (!session) return;
+
+    this.sessions.set(userId, { ...session, ...data });
+  }
+
+  isLimitReached() {
+    return this.sessions.size >= this.MAX_SESSIONS;
+  }
+
+  createSessionState(userId) {
+    return {
+      id: userId,
+      ...DEFAULT_SESSION_STATE
+    };
+  }
+
+  getTokensPath() {
+    return path.join(process.cwd(), 'tokens');
   }
 }
 

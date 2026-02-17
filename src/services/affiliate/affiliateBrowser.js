@@ -1,54 +1,56 @@
-const puppeteer = require('puppeteer-extra');
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-const { loadCookies } = require('../../utils/cookieHelper');
+const puppeteer = require('puppeteer-extra')
+const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+const { loadCookies } = require('../../utils/cookieHelper')
 
-puppeteer.use(StealthPlugin());
+puppeteer.use(StealthPlugin())
 
 class AffiliateBrowser {
-  async generateAffiliateLink(originalLink) {
-    console.log('[AffiliateService] Lendo cookies do arquivo...');
-    const cookiesToInject = await loadCookies();
 
-    if (cookiesToInject.length === 0) {
-      throw new Error('Nenhum cookie encontrado no arquivo txt.');
-    }
+  async generate(originalLink) {
+    console.log('[AffiliateService] Lendo cookies do arquivo...')
+
+    const cookies = await loadCookies()
+    if (!cookies.length) throw new Error('Nenhum cookie encontrado')
 
     const browser = await puppeteer.launch({
       headless: "new",
       args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
-    });
+    })
 
     try {
-      const page = await browser.newPage();
-      await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+      const page = await browser.newPage()
 
-      await page.setCookie(...cookiesToInject);
+      await page.setUserAgent('Mozilla/5.0')
+      await page.setCookie(...cookies)
 
       await page.goto('https://www.mercadolivre.com.br/afiliados/linkbuilder#hub', {
         waitUntil: 'networkidle2'
-      });
+      })
 
-      const inputSelector = 'textarea';
-      await page.waitForSelector(inputSelector, { visible: true, timeout: 15000 });
+      const selector = 'textarea'
 
-      await page.click(inputSelector, { clickCount: 3 });
-      await page.keyboard.press('Backspace');
-      await page.type(inputSelector, originalLink);
+      await page.waitForSelector(selector, { visible: true, timeout: 15000 })
 
-      await page.click('button.links-form__button');
+      await page.click(selector, { clickCount: 3 })
+      await page.keyboard.press('Backspace')
+      await page.type(selector, originalLink)
 
-      await page.waitForFunction(() => document.querySelectorAll('textarea').length > 1, { timeout: 15000 });
+      await page.click('button.links-form__button')
 
-      const resultLink = await page.evaluate(() => {
-        const areas = Array.from(document.querySelectorAll('textarea'));
-        return areas.length > 1 ? areas[areas.length - 1].value : null;
-      });
+      await page.waitForFunction(
+        () => document.querySelectorAll('textarea').length > 1,
+        { timeout: 15000 }
+      )
 
-      return resultLink;
+      return page.evaluate(() => {
+        const areas = document.querySelectorAll('textarea')
+        return areas[areas.length - 1]?.value || null
+      })
+
     } finally {
-      await browser.close();
+      await browser.close()
     }
   }
 }
 
-module.exports = AffiliateBrowser;
+module.exports = AffiliateBrowser

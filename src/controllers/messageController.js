@@ -1,56 +1,56 @@
-const { manager, wppService } = require('./sessionController');
-const ScraperService = require('../services/scraperService');
-const AffiliateService = require('../services/affiliate/affiliateService');
-const MessageFormatter = require('../services/messageFormatter');
+const { manager, wppService } = require('./sessionController')
+const ScraperService = require('../services/scraperService')
+const AffiliateService = require('../services/affiliate/affiliateService')
+const MessageFormatter = require('../services/messageFormatter')
 
 exports.sendMessage = async (req, res) => {
-  const { userId, to, url } = req.body;
+  const { userId, to, url } = req.body
 
-  const session = manager.getSession(userId);
+  const session = manager.getSession(userId)
 
   if (!session) {
-    return res.status(404).json({ error: 'Sessão não encontrada' });
+    return res.status(404).json({ error: 'Sessão não encontrada' })
   }
 
-  if (!session?.client || session.status !== 'connected') {
-    return res.status(400).json({
-      error: 'Sessão não pronta para envio'
-    });
+  if (!session.client || session.status !== 'connected') {
+    return res.status(400).json({ error: 'Sessão não pronta para envio' })
   }
 
   try {
-    const scraper = new ScraperService();
-    const affiliate = new AffiliateService();
+    const scraper = new ScraperService()
+    const affiliate = new AffiliateService()
 
-    console.log(`[Controller] Iniciando Scraper para: ${url}`);
-    const produtos = await scraper.fetchProducts(url);
-    const item = produtos[0];
+    console.log(`[Controller] Scraping produto: ${url}`)
+
+    const produtos = await scraper.fetchProducts(url)
+    const item = produtos?.[0]
 
     if (!item) {
-      return res.status(404).json({ error: 'Produto não encontrado pelo Scraper' });
+      return res.status(404).json({ error: 'Produto não encontrado pelo Scraper' })
     }
 
-    console.log('[Controller] Convertendo link no Affiliate Builder...');
-    const linkAfiliado = await affiliate.generateAffiliateLink(item.link);
-    item.link = linkAfiliado;
+    console.log('[Controller] Gerando link afiliado...')
 
-    const mensagemFormatada = MessageFormatter.format(item);
+    item.link = await affiliate.generateAffiliateLink(item.link)
 
-    await wppService.sendImage(userId, to, item.image, mensagemFormatada);
+    const mensagem = MessageFormatter.format(item)
 
-    return res.status(200).json({
+    await wppService.sendImage(userId, to, item.image, mensagem)
+
+    return res.json({
       message: 'Oferta enviada com sucesso!',
       data: {
         title: item.title,
         link: item.link
       }
-    });
+    })
 
-  } catch (error) {
-    console.error('[Controller] Erro no processamento:', error.message);
+  } catch (err) {
+    console.error('[Controller] Erro:', err)
+
     return res.status(500).json({
       error: 'Falha ao processar e enviar oferta',
-      details: error.message
-    });
+      details: err.message
+    })
   }
-};
+}
