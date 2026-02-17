@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+
 class SessionManager {
   constructor() {
     this.sessions = new Map();
@@ -5,21 +8,49 @@ class SessionManager {
   }
 
   createSession(userId) {
-    // Regra de negócio: Limite de 2 instâncias para controle de custo (RAM)
+    if (this.sessions.has(userId)) return true;
+
     if (this.sessions.size >= this.MAX_SESSIONS) {
       console.log('Limite de sessões atingido');
       return false;
     }
 
-    const sessionData = {
+    this.sessions.set(userId, {
       id: userId,
       status: 'starting',
       client: null,
-      qrcode: null
-    };
+      qrcode: null,
+      interfaceReady: false
+    });
 
-    this.sessions.set(userId, sessionData);
     return true;
+  }
+
+  loadExistingSessions() {
+    const tokensPath = path.join(process.cwd(), 'tokens');
+
+    if (!fs.existsSync(tokensPath)) return;
+
+    const users = fs.readdirSync(tokensPath);
+
+    for (const userId of users) {
+      console.log(`[Session] Restaurando sessão: ${userId}`);
+
+      this.sessions.set(userId, {
+        id: userId,
+        status: 'starting',
+        client: null,
+        qrcode: null,
+        interfaceReady: false
+      });
+    }
+  }
+
+  removeSession(userId) {
+    if (this.sessions.has(userId)) {
+      this.sessions.delete(userId);
+      console.log(`[Manager] Sessão removida: ${userId}`);
+    }
   }
 
   getSession(userId) {

@@ -1,3 +1,2 @@
-2026/02/12-20:34:27.242 2fa4 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/garimpei/Default/Extension Rules/MANIFEST-000001
-2026/02/12-20:34:27.243 2fa4 Recovering log #3
-2026/02/12-20:34:27.243 2fa4 Reusing old log /home/jgluciano/offertrigger/tokens/garimpei/Default/Extension Rules/000003.log 
+2026/02/17-01:03:13.622 57b70 Creating DB /home/jgluciano/offertrigger/tokens/garimpei/Default/Extension Rules since it was missing.
+2026/02/17-01:03:13.652 57b70 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/garimpei/Default/Extension Rules/MANIFEST-000001

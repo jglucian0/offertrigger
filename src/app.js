@@ -3,7 +3,15 @@ const cors = require('cors');
 const sessionController = require('./controllers/sessionController');
 const messageController = require('./controllers/messageController');
 const affiliateController = require('./controllers/affiliateController');
+const offerController = require('./controllers/offerController');
+const { manager, wppService } = require('./controllers/sessionController');
 //onst dispatchController = require('./controllers/dispatchController');
+
+manager.loadExistingSessions();
+
+for (const session of manager.sessions.values()) {
+  wppService.initSession(session.id);
+}
 
 const app = express();
 
@@ -16,17 +24,21 @@ app.get('/', (req, res) => {
 });
 
 app.post('/session/start', sessionController.startSession);
-
-app.get('/session/session/:userId', sessionController.checkStatus);
+app.get('/session/status/:userId', sessionController.checkStatus);
+app.delete('/session/:userId', sessionController.deleteSession);
+app.get('/session/list', sessionController.listSessions);
 
 app.post('/message/send', messageController.sendMessage);
 
 app.get('/session/groups/:userId', sessionController.getGroups);
 
 app.post('/affiliate/generate', affiliateController.generateLink);
+app.get('/offers', offerController.listOffers);
+app.delete("/offers/:id", offerController.deleteOffer);
+app.put("/offers/:id", offerController.updateOffer);
 
+app.use('/storage', express.static('/home/jgluciano/offertrigger/storage'));
 app.use('/dispatch-config', require('./routes/dispatch'));
 
-//app.post('/dispatch/send', dispatchController.send);
 
 module.exports = app;

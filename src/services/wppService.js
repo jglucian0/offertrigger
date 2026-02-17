@@ -32,10 +32,27 @@ class WppService {
             });
           }
         },
-        statusFind: (statusSession, session) => {
-          console.log(`Status da sessão ${session}: `, statusSession);
-          if (this.sessionManager) {
-            this.sessionManager.updateSession(userId, { status: statusSession });
+        statusFind: (statusSession) => {
+          console.log(`Status da sessão ${userId}:`, statusSession);
+
+          if (!this.sessionManager) return;
+
+          if (statusSession === 'isLogged') {
+            this.sessionManager.updateSession(userId, {
+              status: 'connected',
+              qrcode: null
+            });
+
+            return;
+          }
+
+          if (
+            statusSession !== 'inChat' &&
+            statusSession !== 'CONNECTED'
+          ) {
+            this.sessionManager.updateSession(userId, {
+              status: 'connecting'
+            });
           }
         },
         autoClose: 0,
@@ -57,11 +74,29 @@ class WppService {
 
       if (this.sessionManager) {
         this.sessionManager.updateSession(userId, {
-          client: client,
-          status: 'connected',
-          qrcode: null
+          client,
         });
       }
+
+      setTimeout(async () => {
+        try {
+          const state = await client.getConnectionState();
+
+          console.log(`[WPP] Estado inicial ${userId}:`, state);
+
+          if (state === 'CONNECTED') {
+            this.sessionManager.updateSession(userId, {
+              status: 'connected',
+              qrcode: null,
+              interfaceReady: true
+            });
+
+            console.log(`[WPP] Sessão restaurada automaticamente: ${userId}`);
+          }
+        } catch (e) {
+          console.warn('[WPP] Falha ao checar estado inicial:', e.message);
+        }
+      }, 3000);
 
       client.onMessage(async (message) => {
         await this.botService.processIncomingMessage(client, message);
@@ -74,8 +109,16 @@ class WppService {
         if (state?.mode === 'MAIN') {
           const session = this.sessionManager.getSession(userId);
 
+          if (!session) return;
+
           if (!session.interfaceReady) {
-            this.sessionManager.updateSession(userId, { interfaceReady: true });
+            this.sessionManager.updateSession(userId, {
+              status: 'connected',
+              qrcode: null,
+              interfaceReady: true
+            });
+
+            console.log(`[WPP] Sessão pronta: ${userId}`);
           }
         }
       });
@@ -86,6 +129,19 @@ class WppService {
       if (this.sessionManager) {
         this.sessionManager.updateSession(userId, { status: 'error' });
       }
+    }
+  }
+
+  async closeSession(userId) {
+    const session = this.sessionManager.getSession(userId);
+
+    if (!session || !session.client) return;
+
+    try {
+      await session.client.close();
+      console.log(`[WPP] Cliente fechado: ${userId}`);
+    } catch (err) {
+      console.warn(`[WPP] Erro ao fechar cliente ${userId}`, err.message);
     }
   }
 

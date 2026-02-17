@@ -12,8 +12,10 @@ exports.sendMessage = async (req, res) => {
     return res.status(404).json({ error: 'Sessão não encontrada' });
   }
 
-  if (session.status !== 'inChat' && session.status !== 'connected') {
-    return res.status(400).json({ error: 'WhatsApp não está conectado' });
+  if (!session?.client || session.status !== 'connected') {
+    return res.status(400).json({
+      error: 'Sessão não pronta para envio'
+    });
   }
 
   try {

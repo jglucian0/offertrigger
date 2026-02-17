@@ -5,7 +5,7 @@ const DispatchQueue = require('../repositories/dispatchQueueRepository');
 const nicheGroups = require('../config/nicheGroups');
 const { getConfig } = require('../config/dispatchStore');
 
-const USER_ID = "cliente1";
+const USER_ID = "garimpei";
 
 let started = false;
 
@@ -33,7 +33,7 @@ function withJitter(base, percent = 0.2) {
   return base + (Math.random() * delta * 2 - delta);
 }
 
-console.log("🚀 Dispatcher carregado, aguardando sessão cliente1...");
+console.log("🚀 Dispatcher carregado, aguardando conexão da sessão...");
 
 const waitSession = setInterval(() => {
 
@@ -45,15 +45,14 @@ const waitSession = setInterval(() => {
     return;
   }
 
-  if (session.status !== 'inChat' && session.status !== 'connected') {
+  if (!session?.client || session.status !== 'connected') {
+    console.log("Aguardando conexão da sessão...");
     return;
   }
 
   if (!session.interfaceReady) {
     return;
   }
-
-  console.log("✅ cliente1 em inChat, iniciando disparos");
 
   started = true;
   clearInterval(waitSession);
