@@ -2,8 +2,9 @@ require('dotenv').config();
 
 const { manager, wppService } = require('../controllers/sessionController');
 const DispatchQueue = require('../repositories/dispatchQueueRepository');
-const nicheGroups = require('../config/nicheGroups');
+// const nicheGroups = require('../config/nicheGroups');
 const { getConfig } = require('../config/dispatchStore');
+const nicheGroupService = require('../services/nicheGroupService')
 
 const USER_ID = "garimpei";
 
@@ -60,7 +61,7 @@ function waitForSession() {
 }
 
 function startDispatchLoops() {
-  Object.keys(nicheGroups).forEach(startNicheDispatcher);
+  Object.keys(getConfig()).forEach(startNicheDispatcher);
 }
 
 function startNicheDispatcher(niche) {
@@ -88,14 +89,17 @@ async function dispatchNiche(niche, getLastSent, setLastSent) {
     const offer = await DispatchQueue.getNext(niche);
     if (!offer) return;
 
-    console.log(`[${niche}] enviando: ${offer.product_name}`);
+    const groups = await nicheGroupService.getGroups(niche)
 
-    await wppService.sendImage(
-      USER_ID,
-      nicheGroups[niche],
-      offer.image_url,
-      offer.message_text
-    );
+    for (const groupId of groups) {
+      console.log(`[${niche}] Enviando "${offer.product_name}" para o grupo: ${groupId}`);
+      await wppService.sendImage(
+        USER_ID,
+        groupId,
+        offer.image_url,
+        offer.message_text
+      )
+    }
 
     await DispatchQueue.markSent(offer.id);
   } catch (err) {

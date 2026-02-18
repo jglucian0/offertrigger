@@ -1,6 +1,6 @@
-2026/02/17-16:52:16.658 1a68c Reusing MANIFEST /home/jgluciano/offertrigger/tokens/garimpei/Default/Local Storage/leveldb/MANIFEST-000001
-2026/02/17-16:52:16.686 1a68c Recovering log #4
-2026/02/17-16:52:16.687 1a68c Reusing old log /home/jgluciano/offertrigger/tokens/garimpei/Default/Local Storage/leveldb/000004.log 
-2026/02/17-17:08:54.025 1a682 Level-0 table #7: started
-2026/02/17-17:08:54.028 1a682 Level-0 table #7: 15809 bytes OK
-2026/02/17-17:08:54.031 1a682 Delete type=0 #4
+2026/02/18-10:21:58.304 178d Reusing MANIFEST /home/jgluciano/offertrigger/tokens/garimpei/Default/Local Storage/leveldb/MANIFEST-000001
+2026/02/18-10:21:58.344 178d Recovering log #3
+2026/02/18-10:21:58.345 178d Reusing old log /home/jgluciano/offertrigger/tokens/garimpei/Default/Local Storage/leveldb/000003.log 
+2026/02/18-10:44:42.039 1787 Level-0 table #5: started
+2026/02/18-10:44:42.045 1787 Level-0 table #5: 18241 bytes OK
+2026/02/18-10:44:42.049 1787 Delete type=0 #3

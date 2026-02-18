@@ -5,8 +5,10 @@ const https = require('https');
 const ScraperService = require('./scraperService')
 const MessageFormatter = require('./messageFormatter');
 const ImageService = require('./imageService');
-const nicheGroups = require('../config/nicheGroups');
+// const nicheGroups = require('../config/nicheGroups');
 const DispatchQueueRepository = require('../repositories/dispatchQueueRepository')
+const nicheGroupService = require('../services/nicheGroupService')
+
 
 class BotService {
   constructor(affiliateService) {
@@ -102,9 +104,10 @@ class BotService {
         if (text === '7') {
 
           for (const niche of state.niches) {
-            const groupId = nicheGroups[niche];
-            if (groupId)
+            const groups = await nicheGroupService.getGroups(niche)
+            for (const groupId of groups) {
               await client.sendImage(groupId, finalImage, 'produto.jpg', mensagem);
+            }
           }
 
           fs.unlink(finalImage, () => { });
@@ -221,9 +224,9 @@ Escolha o nicho:
           return;
         }
 
-        const groupId = nicheGroups[state.niche];
+        const groups = await nicheGroupService.getGroups(state.niche);
 
-        if (!groupId) {
+        if (!groups.length) {
           await client.sendText(message.from, 'Grupo não configurado.');
           this.pendingBroadcast.delete(message.from);
           return;
@@ -232,18 +235,21 @@ Escolha o nicho:
         console.log(`[Bot] Aviso enviado para ${state.niche}`);
 
         if (state.imagePath) {
-
-          await client.sendImage(
-            groupId,
-            state.imagePath,
-            'aviso.jpg',
-            state.texto || ''
-          );
+          for (const groupId of groups) {
+            await client.sendImage(
+              groupId,
+              state.imagePath,
+              'aviso.jpg',
+              state.texto || ''
+            );
+          }
 
           fs.unlink(state.imagePath, () => { });
 
         } else {
-          await client.sendText(groupId, state.texto);
+          for (const groupId of groups) {
+            await client.sendText(groupId, state.texto);
+          }
         }
 
         await client.sendText(message.from, '✅ Aviso enviado.');

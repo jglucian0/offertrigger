@@ -1,19 +1,19 @@
-const time = 5 * 60 * 1000
+const time = 1 * 60 * 1000
 
 let dispatchConfig = {
   eletronicos: {
-    start: "11:30",
-    end: "12:00",
+    start: "00:00",
+    end: "05:00",
     interval: time
   },
   academia: {
-    start: "11:30",
-    end: "12:00",
+    start: "00:00",
+    end: "05:00",
     interval: time
   },
   moda: {
-    start: "11:30",
-    end: "12:00",
+    start: "00:00",
+    end: "05:00",
     interval: time
   }
 };

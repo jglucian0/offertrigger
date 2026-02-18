@@ -1,18 +1,3 @@
-2026/02/17-16:52:24.817 1a697 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/garimpei/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2026/02/17-16:52:24.817 1a697 Recovering log #62
-2026/02/17-16:52:24.824 1a697 Reusing old log /home/jgluciano/offertrigger/tokens/garimpei/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/000062.log 
-2026/02/17-17:03:29.021 1a682 Level-0 table #71: started
-2026/02/17-17:03:29.041 1a682 Level-0 table #71: 1455733 bytes OK
-2026/02/17-17:03:29.048 1a682 Delete type=0 #62
-2026/02/17-17:03:42.282 1a689 Compacting 1@1 + 4@2 files
-2026/02/17-17:03:42.322 1a689 Generated table #72@1: 38105 keys, 2190296 bytes
-2026/02/17-17:03:42.352 1a689 Generated table #73@1: 14336 keys, 2158149 bytes
-2026/02/17-17:03:42.400 1a689 Generated table #74@1: 96712 keys, 2245235 bytes
-2026/02/17-17:03:42.414 1a689 Generated table #75@1: 25414 keys, 575193 bytes
-2026/02/17-17:03:42.414 1a689 Compacted 1@1 + 4@2 files => 7168873 bytes
-2026/02/17-17:03:42.417 1a689 compacted to: files[ 0 0 4 0 0 0 0 ]
-2026/02/17-17:03:42.417 1a689 Delete type=2 #65
-2026/02/17-17:03:42.417 1a689 Delete type=2 #66
-2026/02/17-17:03:42.418 1a689 Delete type=2 #68
-2026/02/17-17:03:42.418 1a689 Delete type=2 #71
-2026/02/17-17:03:42.418 1a689 Delete type=2 #67
+2026/02/18-10:21:59.673 1787 Reusing MANIFEST /home/jgluciano/offertrigger/tokens/garimpei/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/02/18-10:21:59.674 1787 Recovering log #43
+2026/02/18-10:21:59.710 1787 Reusing old log /home/jgluciano/offertrigger/tokens/garimpei/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/000043.log 

@@ -39,5 +39,7 @@ app.put("/offers/:id", offerController.updateOffer);
 app.use('/storage', express.static('/home/jgluciano/offertrigger/storage'));
 app.use('/dispatch-config', require('./routes/dispatch'));
 
+app.use('/niche-groups', require('./routes/nicheGroups'))
+
 
 module.exports = app;
