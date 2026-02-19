@@ -5,6 +5,7 @@ class DispatchQueueRepository {
   async enqueue(offer) {
     const query = `
       INSERT INTO dispatch_queue (
+        session_id,
         product_name,
         message_text,
         image_url,
@@ -15,11 +16,12 @@ class DispatchQueueRepository {
         discount,
         free_shipping
       )
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
       RETURNING id
     `
 
     const values = [
+      offer.sessionId,
       offer.title,
       offer.message,
       offer.imagePath,
@@ -35,29 +37,61 @@ class DispatchQueueRepository {
     return rows[0]
   }
 
-  async getNext(niche) {
-    const query = `
+  async getNext(sessionId, niche) {
+    const client = await db.connect();
+
+    try {
+      await client.query('BEGIN');
+
+      const { rows } = await client.query(
+        `
       SELECT *
       FROM dispatch_queue
-      WHERE niche = $1
+      WHERE session_id = $1
+        AND niche = $2
         AND send_count = 0
       ORDER BY created_at ASC
       LIMIT 1
-    `
+      FOR UPDATE SKIP LOCKED
+      `,
+        [sessionId, niche]
+      );
 
-    const { rows } = await db.query(query, [niche])
-    return rows[0]
-  }
+      if (!rows.length) {
+        await client.query('COMMIT');
+        return null;
+      }
 
-  async markSent(id) {
-    const query = `
+      await client.query(
+        `
       UPDATE dispatch_queue
-      SET send_count = send_count + 1
+      SET send_count = 1
       WHERE id = $1
-    `
+      `,
+        [rows[0].id]
+      );
 
-    await db.query(query, [id])
+      await client.query('COMMIT');
+
+      return rows[0];
+
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
+    }
   }
+
+  // async markSent(id) {
+  //   const query = `
+  //     UPDATE dispatch_queue
+  //     SET send_count = send_count + 1
+  //     WHERE id = $1
+  //   `
+
+  //   await db.query(query, [id])
+  // }
 
 }
 

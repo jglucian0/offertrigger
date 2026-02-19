@@ -19,6 +19,21 @@ class NicheGroupRepository {
     return Number(rows[0].count)
   }
 
+  async getBySessionAndNiche(sessionId, niche) {
+    const { rows } = await pool.query(
+      `
+    SELECT group_id
+    FROM niche_groups
+    WHERE session_id = $1
+      AND niche = $2
+      AND active = true
+    `,
+      [sessionId, niche]
+    );
+
+    return rows.map(r => r.group_id);
+  }
+
   async create(sessionId, groupId, niche, groupName) {
     return pool.query(
       `

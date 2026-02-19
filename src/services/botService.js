@@ -126,6 +126,7 @@ class BotService {
 
         for (const niche of state.niches) {
           await DispatchQueueRepository.enqueue({
+            sessionId: client.session,
             title: state.produto.title,
             message: mensagem,
             imagePath: finalPath,

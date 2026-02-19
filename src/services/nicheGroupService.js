@@ -10,6 +10,10 @@ class NicheGroupService {
     return repo.getByNiche(niche)
   }
 
+  async getGroupsBySession(sessionId, niche) {
+    return repo.getBySessionAndNiche(sessionId, niche);
+  }
+
   async listAll(sessionId) {
     return repo.listAll(sessionId)
   }
