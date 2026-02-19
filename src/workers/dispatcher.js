@@ -3,7 +3,7 @@ require('dotenv').config();
 const { manager, wppService } = require('../controllers/sessionController');
 const DispatchQueue = require('../repositories/dispatchQueueRepository');
 // const nicheGroups = require('../config/nicheGroups');
-const { getConfig } = require('../config/dispatchStore');
+// const { getConfig } = require('../../quarentena/dispatchStore');
 const nicheGroupService = require('../services/nicheGroupService')
 const nicheDispatchConfigRepository = require('../repositories/nicheDispatchConfigRepository');
 
@@ -13,7 +13,12 @@ let started = false;
 
 console.log(`📦 Dispatcher rodando, aguardando conexão da sessão...`);
 
-function dentroHorario({ start, end }) {
+function dentroHorario(cfg) {
+  const start = cfg.start_time || "00:00";
+  const end = cfg.end_time || "23:59";
+
+  if (!start || !end) return true; // fallback segurança
+
   const now = new Date();
   const nowMinutes = now.getHours() * 60 + now.getMinutes();
 
@@ -103,7 +108,7 @@ async function dispatchSession(sessionId) {
     if (!dentroHorario(cfg)) continue;
 
     const now = Date.now();
-    const interval = withJitter(cfg.interval);
+    const interval = withJitter(cfg.interval_ms || 60000);
 
     if (now - (cfg.last_sent || 0) < interval) continue;
 

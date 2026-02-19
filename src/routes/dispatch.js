@@ -1,14 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { getConfig, updateConfig } = require('../config/dispatchStore');
+const controller = require('../controllers/dispatchController');
 
-router.get('/', (req, res) => {
-  res.json(getConfig());
-});
-
-router.post('/', (req, res) => {
-  updateConfig(req.body);
-  res.json({ success: true });
-});
+router.post('/config', controller.saveConfig);
+router.get('/config/:sessionId', controller.listConfigs);
+router.patch('/config/toggle', controller.toggle);
+router.get('/queue/:sessionId/:niche', controller.listQueue);
 
 module.exports = router;

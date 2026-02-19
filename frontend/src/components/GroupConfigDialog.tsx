@@ -63,7 +63,7 @@ export function GroupConfigDialog({ open, onClose, sessionId }: Props) {
     load();
 
     return () => {
-      isActive = false; // 🔥 invalida request anterior
+      isActive = false;
     };
 
   }, [open, sessionId]);

@@ -5,8 +5,11 @@ import { Send, Clock, CheckCircle, AlertCircle, Package, ExternalLink, Truck } f
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Settings } from "lucide-react";
-import { useState } from "react";
-import { GroupConfigDialog } from "@/components/GroupConfigDialog";
+import { useEffect, useState } from "react"
+import { NicheDispatchConfig } from "@/components/NicheDispatchConfig"
+import { api } from "@/lib/api"
+import { useToast } from "@/hooks/use-toast";
+
 
 interface PendingProduct {
   id: string;
@@ -72,25 +75,54 @@ const pendingProducts: PendingProduct[] = [
   },
 ];
 
+
 const formatCurrency = (v: number) =>
   v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 const Disparos = () => {
-  const [groupsOpen, setGroupsOpen] = useState(false);
+  const [configs, setConfigs] = useState<any[]>([])
+  const [groups, setGroups] = useState<any[]>([])
+  const sessionId = "garimpei"
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [configsRes, groupsRes] = await Promise.all([
+          api.get(`/dispatch/config/${sessionId}`),
+          api.get(`/niche-groups/${sessionId}`)
+        ])
+
+        console.log("CONFIGS:", configsRes.data)
+        console.log("GROUPS:", groupsRes.data)
+
+        setConfigs(configsRes.data)
+        setGroups(groupsRes.data)
+
+      } catch (err) {
+        console.error("Erro ao carregar dados:", err)
+      }
+    }
+
+    loadData()
+  }, [])
+
+  const niches = Array.from(
+    new Set(
+      [
+        ...groups.map(g => g.niche || "sem nicho definido"),
+        ...configs.map(c => c.niche)
+      ].filter(Boolean)
+    )
+
+  )
+  console.log("STATE:", { configs, groups })
   return (
     <AppLayout>
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-1">
           <Send className="h-5 w-5 text-primary" />
           <h1 className="text-2xl font-bold text-foreground">Fila de Disparos</h1>
-
-          <button
-            onClick={() => setGroupsOpen(true)}
-            className="ml-auto flex items-center gap-2 rounded-md border border-border px-3 py-1 text-sm hover:bg-muted transition"
-          >
-            <Settings className="h-4 w-4" />
-            Configurar grupos
-          </button>
         </div>
         <p className="text-sm text-muted-foreground">
           Monitoramento do worker de disparo automático (ciclo de 5 min)
@@ -103,7 +135,62 @@ const Disparos = () => {
         <StatCard title="Falhas" value="1" icon={AlertCircle} />
       </div>
 
+      <div className="space-y-4 mb-8">
 
+        {niches.length === 0 ? (
+          <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-12 text-center">
+            <Settings className="h-8 w-8 text-muted-foreground mb-3" />
+            <p className="text-sm font-medium text-foreground">
+              Nenhum nicho configurado
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Cadastre grupos e defina um nicho para iniciar os disparos
+            </p>
+          </div>
+        ) : (
+          niches.map(niche => {
+            const cfg = configs.find(c => c.niche === niche);
+            const nicheGroups = groups.filter(g => g.niche === niche);
+
+            return (
+              <NicheDispatchConfig
+                key={niche}
+                niche={niche}
+                interval={Math.floor((Number(cfg?.interval_ms) || 60000) / 60000)}
+                start={cfg?.start_time ?? "00:00"}
+                end={cfg?.end_time ?? "23:59"}
+                paused={cfg?.paused ?? false}
+                groups={nicheGroups}
+                onSave={async (data) => {
+                  try {
+                    await api.post("/dispatch/config", {
+                      sessionId,
+                      ...data,
+                      interval: data.interval * 60000
+                    });
+
+                    toast({
+                      title: "Configuração salva",
+                      description: `Nicho "${data.niche}" atualizado.`,
+                    });
+
+                    const updated = await api.get(`/dispatch/config/${sessionId}`);
+                    setConfigs(updated.data);
+
+                  } catch (err) {
+                    toast({
+                      title: "Erro ao salvar",
+                      description: "Não foi possível salvar.",
+                      variant: "destructive",
+                    });
+                  }
+                }}
+              />
+            );
+          })
+        )}
+
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-5">
         {/* Pending products list */}
