@@ -4,6 +4,9 @@ import { StatCard } from "@/components/StatCard";
 import { Send, Clock, CheckCircle, AlertCircle, Package, ExternalLink, Truck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { Settings } from "lucide-react";
+import { useState } from "react";
+import { GroupConfigDialog } from "@/components/GroupConfigDialog";
 
 interface PendingProduct {
   id: string;
@@ -73,12 +76,21 @@ const formatCurrency = (v: number) =>
   v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 const Disparos = () => {
+  const [groupsOpen, setGroupsOpen] = useState(false);
   return (
     <AppLayout>
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-1">
           <Send className="h-5 w-5 text-primary" />
           <h1 className="text-2xl font-bold text-foreground">Fila de Disparos</h1>
+
+          <button
+            onClick={() => setGroupsOpen(true)}
+            className="ml-auto flex items-center gap-2 rounded-md border border-border px-3 py-1 text-sm hover:bg-muted transition"
+          >
+            <Settings className="h-4 w-4" />
+            Configurar grupos
+          </button>
         </div>
         <p className="text-sm text-muted-foreground">
           Monitoramento do worker de disparo automático (ciclo de 5 min)
@@ -90,6 +102,8 @@ const Disparos = () => {
         <StatCard title="Enviados Hoje" value="47" icon={CheckCircle} />
         <StatCard title="Falhas" value="1" icon={AlertCircle} />
       </div>
+
+
 
       <div className="grid gap-6 lg:grid-cols-5">
         {/* Pending products list */}
@@ -180,6 +194,8 @@ const Disparos = () => {
           <DispatchQueue />
         </div>
       </div>
+
+
     </AppLayout>
   );
 };

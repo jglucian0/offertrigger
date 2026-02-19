@@ -20,11 +20,13 @@ interface Session {
   name: string;
   status: "connected" | "qrcode" | "disconnected" | "loading";
   groups: number;
+  groupsRegistred: number;
   messagesSent: number;
   lastActivity: string;
   qrcode?: string;
 }
-
+import { Settings } from "lucide-react";
+import { GroupConfigDialog } from "@/components/GroupConfigDialog";
 
 
 const MAX_SESSIONS = 2;
@@ -44,6 +46,8 @@ const statusConfig = {
 export const SessionGrid = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [reconnecting, setReconnecting] = useState<string | null>(null);
+  const [groupDialogOpen, setGroupDialogOpen] = useState(false);
+  const [activeSession, setActiveSession] = useState<string | null>(null);
   const { toast } = useToast();
 
   const canAddSession = sessions.length < MAX_SESSIONS;
@@ -62,7 +66,8 @@ export const SessionGrid = () => {
               : s.qrcode
                 ? "qrcode"
                 : "loading",
-          groups: 0,
+          groups: 1,
+          groupsRegistred: 5,
           messagesSent: 0,
           lastActivity: s.status === "connected" ? "Agora" : "Aguardando scan",
           qrcode: s.qrcode,
@@ -132,7 +137,8 @@ export const SessionGrid = () => {
         id: userId,
         name: userId,
         status: statusValue,
-        groups: 0,
+        groups: 1,
+        groupsRegistred: 5,
         messagesSent: 0,
         lastActivity: connected
           ? "Agora"
@@ -232,21 +238,21 @@ export const SessionGrid = () => {
                   </div>
 
                   {/* Stats */}
-                  <div className="mt-5 grid grid-cols-2 gap-3">
+                  <div className="mt-5 grid gap-3">
                     <div className="flex items-center gap-2.5 rounded-lg bg-secondary/50 px-3 py-2.5">
                       <Users className="h-4 w-4 text-muted-foreground" />
                       <div>
-                        <p className="text-xl font-bold text-foreground mono">{session.groups}</p>
-                        <p className="text-[10px] text-muted-foreground">Grupos</p>
+                        <p className="text-xl font-bold text-foreground mono">{session.groups}/{session.groupsRegistred}</p>
+                        <p className="text-[10px] text-muted-foreground">Grupos cadastrados</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2.5 rounded-lg bg-secondary/50 px-3 py-2.5">
+                    {/* <div className="flex items-center gap-2.5 rounded-lg bg-secondary/50 px-3 py-2.5">
                       <MessageSquare className="h-4 w-4 text-muted-foreground" />
                       <div>
                         <p className="text-xl font-bold text-foreground mono">{session.messagesSent}</p>
                         <p className="text-[10px] text-muted-foreground">Enviadas</p>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
 
                   <p className="mt-3 text-[10px] text-muted-foreground">
@@ -290,15 +296,30 @@ export const SessionGrid = () => {
                     )}
 
                     {session.status === "connected" && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="flex-1 gap-2 border-success/30 text-success hover:bg-success/10 text-xs h-9 cursor-default"
-                        disabled
-                      >
-                        <Wifi className="h-3.5 w-3.5" />
-                        Sessão ativa
-                      </Button>
+                      <div className="flex gap-2 flex-1">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setActiveSession(session.id);
+                            setGroupDialogOpen(true);
+                          }}
+                          className="flex-1 gap-2 border-primary/30 text-primary hover:bg-primary/10 text-xs h-9"
+                        >
+                          <Settings className="h-3.5 w-3.5" />
+                          Configurar Grupos
+                        </Button>
+
+                        {/* <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1 gap-2 border-success/30 text-success hover:bg-success/10 text-xs h-9 cursor-default"
+                          disabled
+                        >
+                          <Wifi className="h-3.5 w-3.5" />
+                          Sessão ativa
+                        </Button> */}
+                      </div>
                     )}
 
                     <AlertDialog>
@@ -334,9 +355,18 @@ export const SessionGrid = () => {
                     </AlertDialog>
                   </div>
                 </div>
+
               </div>
             );
           })}
+          <GroupConfigDialog
+            open={groupDialogOpen}
+            sessionId={activeSession}
+            onClose={() => {
+              setGroupDialogOpen(false);
+              setActiveSession(null);
+            }}
+          />
         </div>
       )}
     </div>

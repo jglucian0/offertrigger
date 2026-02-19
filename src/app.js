@@ -5,6 +5,8 @@ const messageController = require('./controllers/messageController');
 const affiliateController = require('./controllers/affiliateController');
 const offerController = require('./controllers/offerController');
 const { manager, wppService } = require('./controllers/sessionController');
+const nicheGroupController = require('./controllers/nicheGroupController');
+
 
 manager.loadExistingSessions();
 
@@ -38,6 +40,10 @@ app.put("/offers/:id", offerController.updateOffer);
 
 app.use('/storage', express.static('/home/jgluciano/offertrigger/storage'));
 app.use('/dispatch-config', require('./routes/dispatch'));
+
+app.get('/niche-groups/:sessionId', nicheGroupController.listBySession)
+app.post('/niche-groups/:sessionId', nicheGroupController.register)
+app.delete('/niche-groups/:sessionId', nicheGroupController.remove)
 
 app.use('/niche-groups', require('./routes/nicheGroups'))
 

@@ -19,29 +19,51 @@ class NicheGroupRepository {
     return Number(rows[0].count)
   }
 
-  async create(groupId, niche, groupName) {
-
+  async create(sessionId, groupId, niche, groupName) {
     return pool.query(
-      `INSERT INTO niche_groups (group_id, niche, group_name)
-     VALUES ($1,$2,$3)
-     ON CONFLICT (group_id, niche)
-     DO UPDATE SET active = true, group_name = EXCLUDED.group_name`,
-      [groupId, niche, groupName || null]
+      `
+    INSERT INTO niche_groups (session_id, group_id, niche, group_name, active)
+    VALUES ($1,$2,$3,$4,true)
+    ON CONFLICT (session_id, group_id)
+    DO UPDATE SET
+      niche = EXCLUDED.niche,
+      group_name = EXCLUDED.group_name,
+      active = true
+    `,
+      [sessionId, groupId, niche || 'sem nicho definido', groupName]
     )
   }
 
-  async remove(groupId, niche) {
-    return pool.query(
-      `DELETE FROM niche_groups WHERE group_id = $1 AND niche = $2`,
-      [groupId, niche]
-    )
-  }
-
-  async listAll() {
+  async listBySession(sessionId) {
     const { rows } = await pool.query(
-      `SELECT id, group_id, group_name, niche, active, created_at
-     FROM niche_groups
-     ORDER BY created_at DESC`
+      `
+    SELECT id, group_id, group_name, niche, active, created_at
+    FROM niche_groups
+    WHERE session_id = $1
+    ORDER BY created_at DESC
+    `,
+      [sessionId]
+    )
+
+    return rows
+  }
+
+  async remove(sessionId, groupId) {
+    return pool.query(
+      `DELETE FROM niche_groups WHERE session_id = $1 AND group_id = $2`,
+      [sessionId, groupId]
+    )
+  }
+
+  async listAll(sessionId) {
+    const { rows } = await pool.query(
+      `
+    SELECT id, group_id, group_name, niche
+    FROM niche_groups
+    WHERE session_id = $1
+    ORDER BY created_at DESC
+    `,
+      [sessionId]
     )
 
     return rows

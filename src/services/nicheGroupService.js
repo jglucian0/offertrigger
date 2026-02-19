@@ -2,26 +2,24 @@ const repo = require('../repositories/nicheGroupRepository')
 
 class NicheGroupService {
 
-  async register(groupId, niche, groupName) {
-
-    const total = await repo.countActive()
-
-    if (total >= 5)
-      throw new Error('Limite de 5 grupos ativos atingido')
-
-    return repo.create(groupId, niche, groupName)
+  async register(sessionId, groupId, niche, groupName) {
+    return repo.create(sessionId, groupId, niche, groupName)
   }
 
   async getGroups(niche) {
     return repo.getByNiche(niche)
   }
 
-  async listAll() {
-    return repo.listAll()
+  async listAll(sessionId) {
+    return repo.listAll(sessionId)
   }
 
-  async remove(groupId, niche) {
-    return repo.remove(groupId, niche)
+  async remove(sessionId, groupId) {
+    return repo.remove(sessionId, groupId)
+  }
+
+  async listBySession(sessionId) {
+    return repo.listBySession(sessionId)
   }
 }
 
