@@ -127,7 +127,6 @@ async function dispatchSession(sessionId) {
       }
 
       await nicheDispatchConfigRepository.updateLastSent(sessionId, cfg.niche);
-      await DispatchQueue.markSent(offer.id);
     }
   } catch (err) {
     console.error("Erro no dispatcher:", err);

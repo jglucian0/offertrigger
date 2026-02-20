@@ -38,14 +38,14 @@ app.get('/offers', offerController.listOffers);
 app.delete("/offers/:id", offerController.deleteOffer);
 app.put("/offers/:id", offerController.updateOffer);
 
-app.use('/storage', express.static('/home/jgluciano/offertrigger/storage'));
-// app.use('/dispatch-config', require('./routes/dispatch'));
+
 app.use('/dispatch', require('./routes/dispatch'));
 
 app.get('/niche-groups/:sessionId', nicheGroupController.listBySession)
 app.post('/niche-groups/:sessionId', nicheGroupController.register)
 app.delete('/niche-groups/:sessionId', nicheGroupController.remove)
 
+app.use("/storage", express.static("storage"))
 app.use('/niche-groups', require('./routes/nicheGroups'))
 
 

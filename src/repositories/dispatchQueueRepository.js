@@ -65,7 +65,8 @@ class DispatchQueueRepository {
       await client.query(
         `
       UPDATE dispatch_queue
-      SET send_count = 1
+      SET send_count = 1,
+        sent_at = NOW()
       WHERE id = $1
       `,
         [rows[0].id]
@@ -83,16 +84,65 @@ class DispatchQueueRepository {
     }
   }
 
-  // async markSent(id) {
-  //   const query = `
-  //     UPDATE dispatch_queue
-  //     SET send_count = send_count + 1
-  //     WHERE id = $1
-  //   `
 
-  //   await db.query(query, [id])
-  // }
+  async getHistoryBySession(sessionId) {
+    const { rows } = await db.query(
+      `
+    SELECT
+      id,
+      product_name,
+      niche,
+      CASE
+        WHEN send_count = 0 THEN 'pending'
+        WHEN send_count >= 1 THEN 'sent'
+      END AS status,
+      sent_at,
+      created_at
+    FROM dispatch_queue
+    WHERE session_id = $1
+    ORDER BY created_at DESC
+    LIMIT 20
+    `,
+      [sessionId]
+    )
 
+    return rows
+  }
+
+  async getStatsBySession(sessionId) {
+    const { rows } = await db.query(
+      `
+    SELECT
+      COUNT(*) FILTER (WHERE send_count = 0) AS pending,
+      COUNT(*) FILTER (
+        WHERE send_count > 0
+        AND sent_at::date = CURRENT_DATE
+      ) AS sent_today,
+      COUNT(*) FILTER (WHERE send_count > 0 AND sent_at IS NULL) AS sent_without_timestamp
+    FROM dispatch_queue
+    WHERE session_id = $1
+    `,
+      [sessionId]
+    )
+
+    return rows[0]
+  }
+
+  async listPendingBySessionAndNiche(sessionId, niche) {
+    const { rows } = await db.query(
+      `
+    SELECT *
+    FROM dispatch_queue
+    WHERE session_id = $1
+      AND niche = $2
+      AND send_count = 0
+    ORDER BY created_at DESC
+    `,
+      [sessionId, niche]
+    )
+
+    return rows
+  }
 }
 
 module.exports = new DispatchQueueRepository()

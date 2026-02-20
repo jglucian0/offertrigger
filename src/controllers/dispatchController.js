@@ -1,5 +1,6 @@
 const configRepo = require('../repositories/nicheDispatchConfigRepository');
 const queueRepo = require('../repositories/dispatchQueueRepository');
+const db = require('../infra/db')
 
 const MIN_INTERVAL = 5 * 60 * 1000;
 
@@ -83,24 +84,47 @@ class DispatchController {
     }
   }
 
+  async stats(req, res) {
+    try {
+      const { sessionId } = req.params
+
+      const stats = await queueRepo.getStatsBySession(sessionId)
+
+      return res.json({
+        pending: Number(stats.pending) || 0,
+        sent_today: Number(stats.sent_today) || 0
+      })
+
+    } catch (err) {
+      console.error(err)
+      return res.status(500).json({ error: 'Erro ao buscar stats' })
+    }
+  }
+
+  async history(req, res) {
+    try {
+      const { sessionId } = req.params
+
+      const history = await queueRepo.getHistoryBySession(sessionId)
+
+      return res.json(history)
+
+    } catch (err) {
+      console.error(err)
+      return res.status(500).json({ error: 'Erro ao buscar histórico' })
+    }
+  }
+
   async listQueue(req, res) {
     try {
       const { sessionId, niche } = req.params;
 
-      const { rows } = await require('../infra/db').query(
-        `
-        SELECT *
-        FROM dispatch_queue
-        WHERE session_id = $1
-          AND niche = $2
-          AND send_count = 0
-        ORDER BY created_at DESC
-        `,
-        [sessionId, niche]
-      );
+      const rows = await queueRepo.listPendingBySessionAndNiche(sessionId, niche);
 
       return res.json(rows);
+
     } catch (err) {
+      console.error(err);
       return res.status(500).json({ error: 'Erro ao listar fila' });
     }
   }

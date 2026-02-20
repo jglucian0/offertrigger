@@ -1,5 +1,5 @@
 node_modules
-quarentena
+arquivos temporarios (não usado)
 .env
 /src/generated/prisma
 uploads

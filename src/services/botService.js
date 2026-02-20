@@ -5,7 +5,6 @@ const https = require('https');
 const ScraperService = require('./scraperService')
 const MessageFormatter = require('./messageFormatter');
 const ImageService = require('./imageService');
-// const nicheGroups = require('../config/nicheGroups');
 const DispatchQueueRepository = require('../repositories/dispatchQueueRepository')
 const nicheGroupService = require('../services/nicheGroupService')
 
