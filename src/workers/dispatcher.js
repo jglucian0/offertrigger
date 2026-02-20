@@ -11,6 +11,8 @@ const USER_ID = "garimpei";
 
 let started = false;
 
+const runningSessions = new Set();
+
 console.log(`📦 Dispatcher rodando, aguardando conexão da sessão...`);
 
 function dentroHorario(cfg) {
@@ -69,8 +71,6 @@ function waitForSession() {
 async function startDispatchLoops() {
   const sessions = manager.getAllSessions();
 
-  console.log("Sessions carregadas:", sessions);
-
   for (const session of sessions) {
     if (
       session.status === "connected" &&
@@ -83,54 +83,59 @@ async function startDispatchLoops() {
   }
 }
 
-function startSessionDispatch(sessionId) {
-  setInterval(() => dispatchSession(sessionId), 2000);
+async function startSessionDispatch(sessionId) {
+  while (true) {
+    await dispatchSession(sessionId);
+    await new Promise(resolve => setTimeout(resolve, 2000));
+  }
 }
 
-// function startNicheDispatcher(niche) {
-//   console.log(`📦 Dispatcher ativo para ${niche}`);
-
-//   let lastSent = 0;
-
-//   setInterval(() => dispatchNiche(niche, () => lastSent, v => lastSent = v), 2000);
-// }
-
 async function dispatchSession(sessionId) {
-  console.log("🔄 Verificando sessão:", sessionId);
-
-  const configs = await nicheDispatchConfigRepository.getActiveBySession(sessionId);
-
-  console.log("Configs encontradas:", configs);
-
-  for (const cfg of configs) {
-    console.log("Processando niche:", cfg.niche);
-    if (cfg.paused) continue;
-    if (!dentroHorario(cfg)) continue;
-
-    const now = Date.now();
-    const interval = withJitter(cfg.interval_ms || 60000);
-
-    if (now - (cfg.last_sent || 0) < interval) continue;
-
-    const offer = await DispatchQueue.getNext(sessionId, cfg.niche);
-    if (!offer) continue;
-
-    const groups = await nicheGroupService.getGroupsBySession(sessionId, cfg.niche);
-
-    for (const groupId of groups) {
-      console.log("Enviaria para:", sessionId, groupId);
-
-      await wppService.sendImage(
-        sessionId,
-        groupId,
-        offer.image_url,
-        offer.message_text
-      );
-    }
-
-    await nicheDispatchConfigRepository.updateLastSent(sessionId, cfg.niche);
-    // await DispatchQueue.markSent(offer.id);
+  if (runningSessions.has(sessionId)) {
+    return;
   }
+
+  runningSessions.add(sessionId);
+
+  try {
+    const configs = await nicheDispatchConfigRepository.getActiveBySession(sessionId);
+
+    for (const cfg of configs) {
+      if (cfg.paused) continue;
+      if (!dentroHorario(cfg)) continue;
+
+      const now = Date.now();
+      const baseInterval = Number(cfg.interval_ms) || 60000;
+      const interval = withJitter(baseInterval);
+
+      const lastSent = Number(cfg.last_sent) || 0;
+
+      if (now - lastSent < interval) continue;
+
+      const offer = await DispatchQueue.getNext(sessionId, cfg.niche);
+      if (!offer) continue;
+
+      const groups = await nicheGroupService.getGroupsBySession(sessionId, cfg.niche);
+
+      for (const groupId of groups) {
+        await wppService.sendImage(
+          sessionId,
+          groupId,
+          offer.image_url,
+          offer.message_text
+        );
+      }
+
+      await nicheDispatchConfigRepository.updateLastSent(sessionId, cfg.niche);
+      await DispatchQueue.markSent(offer.id);
+    }
+  } catch (err) {
+    console.error("Erro no dispatcher:", err);
+  } finally {
+    runningSessions.delete(sessionId);
+  }
+
+
 }
 
 waitForSession();

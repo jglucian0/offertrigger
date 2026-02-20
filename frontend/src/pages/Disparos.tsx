@@ -125,7 +125,7 @@ const Disparos = () => {
           <h1 className="text-2xl font-bold text-foreground">Fila de Disparos</h1>
         </div>
         <p className="text-sm text-muted-foreground">
-          Monitoramento do worker de disparo automático (ciclo de 5 min)
+          Monitoramento de disparo automático (ciclo mínimo: 5 min)
         </p>
       </div>
 
@@ -156,10 +156,10 @@ const Disparos = () => {
               <NicheDispatchConfig
                 key={niche}
                 niche={niche}
-                interval={Math.floor((Number(cfg?.interval_ms) || 60000) / 60000)}
+                interval={Math.floor((Number(cfg?.interval_ms) || 300000) / 60000)}
                 start={cfg?.start_time ?? "00:00"}
                 end={cfg?.end_time ?? "23:59"}
-                paused={cfg?.paused ?? false}
+                paused={cfg?.paused ?? true}
                 groups={nicheGroups}
                 onSave={async (data) => {
                   try {
@@ -181,6 +181,26 @@ const Disparos = () => {
                     toast({
                       title: "Erro ao salvar",
                       description: "Não foi possível salvar.",
+                      variant: "destructive",
+                    });
+                  }
+                }}
+                onDelete={async (niche) => {
+                  try {
+                    await api.delete(`/dispatch/config/${sessionId}/${niche}`);
+
+                    toast({
+                      title: "Nicho removido",
+                      description: `O nicho "${niche}" foi excluído.`,
+                    });
+
+                    const updated = await api.get(`/dispatch/config/${sessionId}`);
+                    setConfigs(updated.data);
+
+                  } catch (err) {
+                    toast({
+                      title: "Erro ao excluir",
+                      description: "Não foi possível remover o nicho.",
                       variant: "destructive",
                     });
                   }

@@ -12,7 +12,11 @@ class NicheDispatchConfigRepository {
       [sessionId]
     );
 
-    return rows;
+    return rows.map(r => ({
+      ...r,
+      interval_ms: Number(r.interval_ms),
+      last_sent: Number(r.last_sent)
+    }));
   }
 
   async getBySession(sessionId) {
@@ -34,6 +38,17 @@ class NicheDispatchConfigRepository {
       [sessionId, niche]
     );
     return rows[0] || null;
+  }
+
+  async delete(sessionId, niche) {
+    return db.query(
+      `
+    DELETE FROM niche_dispatch_config
+    WHERE session_id = $1
+      AND niche = $2
+    `,
+      [sessionId, niche]
+    );
   }
 
   async upsert(config) {

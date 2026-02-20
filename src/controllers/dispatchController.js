@@ -1,11 +1,19 @@
 const configRepo = require('../repositories/nicheDispatchConfigRepository');
 const queueRepo = require('../repositories/dispatchQueueRepository');
 
+const MIN_INTERVAL = 5 * 60 * 1000;
+
 class DispatchController {
 
   async saveConfig(req, res) {
     try {
       const { sessionId, niche, interval, start, end, paused } = req.body;
+
+      if (!interval || interval < MIN_INTERVAL) {
+        return res.status(400).json({
+          error: 'Intervalo mínimo permitido é 5 minutos'
+        });
+      }
 
       await configRepo.upsert({
         sessionId,
@@ -24,6 +32,20 @@ class DispatchController {
     }
   }
 
+  async deleteConfig(req, res) {
+    try {
+      const { sessionId, niche } = req.params;
+
+      await configRepo.delete(sessionId, niche);
+
+      return res.json({ success: true });
+
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Erro ao excluir nicho' });
+    }
+  }
+
   async register(sessionId, groupId, niche, groupName) {
     await repo.create(sessionId, groupId, niche, groupName);
 
@@ -33,7 +55,7 @@ class DispatchController {
       await configRepo.upsert({
         sessionId,
         niche,
-        interval: 60000,
+        interval: MIN_INTERVAL,
         start: '00:00',
         end: '23:59',
         paused: false
