@@ -30,13 +30,18 @@ import { Checkbox } from "@/components/ui/checkbox";
 export interface Offer {
   id: string;
   product_name: string;
-  image_url: string;
+  image_url?: string | null;
   original_price: number;
   current_price: number;
   discount: number;
   free_shipping: boolean;
   sent: boolean;
   link: string;
+}
+
+const getImageUrl = (fileName?: string) => {
+  if (!fileName) return "/placeholder.png"
+  return `${api.defaults.baseURL}/uploads/offers/${fileName}`
 }
 
 export const OfferTable = ({ offers = [] }: { offers?: Offer[] }) => {
@@ -143,7 +148,7 @@ export const OfferTable = ({ offers = [] }: { offers?: Offer[] }) => {
                   setForm({ ...form, sent: !v })
                 }
               />
-              Voltar para fila
+              Adicionar à fila
             </div>
 
           </div>
@@ -190,7 +195,11 @@ export const OfferTable = ({ offers = [] }: { offers?: Offer[] }) => {
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg bg-secondary">
-                      <img src={offer.image_url || "/placeholder.png"} alt="" className="h-full w-full object-cover" />
+                      <img
+                        src={getImageUrl(offer.image_url)}
+                        alt={offer.product_name}
+                        className="h-full w-full object-cover"
+                      />
                     </div>
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium text-foreground max-w-[260px]">{offer.product_name}</p>

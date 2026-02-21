@@ -27,6 +27,7 @@ async function listOffers(req, res) {
 
     grouped[offer.niche].push({
       ...offer,
+      image_url: offer.image_url,
       sent: offer.send_count > 0
     })
   })

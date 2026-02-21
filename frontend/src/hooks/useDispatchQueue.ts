@@ -5,24 +5,24 @@ export const useDispatchQueue = (sessionId: string, niche: string | null) => {
   const [data, setData] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
 
+
   useEffect(() => {
-    if (!niche) return
+    if (!sessionId) return
 
     const load = async () => {
       setLoading(true)
-      try {
-        const res = await api.get(`/dispatch/queue/${sessionId}/${niche}`)
 
-        const items = await Promise.all(
-          (Array.isArray(res.data) ? res.data : []).map(async (item: any) => {
-            return {
-              ...item,
-              image_url: item.image_url
-                ? `http://localhost:3001/storage/offers/${item.image_url.split("/").pop()}`
-                : null
-            }
-          })
-        )
+      try {
+        const url = niche
+          ? `/dispatch/queue/${sessionId}/${niche}`
+          : `/dispatch/queue/${sessionId}`
+
+        const res = await api.get(url)
+
+        const items = (Array.isArray(res.data) ? res.data : []).map((item: any) => ({
+          ...item,
+          image_url: item.image_url
+        }))
 
         setData(items)
       } catch (err) {

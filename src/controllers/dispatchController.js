@@ -119,7 +119,13 @@ class DispatchController {
     try {
       const { sessionId, niche } = req.params;
 
-      const rows = await queueRepo.listPendingBySessionAndNiche(sessionId, niche);
+      let rows;
+
+      if (niche) {
+        rows = await queueRepo.listPendingBySessionAndNiche(sessionId, niche);
+      } else {
+        rows = await queueRepo.listPendingBySession(sessionId);
+      }
 
       return res.json(rows);
 

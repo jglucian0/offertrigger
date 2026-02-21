@@ -14,7 +14,7 @@ export function useOffers() {
         offers: section.offers.map((o: any) => ({
           id: o.id,
           product_name: o.product_name,
-          image_url: `http://localhost:3001/storage/offers/${o.image_url.split('/').pop()}`,
+          image_url: o.image_url,
           link: o.link,
           original_price: Number(o.original_price),
           current_price: Number(o.current_price),

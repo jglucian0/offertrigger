@@ -1,4 +1,5 @@
 require('dotenv').config();
+const os = require('os');
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
@@ -17,7 +18,8 @@ class BotService {
     this.pendingApprovals = new Map();
     this.pendingBroadcast = new Map();
 
-    this.uploadPath = path.resolve(__dirname, '../../uploads');
+    this.uploadPath = path.resolve(__dirname, '../../uploads/offers');
+
     if (!fs.existsSync(this.uploadPath)) {
       fs.mkdirSync(this.uploadPath, { recursive: true });
     }
@@ -34,7 +36,7 @@ class BotService {
 
   async downloadImageToTemp(url) {
     return new Promise((resolve, reject) => {
-      const filePath = path.join(this.uploadPath, `scraped_${Date.now()}.jpg`);
+      const filePath = path.join(os.tmpdir(), `scraped_${Date.now()}.jpg`);
 
       https.get(url, {
         headers: {
@@ -116,19 +118,18 @@ class BotService {
           return client.sendText(message.from, '⚡ Disparo instantâneo concluído.');
         }
 
-        const offersPath = path.resolve(__dirname, '../../storage/offers');
-        if (!fs.existsSync(offersPath)) fs.mkdirSync(offersPath, { recursive: true });
+        const fileName = `offer_${Date.now()}.jpg`
+        const finalPath = path.join(this.uploadPath, fileName)
 
-        const finalPath = path.join(offersPath, `offer_${Date.now()}.jpg`);
-        fs.renameSync(finalImage, finalPath);
-        fs.unlink(tempImage, () => { });
+        fs.copyFileSync(finalImage, finalPath)
+        fs.unlinkSync(finalImage)
 
         for (const niche of state.niches) {
           await DispatchQueueRepository.enqueue({
             sessionId: client.session,
             title: state.produto.title,
             message: mensagem,
-            imagePath: finalPath,
+            imagePath: fileName,
             affiliateUrl: state.link,
             niche,
             original_price: state.original_price,

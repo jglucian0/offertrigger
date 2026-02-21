@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path')
 const sessionController = require('./controllers/sessionController');
 const messageController = require('./controllers/messageController');
 const affiliateController = require('./controllers/affiliateController');
@@ -41,12 +42,15 @@ app.put("/offers/:id", offerController.updateOffer);
 
 app.use('/dispatch', require('./routes/dispatch'));
 
+
 app.get('/niche-groups/:sessionId', nicheGroupController.listBySession)
 app.post('/niche-groups/:sessionId', nicheGroupController.register)
 app.delete('/niche-groups/:sessionId', nicheGroupController.remove)
-
-app.use("/storage", express.static("storage"))
 app.use('/niche-groups', require('./routes/nicheGroups'))
 
+app.use(
+  '/uploads',
+  express.static(path.resolve(__dirname, '../uploads'))
+)
 
 module.exports = app;

@@ -13,8 +13,19 @@ import { Button } from "@/components/ui/button";
 import { useDispatchQueue } from "@/hooks/useDispatchQueue"
 
 
-const formatCurrency = (v: number) =>
-  v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+const formatCurrency = (v?: number | null) => {
+  if (v === null || v === undefined) return "R$ 0,00";
+
+  return Number(v).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL"
+  });
+};
+
+const getImageUrl = (fileName?: string) => {
+  if (!fileName) return "/placeholder.png"
+  return `${api.defaults.baseURL}/uploads/offers/${fileName}`
+}
 
 const Disparos = () => {
   const sessionId = "garimpei"
@@ -178,7 +189,7 @@ const Disparos = () => {
               <Package className="h-4 w-4 text-primary" />
               <h2 className="text-lg font-semibold text-foreground">Produtos na Lista de Envio</h2>
             </div>
-            {selectedNiche && (
+            {queue.length > 0 && (
               <Badge
                 variant="secondary"
                 className="bg-primary/10 text-primary border-0 font-mono"
@@ -190,6 +201,14 @@ const Disparos = () => {
 
           <div className="space-y-3">
             <div className="flex gap-2 mb-4">
+              <Button
+                size="sm"
+                variant={selectedNiche === null ? "default" : "outline"}
+                onClick={() => setSelectedNiche(null)}
+              >
+                Todos
+              </Button>
+
               {niches.map(n => (
                 <Button
                   key={n}
@@ -211,7 +230,11 @@ const Disparos = () => {
                 <div className="relative z-10 flex gap-4">
                   {/* Image */}
                   <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-secondary">
-                    <img src={product.image_url} alt="" className="h-full w-full object-cover" />
+                    <img
+                      src={getImageUrl(product.image_url)}
+                      alt={product.product_name}
+                      className="h-full w-full object-cover"
+                    />
                   </div>
 
                   {/* Info */}
@@ -248,26 +271,31 @@ const Disparos = () => {
 
                     {/* Target groups */}
                     <div className="mt-2 flex items-center gap-1.5 flex-wrap">
-                      <span className="text-[10px] text-muted-foreground">Destino:</span>
-                      {groups
-                        .filter(g => g.niche === selectedNiche && g.active)
-                        .map((group) => (
-                          <Badge
-                            key={group.id}
-                            variant="secondary"
-                            className="bg-secondary text-muted-foreground border-0 text-[10px] px-2 py-0"
-                          >
-                            {group.group_name}
-                          </Badge>
-                        ))}
+                      {selectedNiche !== null && (
+                        <>
+                          <span className="text-[10px] text-muted-foreground">Destino:</span>
+
+                          {groups
+                            .filter(g => g.active && g.niche === selectedNiche)
+                            .map((group) => (
+                              <Badge
+                                key={group.id}
+                                variant="secondary"
+                                className="bg-secondary text-muted-foreground border-0 text-[10px] px-2 py-0"
+                              >
+                                {group.group_name}
+                              </Badge>
+                            ))}
+                        </>
+                      )}
+
                       <span className="text-[10px] font-mono text-muted-foreground ml-auto">
-                        adicionado às {" "}
+                        adicionado às{" "}
                         {product.created_at &&
                           new Date(product.created_at).toLocaleTimeString("pt-BR", {
                             hour: "2-digit",
                             minute: "2-digit"
-                          })
-                        }
+                          })}
                       </span>
                     </div>
                   </div>
@@ -280,9 +308,11 @@ const Disparos = () => {
         {/* Dispatch history */}
         <div className="lg:col-span-2">
           <div className="mb-4">
-            <h2 className="text-lg font-semibold text-foreground">Histórico de Disparos</h2>
+            <h2 className="text-lg font-semibold text-foreground">Histórico</h2>
           </div>
-          <DispatchQueue sessionId={sessionId} />
+          <DispatchQueue
+            sessionId={sessionId}
+            selectedNiche={selectedNiche} />
         </div>
       </div>
 

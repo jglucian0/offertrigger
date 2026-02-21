@@ -128,6 +128,21 @@ class DispatchQueueRepository {
     return rows[0]
   }
 
+  async listPendingBySession(sessionId) {
+    const { rows } = await db.query(
+      `
+    SELECT *
+    FROM dispatch_queue
+    WHERE session_id = $1
+      AND send_count = 0
+    ORDER BY created_at DESC
+    `,
+      [sessionId]
+    )
+
+    return rows
+  }
+
   async listPendingBySessionAndNiche(sessionId, niche) {
     const { rows } = await db.query(
       `

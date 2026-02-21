@@ -1,4 +1,6 @@
 require('dotenv').config();
+const path = require("path");
+const fs = require("fs");
 
 const { manager, wppService } = require('../controllers/sessionController');
 const DispatchQueue = require('../repositories/dispatchQueueRepository');
@@ -117,11 +119,22 @@ async function dispatchSession(sessionId) {
 
       const groups = await nicheGroupService.getGroupsBySession(sessionId, cfg.niche);
 
+      const imagePath = path.resolve(
+        __dirname,
+        "../../uploads/offers",
+        offer.image_url
+      );
+
+      if (!fs.existsSync(imagePath)) {
+        console.error("Imagem não encontrada:", imagePath);
+        continue;
+      }
+
       for (const groupId of groups) {
         await wppService.sendImage(
           sessionId,
           groupId,
-          offer.image_url,
+          imagePath,
           offer.message_text
         );
       }

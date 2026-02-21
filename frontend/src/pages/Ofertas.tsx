@@ -3,6 +3,7 @@ import { OfferTable } from "@/components/OfferTable";
 import { ShoppingBag, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useOffers } from "@/hooks/useOffers";
+import { api } from "@/lib/api"
 
 const Ofertas = () => {
   const { data, loading, refresh } = useOffers();

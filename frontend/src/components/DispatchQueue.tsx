@@ -21,10 +21,11 @@ const statusMap = {
 
 interface Props {
   sessionId: string;
+  selectedNiche: string | null;
 }
 
 
-export const DispatchQueue = ({ sessionId }: Props) => {
+export const DispatchQueue = ({ sessionId, selectedNiche }: Props) => {
   const [history, setHistory] = useState<DispatchItem[]>([]);
 
   useEffect(() => {
@@ -84,7 +85,11 @@ export const DispatchQueue = ({ sessionId }: Props) => {
               />
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium text-foreground">{item.product_name}</p>
-                <p className="text-[10px] text-muted-foreground">→ {item.niche}</p>
+                {selectedNiche !== null && (
+                  <p className="text-[10px] text-muted-foreground">
+                    → {item.niche}
+                  </p>
+                )}
               </div>
             </div>
             <div className="flex items-center gap-3 flex-shrink-0">
