@@ -33,7 +33,7 @@ class WppService {
       this.updateSession(userId, { client });
 
       this.checkInitialState(userId, client);
-      this.registerMessageListener(client);
+      this.registerMessageListener(userId, client);
       this.registerInterfaceListener(userId);
 
       return client;
@@ -106,9 +106,13 @@ class WppService {
     }, 3000);
   }
 
-  registerMessageListener(client) {
+  registerMessageListener(userId, client) {
     client.onMessage(async (message) => {
-      await this.botService.processIncomingMessage(client, message);
+      await this.botService.processIncomingMessage(
+        client,
+        message,
+        userId
+      );
     });
   }
 

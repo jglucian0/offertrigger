@@ -32,29 +32,19 @@ class BotService {
   }
 
   normalizeText(text) {
-    if (!text || typeof text !== 'string') return '';
-    return text
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase()
-      .trim();
+    return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
   }
 
   async identificarNicho(sessionId, termo) {
-
-    if (!termo) return undefined;
-
     const t = this.normalizeText(termo);
 
     const groupsData = await nicheGroupService.listBySession(sessionId);
 
-    const nichosUnicos = [
-      ...new Set(
-        groupsData
-          .filter(g => g.active)
-          .map(g => g.niche)
-      )
-    ];
+    const groups = groupsData
+      .filter(g => g.niche === state.niche && g.active)
+      .map(g => g.group_id);
+
+    const nichosUnicos = [...new Set(groups.map(g => g.niche))];
 
     return nichosUnicos.find(n =>
       this.normalizeText(n).substring(0, 4) === t.substring(0, 4)
@@ -114,10 +104,10 @@ class BotService {
 [0] - \`❌ Cancelar\``);
   }
 
+
   async handleApprovalResponse(client, message, sessionId) {
     const sessionMap = this.getSessionMap(this.pendingApprovals, sessionId);
     const state = sessionMap.get(message.from);
-
     if (!state) return;
 
     const text = (message.body || '').trim();
@@ -152,14 +142,10 @@ class BotService {
         fs.copyFileSync(finalImage, finalPath)
         fs.unlinkSync(finalImage)
 
-        if (state.config.precoCustom) {
-          state.current_price = state.config.precoCustom;
-        }
-
         for (const niche of state.niches) {
           await DispatchQueueRepository.enqueue({
-            sessionId: client.session,
-            title: state.config.tituloCustom || state.produto.title,
+            sessionId: sessionId,
+            title: state.produto.title,
             message: mensagem,
             imagePath: fileName,
             affiliateUrl: state.link,
@@ -181,7 +167,10 @@ class BotService {
       if (text === '5') return state.config.semEmoji = true, this.sendPreview(client, message.from, state);
       if (text === '6') return state.etapa = 'edit_extra', client.sendText(message.from, '📝 Informação extra:');
       if (text === '8') return state.etapa = 'edit_ante', client.sendText(message.from, '📌 Antetítulo:');
-      if (text === '0') return sessionMap.delete(message.from), client.sendText(message.from, '❌ Cancelado.');
+      if (text === '0') {
+        sessionMap.delete(message.from);
+        return client.sendText(message.from, '❌ Cancelado.');
+      }
 
       return client.sendText(message.from, 'Opção inválida.');
     }
@@ -195,20 +184,14 @@ class BotService {
     return this.sendPreview(client, message.from, state);
   }
 
-
-
-
   async processIncomingMessage(client, message, sessionId) {
     if (message.fromMe) return;
     if (message.isGroupMsg || message.from.includes('@g.us')) return;
 
     const approvalMap = this.getSessionMap(this.pendingApprovals, sessionId);
-    const broadcastMap = this.getSessionMap(this.pendingBroadcast, sessionId);
-
-    console.log('SESSION ID RECEBIDO NO BOT:', sessionId);
+    const sessionMap = this.getSessionMap(this.pendingApprovals, sessionId);
 
     if (approvalMap.has(message.from)) {
-
       const state = approvalMap.get(message.from);
 
       if (state?.etapa === 'escolher_nicho') {
@@ -220,31 +203,28 @@ class BotService {
 
         const nichoEscolhido = state.nichosDisponiveis[index];
 
-        approvalMap.delete(message.from);
+        sessionMap.delete(message.from);
 
-        return this.processIncomingMessage(
+        return this.executarFluxoProduto(
           client,
-          {
-            ...message,
-            body: `${nichoEscolhido}\n${state.link}`,
-            body: `${nichoEscolhido}\n${state.link}`,
-            isMedia: !!state.imagePath,
-            type: state.imagePath ? 'image' : message.type,
-            __imagePathFromStep: state.imagePath
-          },
-          sessionId
+          message,
+          sessionId,
+          state.link,
+          [nichoEscolhido]
         );
       }
 
       return this.handleApprovalResponse(client, message, sessionId);
     }
 
+    const broadcastMap = this.getSessionMap(this.pendingBroadcast, sessionId);
+
     if (broadcastMap.has(message.from)) {
 
-      const bodyRaw = (message.body || '').trim();
       const state = broadcastMap.get(message.from);
+      const bodyRaw = (message.body || '').trim();
 
-      if (state?.etapa === 'aguardando_mensagem') {
+      if (state.etapa === 'aguardando_mensagem') {
 
         if (message.isMedia || message.type === 'image') {
 
@@ -262,29 +242,21 @@ class BotService {
           state.texto = bodyRaw;
         }
 
-        const groupsFromDb = await nicheGroupService.listBySession(sessionId);
-
-        console.log('GROUPS DO BANCO:', groupsFromDb);
-
-        const groups = groupsFromDb.filter(g => g.active);
-
-
+        console.log('SESSION ID RECEBIDO NO BOT:', sessionId);
+        const groups = (await nicheGroupService.listBySession(sessionId))
+          .filter(g => g.active);
         const nichosUnicos = [...new Set(groups.map(g => g.niche))];
+        const broadcastMap = this.getSessionMap(this.pendingBroadcast, sessionId);
 
         if (!nichosUnicos.length) {
-          broadcastMap.delete(message.from);
-          await client.sendText(message.from, 'Nenhum nicho configurado.');
-          return;
+          broadcastMap.delete(message.from)
+          return client.sendText(message.from, 'Nenhum nicho configurado.');
         }
 
         state.nichosDisponiveis = nichosUnicos;
         state.etapa = 'menu';
 
-        let menu = `🛠️ Preview do aviso:
-
-        ${state.texto || '[imagem]'}
-
-        Escolha o nicho:`;
+        let menu = `Escolha o nicho:\n\n`;
 
         nichosUnicos.forEach((n, i) => {
           menu += `[${i + 1}] - ${n}\n`;
@@ -292,7 +264,24 @@ class BotService {
 
         menu += `[0] - Cancelar`;
 
-        await client.sendText(message.from, menu);
+        if (state.imagePath) {
+
+          await client.sendImage(
+            message.from,
+            state.imagePath,
+            'aviso.jpg',
+            `🛠️ Preview do aviso:\n\n${state.texto || ''}\n\n${menu}`
+          );
+
+        } else {
+
+          await client.sendText(
+            message.from,
+            `🛠️ Preview do aviso:\n\n${state.texto || ''}\n\n${menu}`
+          );
+
+        }
+
         return;
       }
 
@@ -318,7 +307,10 @@ class BotService {
           return;
         }
 
-        const groups = await nicheGroupService.getGroupsBySession(sessionId, state.niche);
+        const groupsData = await nicheGroupService.getGroupsBySession(sessionId);
+        const groups = groupsData
+          .filter(g => g.niche === state.niche && g.active)
+          .map(g => g.group_id);
 
         if (!groups.length) {
           await client.sendText(message.from, 'Grupo não configurado.');
@@ -353,55 +345,31 @@ class BotService {
       }
     }
 
-    const body = message.caption || message.body || '';
-    const lines = body.split('\n').map(l => l.trim()).filter(l => l !== '');
+    const body = (message.caption || message.body || '').trim();
+    const urlDetectada = body.match(/https?:\/\/\S+/)?.[0];
+    if (!urlDetectada) return;
 
-    if (body.trim() === '/aviso') {
+    const parts = body.split(' ').filter(Boolean);
 
-      broadcastMap.set(message.from, {
-        etapa: 'aguardando_mensagem',
-        texto: null,
-        niche: null,
-        imagePath: null
-      });
-
-      await client.sendText(message.from, '📢 Envie o texto do aviso:');
-      return;
-    }
-
-    const bodyTrim = (message.caption || message.body || '').trim();
-    const urlDetectada = bodyTrim.match(/https?:\/\/\S+/)?.[0];
-
-    if (urlDetectada && lines.length === 1) {
-
-      let fotoCaminhoLocal = null;
-
-      if (message.isMedia || message.type === 'image') {
-        const buffer = await client.decryptFile(message);
-        const fileName = `${Date.now()}.jpg`;
-        fotoCaminhoLocal = path.join(this.uploadPath, fileName);
-        fs.writeFileSync(fotoCaminhoLocal, buffer);
-      }
+    if (parts.length === 1) {
+      console.log('SESSION ID NO BOT:', sessionId);
 
       const groups = (await nicheGroupService.listBySession(sessionId))
         .filter(g => g.active);
 
+      console.log('GROUPS RETORNADOS:', groups);
       const nichosUnicos = [...new Set(groups.map(g => g.niche))];
 
       if (!nichosUnicos.length)
         return client.sendText(message.from, 'Nenhum nicho configurado.');
 
-      const sessionMap = this.getSessionMap(this.pendingApprovals, sessionId);
-
       sessionMap.set(message.from, {
         etapa: 'escolher_nicho',
         link: urlDetectada,
-        nichosDisponiveis: nichosUnicos,
-        imagePath: fotoCaminhoLocal
+        nichosDisponiveis: nichosUnicos
       });
 
       let menu = 'Escolha o nicho:\n\n';
-
       nichosUnicos.forEach((n, i) => {
         menu += `[${i + 1}] - ${n}\n`;
       });
@@ -409,120 +377,84 @@ class BotService {
       return client.sendText(message.from, menu);
     }
 
-    let nichosIdentificados = [];
+    if (parts.length >= 2) {
 
-    if (lines.length >= 2) {
-      const nichosRaw = lines[0].split(',');
-      nichosIdentificados = await Promise.all(
-        nichosRaw.map(n => this.identificarNicho(sessionId, n))
+      const possivelNicho = parts[0];
+
+      const nichoValidado = await this.identificarNicho(sessionId, possivelNicho);
+
+      if (!nichoValidado)
+        return client.sendText(message.from, 'Nicho não encontrado.');
+
+      return this.executarFluxoProduto(
+        client,
+        message,
+        sessionId,
+        urlDetectada,
+        [nichoValidado]
       );
+    }
+  }
 
-      nichosIdentificados = nichosIdentificados.filter(n => n);
+  async executarFluxoProduto(client, message, sessionId, url, nichos) {
+    try {
 
-      const urlDetectada = lines.find(l =>
-        l.startsWith('https://produto.mercadolivre.com.br/') ||
-        l.startsWith('https://www.mercadolivre.com.br/') ||
-        l.startsWith('https://mercadolivre.com/sec/')
-      );
+      const dadosScraper = await this.scraperService.fetchProducts(url);
+      const produtoUrlReal = dadosScraper.url || url;
 
+      let linkAfiliado;
 
-      if (urlDetectada && nichosIdentificados.length > 0) {
-        try {
-
-          const dadosScraper = await this.scraperService.fetchProducts(urlDetectada);
-          const produtoUrlReal = dadosScraper.url || urlDetectada;
-          let linkAfiliado;
-
-          try {
-            console.log('[Bot] Convertendo link real do produto...');
-            linkAfiliado = await this.affiliateService.generateAffiliateLink(produtoUrlReal);
-          } catch (err) {
-            console.error('[Bot] Falha ao converter link:', err.message);
-            linkAfiliado = produtoUrlReal;
-          }
-
-          let fotoCaminhoLocal = null;
-
-          if (message.__imagePathFromStep) {
-            fotoCaminhoLocal = message.__imagePathFromStep;
-          } else if (message.isMedia || message.type === 'image') {
-            const buffer = await client.decryptFile(message);
-            const fileName = `${Date.now()}.jpg`;
-            fotoCaminhoLocal = path.join(this.uploadPath, fileName);
-            fs.writeFileSync(fotoCaminhoLocal, buffer);
-          }
-
-          const mensagem = MessageFormatter.format({
-            ...dadosScraper,
-            link: linkAfiliado
-          });
-
-          let imagemParaEnviar;
-
-          if (fotoCaminhoLocal) {
-            imagemParaEnviar = fotoCaminhoLocal;
-          } else if (dadosScraper.imageUrl) {
-            imagemParaEnviar = await this.downloadImageToTemp(dadosScraper.imageUrl);
-          } else {
-            throw new Error('Nenhuma imagem disponível para envio');
-          }
-
-          const imagemComMarca = await ImageService.applyWatermark(imagemParaEnviar);
-
-          approvalMap.set(message.from, {
-            etapa: 'menu',
-            produto: dadosScraper,
-            link: linkAfiliado,
-            linkOriginal: produtoUrlReal,
-            niches: nichosIdentificados,
-
-            imagePath: imagemParaEnviar,
-
-            original_price: dadosScraper.oldPriceValue || null,
-            current_price: dadosScraper.currentPriceValue || null,
-            discount: dadosScraper.discountPercent || 0,
-            free_shipping:
-              typeof dadosScraper.shipping === 'string' &&
-              /gratis|grátis/i.test(dadosScraper.shipping),
-
-            config: {
-              anteTitulo: null,
-              tituloCustom: null,
-              precoCustom: null,
-              removerPrecoAntigo: false,
-              semEmoji: false,
-              extraInfo: null
-            }
-          });
-
-          await client.sendImage(
-            message.from,
-            imagemComMarca,
-            'produto.jpg',
-            mensagem,
-          );
-
-          fs.unlink(imagemComMarca, () => { });
-
-          await client.sendText(message.from,
-            `O que deseja fazer?
-
-[1] - \`✅ Enviar\`
-[2] - \`✏️ Editar título\`
-[3] - \`💰 Editar preço\`
-[4] - \`💸 Remover preço antigo\`
-[5] - \`☠️ Remover emoji\`
-[6] - \`📝 Adicionar informação\`
-[7] - \`⚡ Disparo instantâneo\`
-[8] - \`📌 Inserir antetítulo\`
-[0] - \`❌ Cancelar\``);
-
-        } catch (err) {
-          console.error('[Bot] Erro no processamento:', err.message);
-        }
+      try {
+        linkAfiliado = await this.affiliateService.generateAffiliateLink(produtoUrlReal);
+      } catch {
+        linkAfiliado = produtoUrlReal;
       }
+
+      let imagemParaEnviar;
+
+      if (dadosScraper.imageUrl) {
+        imagemParaEnviar = await this.downloadImageToTemp(dadosScraper.imageUrl);
+      } else {
+        throw new Error('Nenhuma imagem disponível');
+      }
+
+      const imagemComMarca = await ImageService.applyWatermark(imagemParaEnviar);
+      const sessionMap = this.getSessionMap(this.pendingApprovals, sessionId);
+
+      sessionMap.set(message.from, {
+        etapa: 'menu',
+        produto: dadosScraper,
+        link: linkAfiliado,
+        niches: nichos,
+        imagePath: imagemParaEnviar,
+        config: {}
+      });
+
+      await client.sendImage(
+        message.from,
+        imagemComMarca,
+        'produto.jpg',
+        this.buildMessage(dadosScraper, linkAfiliado)
+      );
+
+      fs.unlink(imagemComMarca, () => { });
+
+      await client.sendText(message.from,
+        `O que deseja fazer?
+
+[1] - ✅ Enviar
+[2] - ✏️ Editar título
+[3] - 💰 Editar preço
+[7] - ⚡ Disparo instantâneo
+[0] - ❌ Cancelar`);
+
+    } catch (err) {
+      console.error(err);
+      await client.sendText(message.from, 'Erro ao processar produto.');
     }
   }
 }
+
+
 
 module.exports = BotService;

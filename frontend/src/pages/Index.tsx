@@ -63,7 +63,7 @@ const Dashboard = () => {
             <h2 className="text-lg font-semibold text-foreground">Fila de Disparos</h2>
             <span className="text-xs font-mono text-muted-foreground">ciclo: 5 min</span>
           </div>
-          <DispatchQueue />
+          <DispatchQueue sessionId="garimpei" selectedNiche="all" />
         </div>
       </div>
     </AppLayout>
