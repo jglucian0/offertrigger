@@ -33,23 +33,27 @@ import {
 import { Play, Pause } from "lucide-react"
 
 interface Props {
-  niche: string
-  interval: number
-  start: string
-  end: string
-  paused: boolean
-  groups: { group_id: string; group_name: string }[]
-  onSave: (data: any) => void
-  onDelete: (niche: string) => void
+  sessionId: string;
+  niche: string;
+  interval: number;
+  start: string;
+  end: string;
+  paused: boolean;
+  groups: { group_id: string; group_name: string }[];
+  readOnly?: boolean;
+  onSave: (data: any) => void;
+  onDelete: (niche: string) => void;
 }
 
 export const NicheDispatchConfig = ({
+  sessionId,
   niche,
   interval,
   start,
   end,
   paused,
   groups,
+  readOnly,
   onSave,
   onDelete
 }: Props) => {
@@ -64,10 +68,13 @@ export const NicheDispatchConfig = ({
     <div className="border border-border rounded-xl overflow-hidden bg-card">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-4 py-3 hover:bg-muted transition"
+        className="w-full flex items-center justify-between px-4 py-3 transition hover:bg-muted"
       >
         <div className="flex items-center gap-3">
           <span className="font-semibold">{niche}</span>
+          <Badge variant="outline">
+            {sessionId}
+          </Badge>
           <Badge variant="secondary">
             {groups.length} grupos
           </Badge>
@@ -75,8 +82,8 @@ export const NicheDispatchConfig = ({
             variant={localPaused ? "secondary" : "default"}
             className={
               localPaused
-                ? "bg-muted text-muted-foreground bg-primary text-primary-foreground"
-                : "bg-green-600 text-white"
+                ? "bg-muted text-muted-foreground bg-primary hover:bg-primary text-primary-foreground "
+                : "bg-green-600 text-white hover:bg-green-600"
             }
           >
             {localPaused ? "Pausado" : "Rodando"}
@@ -131,6 +138,7 @@ export const NicheDispatchConfig = ({
 
             <Button
               size="sm"
+              disabled={readOnly}
               variant={localPaused ? "secondary" : "default"}
               className={`
       gap-2
@@ -182,56 +190,74 @@ export const NicheDispatchConfig = ({
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <AlertDialogTrigger asChild>
-                      <div>
+                    <span className="cursor-not-allowed inline-block">
+                      {readOnly || groups.length > 0 ? (
                         <Button
                           variant="destructive"
                           size="sm"
                           className="gap-2"
-                          disabled={groups.length > 0}
+                          disabled
                         >
                           <Trash2 className="h-4 w-4" />
                           Excluir
                         </Button>
-                      </div>
-                    </AlertDialogTrigger>
+                      ) : (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              className="gap-2"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              Excluir
+                            </Button>
+                          </AlertDialogTrigger>
+
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Excluir nicho "{niche}"?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Essa ação removerá a configuração do nicho permanentemente.
+                                Essa ação não pode ser desfeita.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                              <AlertDialogAction
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                onClick={() => onDelete(niche)}
+                              >
+                                Confirmar exclusão
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )}
+                    </span>
                   </TooltipTrigger>
 
-                  {groups.length > 0 && (
+                  {(readOnly || groups.length > 0) && (
                     <TooltipContent>
-                      <p>Para excluir é preciso remover grupos cadastrados.</p>
+                      <p>
+                        {readOnly
+                          ? "Selecione uma sessão específica para excluir."
+                          : "Para excluir é preciso remover grupos cadastrados."}
+                      </p>
                     </TooltipContent>
                   )}
                 </Tooltip>
               </TooltipProvider>
-
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>
-                    Excluir nicho "{niche}"?
-                  </AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Essa ação removerá a configuração do nicho permanentemente.
-                    Essa ação não pode ser desfeita.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                  <AlertDialogAction
-                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90 "
-                    onClick={() => onDelete(niche)}
-                  >
-                    Confirmar exclusão
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
             </AlertDialog>
 
 
             {/* BOTÃO SALVAR */}
             <Button
               size="sm"
+              disabled={readOnly}
               className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
               onClick={() => onSave({
                 niche,

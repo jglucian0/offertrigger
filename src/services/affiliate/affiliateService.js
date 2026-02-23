@@ -14,8 +14,10 @@ class AffiliateService {
       return link
 
     } catch {
-      console.log('[Affiliate] Link gerado via BROWSER')
-      return this.browser.generate(originalLink)
+      console.log('[Affiliate] Erro ao gerar link via REQUEST')
+      return
+      // console.log('[Affiliate] Link gerado via BROWSER')
+      // return this.browser.generate(originalLink)
     }
   }
 }

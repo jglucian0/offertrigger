@@ -28,12 +28,14 @@ const getImageUrl = (fileName?: string) => {
 }
 
 const Disparos = () => {
-  const sessionId = "garimpei"
   const { toast } = useToast();
 
   const [configs, setConfigs] = useState<any[]>([])
   const [groups, setGroups] = useState<any[]>([])
   const [selectedNiche, setSelectedNiche] = useState<string | null>(null)
+  const [sessions, setSessions] = useState<any[]>([])
+  const [selectedSession, setSelectedSession] = useState<string | "all">("all")
+  const sessionId = selectedSession === "all" ? null : selectedSession
   const [stats, setStats] = useState({
     pending: 0,
     sent_today: 0,
@@ -53,37 +55,107 @@ const Disparos = () => {
   )
 
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        const [configsRes, groupsRes] = await Promise.all([
-          api.get(`/dispatch/config/${sessionId}`),
-          api.get(`/niche-groups/${sessionId}`)
-        ])
-
-        console.log("CONFIGS:", configsRes.data)
-        console.log("GROUPS:", groupsRes.data)
-
-        setConfigs(configsRes.data)
-        setGroups(groupsRes.data)
-
-      } catch (err) {
-        console.error("Erro ao carregar dados:", err)
-      }
+    const loadSessions = async () => {
+      const res = await api.get("/session/list")
+      setSessions(res.data)
     }
 
-    loadData()
+    loadSessions()
   }, [])
 
   useEffect(() => {
-    const loadStats = async () => {
-      const res = await api.get(`/dispatch/stats/${sessionId}`)
-      setStats(res.data)
+    const loadData = async () => {
+      try {
+
+        if (selectedSession === "all") {
+          const results = await Promise.all(
+            sessions.map(s =>
+              Promise.all([
+                api.get(`/dispatch/config/${s.id}`),
+                api.get(`/niche-groups/${s.id}`)
+              ])
+            )
+          )
+
+          const allConfigs = results.flatMap(r => r[0].data.map((c: any) => ({
+            ...c,
+            sessionId: sessions[results.indexOf(r)].id
+          })))
+
+          const allGroups = results.flatMap(r => r[1].data.map((g: any) => ({
+            ...g,
+            sessionId: sessions[results.indexOf(r)].id
+          })))
+
+          setConfigs(allConfigs)
+          setGroups(allGroups)
+
+        } else {
+          const [configsRes, groupsRes] = await Promise.all([
+            api.get(`/dispatch/config/${selectedSession}`),
+            api.get(`/niche-groups/${selectedSession}`)
+          ])
+
+          setConfigs(configsRes.data.map((c: any) => ({
+            ...c,
+            sessionId: selectedSession
+          })))
+
+          setGroups(groupsRes.data.map((g: any) => ({
+            ...g,
+            sessionId: selectedSession
+          })))
+        }
+
+      } catch (err) {
+        console.error(err)
+      }
     }
 
-    loadStats()
-    const interval = setInterval(loadStats, 5000)
-    return () => clearInterval(interval)
-  }, [])
+    if (sessions.length > 0)
+      loadData()
+
+  }, [selectedSession, sessions])
+
+  useEffect(() => {
+
+    const loadStats = async () => {
+      try {
+
+        if (selectedSession === "all") {
+
+          const results = await Promise.all(
+            sessions.map(s =>
+              api.get(`/dispatch/stats/${s.id}`)
+            )
+          )
+
+          const merged = results.reduce((acc, r) => ({
+            pending: acc.pending + (r.data.pending || 0),
+            sent_today: acc.sent_today + (r.data.sent_today || 0),
+            failures: acc.failures + (r.data.failures || 0)
+          }), { pending: 0, sent_today: 0, failures: 0 })
+
+          setStats(merged)
+
+        } else {
+
+          const res = await api.get(`/dispatch/stats/${selectedSession}`)
+          setStats(res.data)
+        }
+
+      } catch (err) {
+        console.error("Erro ao carregar stats:", err)
+      }
+    }
+
+    if (sessions.length > 0) {
+      loadStats()
+      const interval = setInterval(loadStats, 5000)
+      return () => clearInterval(interval)
+    }
+
+  }, [selectedSession, sessions])
 
 
   return (
@@ -104,6 +176,27 @@ const Disparos = () => {
         <StatCard title="Falhas" value={stats.failures ?? 0} icon={AlertCircle} />
       </div>
 
+      <div className="flex gap-2 mb-6">
+        <Button
+          size="sm"
+          variant={selectedSession === "all" ? "default" : "outline"}
+          onClick={() => setSelectedSession("all")}
+        >
+          Todas sessões
+        </Button>
+
+        {sessions.map(s => (
+          <Button
+            key={s.id}
+            size="sm"
+            variant={selectedSession === s.id ? "default" : "outline"}
+            onClick={() => setSelectedSession(s.id)}
+          >
+            {s.id}
+          </Button>
+        ))}
+      </div>
+
       <div className="space-y-4 mb-8">
 
         {niches.length === 0 ? (
@@ -117,23 +210,61 @@ const Disparos = () => {
             </p>
           </div>
         ) : (
+
           niches.map(niche => {
-            const cfg = configs.find(c => c.niche === niche);
-            const nicheGroups = groups.filter(g => g.niche === niche);
+
+            const cfg =
+              selectedSession === "all"
+                ? configs.find(c => c.niche === niche)
+                : configs.find(
+                  c =>
+                    c.niche === niche &&
+                    c.sessionId === selectedSession
+                );
+
+            const nicheSessionId =
+              selectedSession === "all"
+                ? cfg?.sessionId || ""
+                : selectedSession;
+
+            const nicheGroups =
+              selectedSession === "all"
+                ? groups.filter(
+                  g =>
+                    g.niche === niche &&
+                    g.sessionId === nicheSessionId
+                )
+                : groups.filter(
+                  g =>
+                    g.niche === niche &&
+                    g.sessionId === selectedSession
+                );
 
             return (
               <NicheDispatchConfig
-                key={niche}
+                key={`${niche}-${nicheSessionId}`}
+                sessionId={nicheSessionId}
                 niche={niche}
                 interval={Math.floor((Number(cfg?.interval_ms) || 300000) / 60000)}
                 start={cfg?.start_time ?? "00:00"}
                 end={cfg?.end_time ?? "23:59"}
                 paused={cfg?.paused ?? true}
                 groups={nicheGroups}
+                readOnly={selectedSession === "all"}
                 onSave={async (data) => {
                   try {
+
+                    if (!nicheSessionId) {
+                      toast({
+                        title: "Selecione uma sessão",
+                        description: "Escolha uma sessão específica para editar configurações.",
+                        variant: "destructive",
+                      });
+                      return;
+                    }
+
                     await api.post("/dispatch/config", {
-                      sessionId,
+                      sessionId: nicheSessionId,
                       ...data,
                       interval: data.interval * 60000
                     });
@@ -143,8 +274,12 @@ const Disparos = () => {
                       description: `Nicho "${data.niche}" atualizado.`,
                     });
 
-                    const updated = await api.get(`/dispatch/config/${sessionId}`);
-                    setConfigs(updated.data);
+                    const updated = await api.get(`/dispatch/config/${nicheSessionId}`);
+
+                    setConfigs(updated.data.map((c: any) => ({
+                      ...c,
+                      sessionId: nicheSessionId
+                    })));
 
                   } catch (err) {
                     toast({
@@ -156,15 +291,29 @@ const Disparos = () => {
                 }}
                 onDelete={async (niche) => {
                   try {
-                    await api.delete(`/dispatch/config/${sessionId}/${niche}`);
+
+                    if (!nicheSessionId) {
+                      toast({
+                        title: "Selecione uma sessão",
+                        description: "Escolha uma sessão específica para editar configurações.",
+                        variant: "destructive",
+                      });
+                      return;
+                    }
+
+                    await api.delete(`/dispatch/config/${nicheSessionId}/${niche}`);
 
                     toast({
                       title: "Nicho removido",
                       description: `O nicho "${niche}" foi excluído.`,
                     });
 
-                    const updated = await api.get(`/dispatch/config/${sessionId}`);
-                    setConfigs(updated.data);
+                    const updated = await api.get(`/dispatch/config/${nicheSessionId}`);
+
+                    setConfigs(updated.data.map((c: any) => ({
+                      ...c,
+                      sessionId: nicheSessionId
+                    })));
 
                   } catch (err) {
                     toast({
@@ -311,7 +460,7 @@ const Disparos = () => {
             <h2 className="text-lg font-semibold text-foreground">Histórico</h2>
           </div>
           <DispatchQueue
-            sessionId={sessionId}
+            sessionId={selectedSession}
             selectedNiche={selectedNiche} />
         </div>
       </div>

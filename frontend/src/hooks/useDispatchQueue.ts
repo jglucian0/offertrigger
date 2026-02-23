@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { api } from "@/lib/api"
 
-export const useDispatchQueue = (sessionId: string, niche: string | null) => {
+export const useDispatchQueue = (sessionId: string | null, niche: string | null) => {
   const [data, setData] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
 

@@ -205,8 +205,6 @@ class BotService {
     const approvalMap = this.getSessionMap(this.pendingApprovals, sessionId);
     const broadcastMap = this.getSessionMap(this.pendingBroadcast, sessionId);
 
-    console.log('SESSION ID RECEBIDO NO BOT:', sessionId);
-
     if (approvalMap.has(message.from)) {
 
       const state = approvalMap.get(message.from);

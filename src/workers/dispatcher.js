@@ -9,9 +9,6 @@ const DispatchQueue = require('../repositories/dispatchQueueRepository');
 const nicheGroupService = require('../services/nicheGroupService')
 const nicheDispatchConfigRepository = require('../repositories/nicheDispatchConfigRepository');
 
-const USER_ID = "garimpei";
-
-let started = false;
 
 const runningSessions = new Set();
 
@@ -44,29 +41,22 @@ function withJitter(base, percent = 0.2) {
   return base + jitter;
 }
 
-function isSessionReady(session) {
-  return (
-    session &&
-    session.client &&
-    session.status === 'connected' &&
-    session.interfaceReady
-  );
-}
-
-function waitForSession() {
+function waitForSessions() {
   const interval = setInterval(() => {
-    if (started) return;
 
-    const session = manager.getSession(USER_ID);
+    const sessions = manager.getAllSessions();
 
-    if (!isSessionReady(session)) {
-      return;
+    for (const session of sessions) {
+      if (
+        session.status === "connected" &&
+        session.interfaceReady &&
+        session.id &&
+        !runningSessions.has(session.id)
+      ) {
+        startSessionDispatch(session.id);
+      }
     }
 
-    started = true;
-    clearInterval(interval);
-
-    startDispatchLoops();
   }, 3000);
 }
 
@@ -150,4 +140,4 @@ async function dispatchSession(sessionId) {
 
 }
 
-waitForSession();
+waitForSessions();

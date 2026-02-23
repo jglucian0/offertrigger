@@ -11,6 +11,7 @@ interface DispatchItem {
   status: "pending" | "sent" | "failed";
   sent_at?: string | null;
   created_at: string;
+  sessionId?: string;
 }
 
 const statusMap = {
@@ -20,7 +21,7 @@ const statusMap = {
 };
 
 interface Props {
-  sessionId: string;
+  sessionId: string | "all";
   selectedNiche: string | null;
 }
 
@@ -31,17 +32,48 @@ export const DispatchQueue = ({ sessionId, selectedNiche }: Props) => {
   useEffect(() => {
     const loadHistory = async () => {
       try {
-        const res = await api.get(`/dispatch/history/${sessionId}`);
-        setHistory(res.data);
-      } catch (err) {
-        console.error("Erro ao carregar histórico:", err);
-      }
-    };
 
-    loadHistory();
-    const interval = setInterval(loadHistory, 5000);
-    return () => clearInterval(interval);
-  }, [sessionId]);
+        if (sessionId === "all") {
+
+          const sessionsRes = await api.get("/session/list")
+
+          const results = await Promise.all(
+            sessionsRes.data.map((s: any) =>
+              api.get(`/dispatch/history/${s.id}`)
+            )
+          )
+
+          const merged = results.flatMap((res, index) =>
+            res.data.map((item: any) => ({
+              ...item,
+              sessionId: sessionsRes.data[index].id
+            }))
+          )
+
+          setHistory(merged)
+
+        } else {
+
+          const res = await api.get(`/dispatch/history/${sessionId}`)
+
+          const withSession = res.data.map((item: any) => ({
+            ...item,
+            sessionId
+          }))
+
+          setHistory(withSession)
+        }
+
+      } catch (err) {
+        console.error("Erro ao carregar histórico:", err)
+      }
+    }
+
+    loadHistory()
+    const interval = setInterval(loadHistory, 5000)
+    return () => clearInterval(interval)
+
+  }, [sessionId])
 
 
   return (
@@ -88,6 +120,12 @@ export const DispatchQueue = ({ sessionId, selectedNiche }: Props) => {
                 {selectedNiche !== null && (
                   <p className="text-[10px] text-muted-foreground">
                     → {item.niche}
+                  </p>
+                )}
+
+                {sessionId === "all" && (
+                  <p className="text-[10px] text-muted-foreground">
+                    Sessão: {item.sessionId}
                   </p>
                 )}
               </div>
