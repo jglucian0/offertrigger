@@ -19,6 +19,32 @@ class NicheDispatchConfigRepository {
     }));
   }
 
+  async deleteBySession(sessionId) {
+    try {
+      await db.query(
+        `
+      DELETE FROM niche_groups
+      WHERE session_id = $1
+      `,
+        [sessionId]
+      );
+
+      await db.query(
+        `
+      DELETE FROM niche_dispatch_config
+      WHERE session_id = $1
+      `,
+        [sessionId]
+      );
+
+      return true;
+
+    } catch (error) {
+      console.error("[NicheDispatchConfigRepository] deleteBySession error:", error);
+      throw error;
+    }
+  }
+
   async getBySession(sessionId) {
     const { rows } = await db.query(
       `SELECT * FROM niche_dispatch_config WHERE session_id = $1`,

@@ -38,6 +38,7 @@ app.post('/affiliate/generate', affiliateController.generateLink);
 app.get('/offers', offerController.listOffers);
 app.delete("/offers/:id", offerController.deleteOffer);
 app.put("/offers/:id", offerController.updateOffer);
+app.put('/offers/:id/migrate', offerController.migrateOffer)
 
 
 app.use('/dispatch', require('./routes/dispatch'));

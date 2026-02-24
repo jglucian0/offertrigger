@@ -1,9 +1,9 @@
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink } from "lucide-react";
 import { api } from "@/lib/api";
-import { Trash2, Pencil } from "lucide-react";
+import { Trash2, Pencil, Repeat } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   AlertDialog,
@@ -31,12 +31,14 @@ export interface Offer {
   id: string;
   product_name: string;
   image_url?: string | null;
+  niche?: string;
   original_price: number;
   current_price: number;
   discount: number;
   free_shipping: boolean;
   sent: boolean;
   link: string;
+  sessionId?: string | null;
 }
 
 const getImageUrl = (fileName?: string) => {
@@ -44,22 +46,32 @@ const getImageUrl = (fileName?: string) => {
   return `${api.defaults.baseURL}/uploads/offers/${fileName}`
 }
 
-export const OfferTable = ({ offers = [] }: { offers?: Offer[] }) => {
+interface OfferTableProps {
+  offers?: Offer[]
+  onRefresh?: () => void
+  niche?: string
+}
+
+export const OfferTable = ({ offers = [], onRefresh, niche }: OfferTableProps) => {
   const { toast } = useToast();
   const [editing, setEditing] = useState<Offer | null>(null);
   const [form, setForm] = useState<any>({});
+  const [migrating, setMigrating] = useState<Offer | null>(null);
+  const [sessions, setSessions] = useState<any[]>([]);
+  const [selectedSession, setSelectedSession] = useState<string>("");
+  const [isMigrating, setIsMigrating] = useState(false);
+  const [internalOffers, setInternalOffers] = useState<Offer[]>(offers)
+  const [sessionsLoaded, setSessionsLoaded] = useState(false);
 
   const handleDelete = async (id: string) => {
     try {
       await api.delete(`/offers/${id}`);
+      onRefresh?.();
 
       toast({
         title: "Oferta removida",
         description: "O produto foi excluído da lista com sucesso.",
       });
-
-      // Recarrega para atualizar a lista (ou você poderia filtrar o estado localmente)
-      setTimeout(() => window.location.reload(), 1000);
     } catch (error) {
       toast({
         variant: "destructive",
@@ -69,7 +81,7 @@ export const OfferTable = ({ offers = [] }: { offers?: Offer[] }) => {
     }
   };
 
-  const handleEdit = async (offer: Offer) => {
+  const handleEdit = async () => {
     const payload = {
       product_name: form.product_name,
       original_price: form.original_price,
@@ -80,12 +92,37 @@ export const OfferTable = ({ offers = [] }: { offers?: Offer[] }) => {
     };
 
     await api.put(`/offers/${editing!.id}`, payload);
-
-    window.location.reload();
+    onRefresh?.();
+    setEditing(null);
   };
 
+  useEffect(() => {
+    setInternalOffers(offers)
+  }, [offers])
 
-  if (offers.length === 0) {
+  useEffect(() => {
+    api.get("/session/list").then(res => {
+
+      const normalized = res.data.map((s: any) => ({
+        ...s,
+        id: String(s.id)
+      }));
+
+      setSessions(normalized);
+      setSessionsLoaded(true);
+    });
+  }, []);
+
+  const sessionExists = (sessionId?: string | null) => {
+    if (!sessionId) return false;
+    if (!sessionsLoaded) return true;
+
+    return sessions.some(
+      (s) => s.id === String(sessionId)
+    );
+  };
+
+  if (internalOffers.length === 0) {
     return (
       <div className="overflow-hidden rounded-xl border border-border">
         <div className="p-12 text-center text-muted-foreground text-sm">
@@ -95,8 +132,13 @@ export const OfferTable = ({ offers = [] }: { offers?: Offer[] }) => {
     );
   }
 
+  const filteredOffers = niche
+    ? internalOffers.filter(o => o.niche === niche)
+    : internalOffers;
+
   const formatCurrency = (v: number) =>
     v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
   return (
     <>
       <Dialog open={!!editing} onOpenChange={() => setEditing(null)}>
@@ -160,9 +202,7 @@ export const OfferTable = ({ offers = [] }: { offers?: Offer[] }) => {
 
             <Button
               className="bg-primary"
-              onClick={async () => {
-                await handleEdit(editing!);
-              }}
+              onClick={handleEdit}
             >
               Atualizar
             </Button>
@@ -171,12 +211,90 @@ export const OfferTable = ({ offers = [] }: { offers?: Offer[] }) => {
 
       </Dialog>
 
+      <Dialog open={!!migrating} onOpenChange={() => setMigrating(null)}>
+        <DialogContent className="bg-card border-border">
+          <DialogHeader>
+            <DialogTitle>Migrar oferta</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-3">
+
+            <div className="text-sm text-muted-foreground">
+              Produto:
+              <span className="block font-medium text-foreground mt-1 truncate">
+                {migrating?.product_name}
+              </span>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Nova sessão
+              </label>
+
+              <select
+                value={selectedSession}
+                onChange={(e) => setSelectedSession(e.target.value)}
+                className="w-full bg-secondary border border-border rounded-md px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+              >
+                <option value="">Selecione uma sessão</option>
+
+                {sessions.map((s: any) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name || s.id}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+          </div>
+
+          <DialogFooter className="mt-4">
+            <Button variant="outline" onClick={() => setMigrating(null)}>
+              Cancelar
+            </Button>
+
+            <Button
+              className="bg-primary"
+              disabled={!selectedSession || isMigrating}
+              onClick={async () => {
+                try {
+                  setIsMigrating(true);
+
+                  await api.put(`/offers/${migrating!.id}/migrate`, {
+                    newSessionId: selectedSession
+                  });
+
+                  toast({
+                    title: "Oferta migrada com sucesso",
+                    description: "O produto foi movido para a nova sessão.",
+                  });
+
+                  onRefresh?.();
+                  setMigrating(null);
+
+                } catch (error) {
+                  toast({
+                    title: "Erro ao migrar oferta",
+                    description: "Não foi possível mover o produto.",
+                    variant: "destructive",
+                  });
+                } finally {
+                  setIsMigrating(false);
+                }
+              }}
+            >
+              {isMigrating ? "Salvando..." : "Salvar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <div className="overflow-hidden rounded-xl border border-border">
         <table className="w-full">
           <thead>
             <tr className="border-b border-border bg-secondary/50">
               <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Produto</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Sessão</th>
               <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Preço</th>
               <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">Desconto</th>
               <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">Frete</th>
@@ -185,11 +303,16 @@ export const OfferTable = ({ offers = [] }: { offers?: Offer[] }) => {
               <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">Ações</th>
             </tr>
           </thead>
+
           <tbody className="divide-y divide-border">
-            {offers.map((offer, i) => (
+            {filteredOffers.map((offer, i) => (
               <tr
                 key={offer.id}
-                className="bg-card transition-colors hover:bg-secondary/30 animate-fade-in-up"
+                className={
+                  !sessionExists(offer.sessionId)
+                    ? "bg-destructive/10 border-l-4 border-destructive"
+                    : "bg-card transition-colors hover:bg-secondary/30 animate-fade-in-up"
+                }
                 style={{ animationDelay: `${i * 60}ms` }}
               >
                 <td className="px-4 py-3">
@@ -206,6 +329,13 @@ export const OfferTable = ({ offers = [] }: { offers?: Offer[] }) => {
                       <p className="text-[10px] font-mono text-muted-foreground">{offer.id}</p>
                     </div>
                   </div>
+                </td>
+                <td className="px-4 py-3">
+                  {!sessionExists(offer.sessionId) && (
+                    <span className="text-xs text-destructive font-semibold">
+                      Sessão inexistente
+                    </span>
+                  )}
                 </td>
                 <td className="px-4 py-3">
                   {offer.original_price > 0 && (
@@ -262,6 +392,15 @@ export const OfferTable = ({ offers = [] }: { offers?: Offer[] }) => {
                     >
                       <Pencil className="h-4 w-4" />
                     </button>
+                    <button
+                      onClick={() => {
+                        setMigrating(offer);
+                        setSelectedSession("");
+                      }}
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      <Repeat className="h-4 w-4" />
+                    </button>
 
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
@@ -308,3 +447,4 @@ export const OfferTable = ({ offers = [] }: { offers?: Offer[] }) => {
     </>
   );
 };
+

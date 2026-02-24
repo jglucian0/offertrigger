@@ -3,6 +3,8 @@ const path = require('path')
 
 const WppService = require('../services/wppService')
 const manager = require('../services/sessionSingleton')
+const nicheDispatchConfigRepository = require('../repositories/nicheDispatchConfigRepository');
+const nicheGroupRepository = require('../repositories/nicheGroupRepository');
 
 const wppService = new WppService(manager)
 
@@ -70,6 +72,7 @@ async function deleteSession(req, res) {
       return res.status(404).json({ error: 'Sessão não encontrada' })
     }
 
+    await nicheDispatchConfigRepository.deleteBySession(userId);
     await wppService.closeSession(userId)
 
     manager.removeSession(userId)

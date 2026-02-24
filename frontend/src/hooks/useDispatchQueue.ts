@@ -7,24 +7,35 @@ export const useDispatchQueue = (sessionId: string | null, niche: string | null)
 
 
   useEffect(() => {
-    if (!sessionId) return
-
     const load = async () => {
+
       setLoading(true)
 
       try {
-        const url = niche
-          ? `/dispatch/queue/${sessionId}/${niche}`
-          : `/dispatch/queue/${sessionId}`
+        if (!sessionId) {
+          const sessionsRes = await api.get("/session/list")
 
-        const res = await api.get(url)
+          const results = await Promise.all(
+            sessionsRes.data.map((s: any) =>
+              niche
+                ? api.get(`/dispatch/queue/${s.id}/${niche}`)
+                : api.get(`/dispatch/queue/${s.id}`)
+            )
+          )
 
-        const items = (Array.isArray(res.data) ? res.data : []).map((item: any) => ({
-          ...item,
-          image_url: item.image_url
-        }))
+          const merged = results.flatMap(r =>
+            Array.isArray(r.data) ? r.data : []
+          )
 
-        setData(items)
+          setData(merged)
+        } else {
+          const url = niche
+            ? `/dispatch/queue/${sessionId}/${niche}`
+            : `/dispatch/queue/${sessionId}`
+
+          const res = await api.get(url)
+          setData(Array.isArray(res.data) ? res.data : [])
+        }
       } catch (err) {
         console.error("Erro ao carregar fila:", err)
       } finally {

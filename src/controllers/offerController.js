@@ -13,7 +13,8 @@ async function listOffers(req, res) {
       current_price,
       discount,
       free_shipping,
-      send_count
+      send_count,
+      session_id
     FROM dispatch_queue
     ORDER BY niche, created_at DESC
   `)
@@ -38,6 +39,25 @@ async function listOffers(req, res) {
   }))
 
   return res.json(payload)
+}
+
+async function migrateOffer(req, res) {
+  const { id } = req.params
+  const { newSessionId } = req.body
+
+  if (!newSessionId)
+    return res.status(400).json({ error: "newSessionId obrigatório" })
+
+  await db.query(
+    `
+    UPDATE dispatch_queue
+    SET session_id = $1
+    WHERE id = $2
+    `,
+    [newSessionId, id]
+  )
+
+  return res.json({ success: true })
 }
 
 async function deleteOffer(req, res) {
@@ -92,5 +112,6 @@ async function updateOffer(req, res) {
 module.exports = {
   listOffers,
   updateOffer,
-  deleteOffer
+  deleteOffer,
+  migrateOffer
 }

@@ -3,8 +3,147 @@ import { StatCard } from "@/components/StatCard";
 import { OfferTable } from "@/components/OfferTable";
 import { DispatchQueue } from "@/components/DispatchQueue";
 import { ShoppingBag, Send, Smartphone, TrendingUp, Zap } from "lucide-react";
+import { useEffect, useState } from "react"
+import { api } from "@/lib/api"
 
 const Dashboard = () => {
+  const MAX_SESSIONS = 2;
+
+  const [stats, setStats] = useState({
+    offers: 0,
+    sent: 0,
+    sessionsActive: 0,
+    sessionsTotal: 0,
+    offersToday: 0,
+    sentLastHour: 0
+  })
+
+  const [offers, setOffers] = useState([])
+
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const sessionsRes = await api.get("/session/list")
+        const sessions = sessionsRes.data
+
+        const sessionsActive = sessions.filter(
+          (s: any) =>
+            s.status === "connected" ||
+            s.status === "inChat"
+        ).length
+
+        // ===== Mensagens enviadas hoje (já existia)
+        const dispatchStats = await Promise.all(
+          sessions.map((s: any) =>
+            api.get(`/dispatch/stats/${s.id}`)
+          )
+        )
+
+        const merged = dispatchStats.reduce(
+          (acc, r) => ({
+            sent: acc.sent + (r.data.sent_today || 0),
+            pending: acc.pending + (r.data.pending || 0),
+          }),
+          { sent: 0, pending: 0 }
+        )
+
+        // ===== NOVO: mensagens enviadas na última hora
+        const historyResults = await Promise.all(
+          sessions.map((s: any) =>
+            api.get(`/dispatch/history/${s.id}`)
+          )
+        )
+
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000)
+
+        const sentLastHour = historyResults
+          .flatMap(res => res.data)
+          .filter((item: any) =>
+            item.status === "sent" &&
+            item.sent_at &&
+            new Date(item.sent_at) >= oneHourAgo
+          ).length
+
+        setStats(prev => ({
+          ...prev,
+          sent: merged.sent,
+          sessionsActive,
+          sessionsTotal: MAX_SESSIONS,
+          sentLastHour
+        }))
+
+      } catch (err) {
+        console.error("Erro ao carregar stats:", err)
+      }
+    }
+
+    const loadOffers = async () => {
+      try {
+        const offersRes = await api.get("/offers")
+
+        const flattened = offersRes.data.flatMap((section: any) =>
+          section.offers.map((o: any) => ({
+            id: o.id,
+            product_name: o.product_name,
+            image_url: o.image_url,
+            link: o.link,
+            original_price: Number(o.original_price),
+            current_price: Number(o.current_price),
+            discount: Number(o.discount),
+            free_shipping: o.free_shipping,
+            sent: Boolean(o.sent),
+            niche: section.niche,
+            created_at: o.created_at,
+            sessionId: o.session_id
+          }))
+        )
+
+        const queueOnly = flattened.filter(o => !o.sent)
+        const newData = queueOnly.slice(0, 10)
+
+        // 👇 evita sobrescrever se nada mudou
+        setOffers(prev => {
+          if (JSON.stringify(prev) === JSON.stringify(newData)) {
+            return prev
+          }
+          return newData
+        })
+
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+
+        const offersToday = flattened.filter((o: any) => {
+          if (!o.created_at) return false
+          return new Date(o.created_at) >= today
+        }).length
+
+        setStats(prev => ({
+          ...prev,
+          offers: flattened.length,
+          offersToday
+        }))
+
+      } catch (err) {
+        console.error("Erro ao carregar offers:", err)
+      }
+    }
+
+    // carga inicial
+    loadStats()
+    loadOffers()
+
+    // polling separado
+    const statsInterval = setInterval(loadStats, 10000)
+    const offersInterval = setInterval(loadOffers, 10000)
+
+    return () => {
+      clearInterval(statsInterval)
+      clearInterval(offersInterval)
+    }
+  }, [])
+
+
+
   return (
     <AppLayout>
       {/* Header */}
@@ -22,21 +161,27 @@ const Dashboard = () => {
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Ofertas Coletadas"
-          value="1.247"
+          value={stats.offers}
           icon={ShoppingBag}
-          trend={{ value: "+32 hoje", positive: true }}
+          trend={{
+            value: `+${stats.offersToday} hoje`,
+            positive: stats.offersToday > 0
+          }}
         />
         <StatCard
           title="Mensagens Enviadas"
-          value="892"
+          value={stats.sent}
           icon={Send}
-          trend={{ value: "+18 última hora", positive: true }}
+          trend={{
+            value: `+${stats.sentLastHour} última hora`,
+            positive: stats.sentLastHour > 0
+          }}
         />
         <StatCard
           title="Sessões Ativas"
-          value="1/2"
+          value={`${stats.sessionsActive}/${stats.sessionsTotal}`}
           icon={Smartphone}
-          subtitle="2 conectadas • 1 aguardando"
+          subtitle={`${stats.sessionsActive} ativas • ${stats.sessionsTotal - stats.sessionsActive} disponivel`}
         />
         <StatCard
           title="Taxa de Conversão (Em breve)"
@@ -54,7 +199,30 @@ const Dashboard = () => {
             <h2 className="text-lg font-semibold text-foreground">Últimas Ofertas</h2>
             <span className="text-xs font-mono text-muted-foreground">atualizado há 2 min</span>
           </div>
-          <OfferTable />
+          <OfferTable
+            offers={offers}
+            onRefresh={async () => {
+              const offersRes = await api.get("/offers")
+
+              const flattened = offersRes.data.flatMap((section: any) =>
+                section.offers.map((o: any) => ({
+                  id: o.id,
+                  product_name: o.product_name,
+                  image_url: o.image_url,
+                  link: o.link,
+                  original_price: Number(o.original_price),
+                  current_price: Number(o.current_price),
+                  discount: Number(o.discount),
+                  free_shipping: o.free_shipping,
+                  sent: Boolean(o.sent),
+                  niche: section.niche,
+                  sessionId: o.session_id
+                }))
+              )
+
+              const queueOnly = flattened.filter(o => !o.sent)
+              setOffers(queueOnly.slice(0, 10))
+            }} />
         </div>
 
         {/* Dispatch queue */}
@@ -63,7 +231,7 @@ const Dashboard = () => {
             <h2 className="text-lg font-semibold text-foreground">Fila de Disparos</h2>
             <span className="text-xs font-mono text-muted-foreground">ciclo: 5 min</span>
           </div>
-          <DispatchQueue sessionId="garimpei" selectedNiche="all" />
+          <DispatchQueue sessionId="all" selectedNiche={null} />
         </div>
       </div>
     </AppLayout>
