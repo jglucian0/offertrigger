@@ -77,68 +77,70 @@ export const DispatchQueue = ({ sessionId, selectedNiche }: Props) => {
 
 
   return (
-    <div className="space-y-2">
-      {history.length === 0 && (
-        <p className="text-xs text-muted-foreground">
-          Nenhum disparo registrado ainda.
-        </p>
-      )}
+    <div className="overflow-x-auto no-scrollbar">
+      <div className="min-w-[600px] space-y-2">
+        {history.length === 0 && (
+          <p className="text-xs text-muted-foreground">
+            Nenhum disparo registrado ainda.
+          </p>
+        )}
 
-      {history.map((item, i) => {
-        const st = statusMap[item.status];
-        const Icon = st.icon;
+        {history.map((item, i) => {
+          const st = statusMap[item.status];
+          const Icon = st.icon;
 
-        const time = item.sent_at
-          ? new Date(item.sent_at).toLocaleTimeString("pt-BR", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })
-          : new Date(item.created_at).toLocaleTimeString("pt-BR", {
-            hour: "2-digit",
-            minute: "2-digit",
-          });
+          const time = item.sent_at
+            ? new Date(item.sent_at).toLocaleTimeString("pt-BR", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })
+            : new Date(item.created_at).toLocaleTimeString("pt-BR", {
+              hour: "2-digit",
+              minute: "2-digit",
+            });
 
-        return (
-          <div
-            key={item.id}
-            className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3 transition-colors hover:bg-secondary/30 animate-fade-in-up"
-            style={{ animationDelay: `${i * 50}ms` }}
-          >
-            <div className="flex items-center gap-3 min-w-0">
-              <Icon
-                className={cn(
-                  "h-4 w-4 flex-shrink-0",
-                  item.status === "sent"
-                    ? "text-success"
-                    : item.status === "failed"
-                      ? "text-destructive"
-                      : "text-muted-foreground"
-                )}
-              />
-              <div className="min-w-0">
-                <p className="truncate text-sm font-medium text-foreground">{item.product_name}</p>
-                {selectedNiche !== null && (
-                  <p className="text-[10px] text-muted-foreground">
-                    → {item.niche}
-                  </p>
-                )}
+          return (
+            <div
+              key={item.id}
+              className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3 transition-colors hover:bg-secondary/30 animate-fade-in-up"
+              style={{ animationDelay: `${i * 50}ms` }}
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <Icon
+                  className={cn(
+                    "h-4 w-4 flex-shrink-0",
+                    item.status === "sent"
+                      ? "text-success"
+                      : item.status === "failed"
+                        ? "text-destructive"
+                        : "text-muted-foreground"
+                  )}
+                />
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-foreground">{item.product_name}</p>
+                  {selectedNiche !== null && (
+                    <p className="text-[10px] text-muted-foreground">
+                      → {item.niche}
+                    </p>
+                  )}
 
-                {sessionId === "all" && (
-                  <p className="text-[10px] text-muted-foreground">
-                    Sessão: {item.sessionId}
-                  </p>
-                )}
+                  {sessionId === "all" && (
+                    <p className="text-[10px] text-muted-foreground">
+                      Sessão: {item.sessionId}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center gap-3 flex-shrink-0">
+                <span className="text-xs font-mono text-muted-foreground">{time}</span>
+                <Badge variant="secondary" className={cn("border-0 text-[10px]", st.className)}>
+                  {st.label}
+                </Badge>
               </div>
             </div>
-            <div className="flex items-center gap-3 flex-shrink-0">
-              <span className="text-xs font-mono text-muted-foreground">{time}</span>
-              <Badge variant="secondary" className={cn("border-0 text-[10px]", st.className)}>
-                {st.label}
-              </Badge>
-            </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 };

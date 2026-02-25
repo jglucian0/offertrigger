@@ -68,13 +68,11 @@ export const NicheDispatchConfig = ({
     <div className="border border-border rounded-xl overflow-hidden bg-card">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-4 py-3 transition hover:bg-muted"
+        className="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 py-3 transition hover:bg-muted text-left"
       >
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="font-semibold">{niche}</span>
-          <Badge variant="outline">
-            {sessionId}
-          </Badge>
+
           <Badge variant="secondary">
             {groups.length} grupos
           </Badge>
@@ -88,14 +86,17 @@ export const NicheDispatchConfig = ({
           >
             {localPaused ? "Pausado" : "Rodando"}
           </Badge>
+          <ChevronDown className={`h-4 w-4 transition ${open ? "rotate-180" : ""}`} />
         </div>
-        <ChevronDown className={`h-4 w-4 transition ${open ? "rotate-180" : ""}`} />
+        <Badge className="p-0" variant="outline">
+          Configuração da sessão: {sessionId}
+        </Badge>
       </button>
 
       {open && (
         <div className="p-4 space-y-4 border-t border-border">
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="text-xs">Intervalo (minutos)</label>
               <Input

@@ -158,43 +158,91 @@ const Dashboard = () => {
       </div>
 
       {/* Stats */}
-      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          title="Ofertas Coletadas"
-          value={stats.offers}
-          icon={ShoppingBag}
-          trend={{
-            value: `+${stats.offersToday} hoje`,
-            positive: stats.offersToday > 0
-          }}
-        />
-        <StatCard
-          title="Mensagens Enviadas"
-          value={stats.sent}
-          icon={Send}
-          trend={{
-            value: `+${stats.sentLastHour} última hora`,
-            positive: stats.sentLastHour > 0
-          }}
-        />
-        <StatCard
-          title="Sessões Ativas"
-          value={`${stats.sessionsActive}/${stats.sessionsTotal}`}
-          icon={Smartphone}
-          subtitle={`${stats.sessionsActive} ativas • ${stats.sessionsTotal - stats.sessionsActive} disponivel`}
-        />
-        <StatCard
-          title="Taxa de Conversão (Em breve)"
-          value="0.0%"
-          icon={TrendingUp}
-          trend={{ value: "+0.0% semana", positive: true }}
-        />
+      <div className="mb-8">
+        {/* Mobile: carrossel */}
+        <div className="flex items-stretch gap-4 overflow-x-auto snap-x snap-mandatory md:hidden pb-2 no-scrollbar touch-pan-x">
+          <div className="snap-start shrink-0  flex">
+            <StatCard
+              title="Ofertas Coletadas"
+              value={stats.offers}
+              icon={ShoppingBag}
+              trend={{
+                value: `+${stats.offersToday} hoje`,
+                positive: stats.offersToday > 0
+              }}
+            />
+          </div>
+
+          <div className="snap-start shrink-0  flex">
+            <StatCard
+              title="Mensagens Enviadas"
+              value={stats.sent}
+              icon={Send}
+              trend={{
+                value: `+${stats.sentLastHour} última hora`,
+                positive: stats.sentLastHour > 0
+              }}
+            />
+          </div>
+
+          <div className="snap-start shrink-0 flex">
+            <StatCard
+              title="Sessões Ativas"
+              value={`${stats.sessionsActive}/${stats.sessionsTotal}`}
+              icon={Smartphone}
+              subtitle={`${stats.sessionsActive} ativas • ${stats.sessionsTotal - stats.sessionsActive} disponivel`}
+            />
+          </div>
+
+          <div className="snap-start shrink-0  flex">
+            <StatCard
+              title="Taxa de Conversão (Em breve)"
+              value="0.0%"
+              icon={TrendingUp}
+              trend={{ value: "+0.0% semana", positive: true }}
+            />
+          </div>
+        </div>
+
+        {/* Desktop: grid normal */}
+        <div className="hidden md:grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <StatCard
+            title="Ofertas Coletadas"
+            value={stats.offers}
+            icon={ShoppingBag}
+            trend={{
+              value: `+${stats.offersToday} hoje`,
+              positive: stats.offersToday > 0
+            }}
+          />
+          <StatCard
+            title="Mensagens Enviadas"
+            value={stats.sent}
+            icon={Send}
+            trend={{
+              value: `+${stats.sentLastHour} última hora`,
+              positive: stats.sentLastHour > 0
+            }}
+          />
+          <StatCard
+            title="Sessões Ativas"
+            value={`${stats.sessionsActive}/${stats.sessionsTotal}`}
+            icon={Smartphone}
+            subtitle={`${stats.sessionsActive} ativas • ${stats.sessionsTotal - stats.sessionsActive} disponivel`}
+          />
+          <StatCard
+            title="Taxa de Conversão (Em breve)"
+            value="0.0%"
+            icon={TrendingUp}
+            trend={{ value: "+0.0% semana", positive: true }}
+          />
+        </div>
       </div>
 
       {/* Two columns */}
       <div className="grid gap-6 lg:grid-cols-5">
         {/* Offers table */}
-        <div className="lg:col-span-3">
+        <div className="lg:col-span-3 min-w-0">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-foreground">Últimas Ofertas</h2>
             <span className="text-xs font-mono text-muted-foreground">atualizado há 2 min</span>
@@ -226,7 +274,7 @@ const Dashboard = () => {
         </div>
 
         {/* Dispatch queue */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 min-w-0">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-foreground">Fila de Disparos</h2>
             <span className="text-xs font-mono text-muted-foreground">ciclo: 5 min</span>

@@ -289,160 +289,162 @@ export const OfferTable = ({ offers = [], onRefresh, niche }: OfferTableProps) =
         </DialogContent>
       </Dialog>
 
-      <div className="overflow-hidden rounded-xl border border-border">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-border bg-secondary/50">
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Produto</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Sessão</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Preço</th>
-              <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">Desconto</th>
-              <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">Frete</th>
-              <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">Status</th>
-              <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">Link</th>
-              <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">Ações</th>
-            </tr>
-          </thead>
-
-          <tbody className="divide-y divide-border">
-            {filteredOffers.map((offer, i) => (
-              <tr
-                key={offer.id}
-                className={
-                  !sessionExists(offer.sessionId)
-                    ? "bg-destructive/10 border-l-4 border-destructive"
-                    : "bg-card transition-colors hover:bg-secondary/30 animate-fade-in-up"
-                }
-                style={{ animationDelay: `${i * 60}ms` }}
-              >
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg bg-secondary">
-                      <img
-                        src={getImageUrl(offer.image_url)}
-                        alt={offer.product_name}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-foreground max-w-[260px]">{offer.product_name}</p>
-                      <p className="text-[10px] font-mono text-muted-foreground">{offer.id}</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-4 py-3">
-                  {!sessionExists(offer.sessionId) && (
-                    <span className="text-xs text-destructive font-semibold">
-                      Sessão inexistente
-                    </span>
-                  )}
-                </td>
-                <td className="px-4 py-3">
-                  {offer.original_price > 0 && (
-                    <p className="text-xs text-muted-foreground line-through">
-                      {formatCurrency(offer.original_price)}
-                    </p>
-                  )}
-
-                  {offer.current_price > 0 ? (
-                    <p className="text-sm font-bold text-foreground mono">
-                      {formatCurrency(offer.current_price)}
-                    </p>
-                  ) : (
-                    <span className="text-xs text-muted-foreground">—</span>
-                  )}
-                </td>
-                <td className="px-4 py-3 text-center">
-                  <Badge variant="secondary" className="bg-primary/10 text-primary font-mono font-bold border-0">
-                    {offer.discount > 0 ? `-${offer.discount}%` : "—"}
-                  </Badge>
-                </td>
-                <td className="px-4 py-3 text-center">
-                  {offer.free_shipping ? (
-                    <Badge variant="secondary" className="bg-success/10 text-success border-0 text-[10px]">GRÁTIS</Badge>
-                  ) : (
-                    <span className="text-xs text-muted-foreground">—</span>
-                  )}
-                </td>
-                <td className="px-4 py-3 text-center">
-                  <Badge
-                    variant="secondary"
-                    className={cn(
-                      "border-0 text-[10px] font-semibold",
-                      offer.sent
-                        ? "bg-success/10 text-success"
-                        : "bg-secondary text-muted-foreground"
-                    )}
-                  >
-                    {offer.sent ? "Enviado" : "Na fila"}
-                  </Badge>
-                </td>
-
-                <td className="px-4 py-3 text-center">
-                  <div className="flex justify-center gap-2">
-                    <button
-                      onClick={() => {
-                        setEditing(offer);
-                        setForm({
-                          ...offer,
-                          sent: Boolean(offer.sent)
-                        });
-                      }}
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={() => {
-                        setMigrating(offer);
-                        setSelectedSession("");
-                      }}
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      <Repeat className="h-4 w-4" />
-                    </button>
-
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <button className="text-muted-foreground hover:text-destructive transition-colors">
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent className="bg-card border-border">
-                        <AlertDialogHeader>
-                          <AlertDialogTitle className="text-foreground">Remover oferta?</AlertDialogTitle>
-                          <AlertDialogDescription className="text-muted-foreground">
-                            Esta ação não pode ser desfeita. O produto "{offer.product_name}" será removido permanentemente da lista de ofertas.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel className="border-border text-muted-foreground hover:bg-secondary">
-                            Cancelar
-                          </AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={() => handleDelete(offer.id)}
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                          >
-                            Remover produto
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </div>
-                </td>
-
-
-                <td className="px-4 py-3 text-center">
-                  <a href={offer.link} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center text-primary hover:text-accent transition-colors">
-                    <ExternalLink className="h-4 w-4" />
-                  </a>
-                </td>
+      <div className="rounded-xl border border-border w-full min-w-0">
+        <div className="w-full overflow-x-auto no-scrollbar">
+          <table className="min-w-[950px] w-full">
+            <thead>
+              <tr className="border-b border-border bg-secondary/50">
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Produto</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Sessão</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Preço</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">Desconto</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">Frete</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">Status</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">Link</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">Ações</th>
               </tr>
+            </thead>
 
-            ))}
-          </tbody>
-        </table>
+            <tbody className="divide-y divide-border">
+              {filteredOffers.map((offer, i) => (
+                <tr
+                  key={offer.id}
+                  className={
+                    !sessionExists(offer.sessionId)
+                      ? "bg-destructive/10 border-l-4 border-destructive"
+                      : "bg-card transition-colors hover:bg-secondary/30 animate-fade-in-up"
+                  }
+                  style={{ animationDelay: `${i * 60}ms` }}
+                >
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg bg-secondary">
+                        <img
+                          src={getImageUrl(offer.image_url)}
+                          alt={offer.product_name}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium text-foreground max-w-[260px]">{offer.product_name}</p>
+                        <p className="text-[10px] font-mono text-muted-foreground">{offer.id}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3">
+                    {!sessionExists(offer.sessionId) && (
+                      <span className="text-xs text-destructive font-semibold">
+                        Sessão inexistente
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
+                    {offer.original_price > 0 && (
+                      <p className="text-xs text-muted-foreground line-through">
+                        {formatCurrency(offer.original_price)}
+                      </p>
+                    )}
+
+                    {offer.current_price > 0 ? (
+                      <p className="text-sm font-bold text-foreground mono">
+                        {formatCurrency(offer.current_price)}
+                      </p>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    <Badge variant="secondary" className="bg-primary/10 text-primary font-mono font-bold border-0">
+                      {offer.discount > 0 ? `-${offer.discount}%` : "—"}
+                    </Badge>
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    {offer.free_shipping ? (
+                      <Badge variant="secondary" className="bg-success/10 text-success border-0 text-[10px]">GRÁTIS</Badge>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    <Badge
+                      variant="secondary"
+                      className={cn(
+                        "border-0 text-[10px] font-semibold",
+                        offer.sent
+                          ? "bg-success/10 text-success"
+                          : "bg-secondary text-muted-foreground"
+                      )}
+                    >
+                      {offer.sent ? "Enviado" : "Na fila"}
+                    </Badge>
+                  </td>
+
+                  <td className="px-4 py-3 text-center">
+                    <div className="flex justify-center gap-2">
+                      <button
+                        onClick={() => {
+                          setEditing(offer);
+                          setForm({
+                            ...offer,
+                            sent: Boolean(offer.sent)
+                          });
+                        }}
+                        className="text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          setMigrating(offer);
+                          setSelectedSession("");
+                        }}
+                        className="text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        <Repeat className="h-4 w-4" />
+                      </button>
+
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <button className="text-muted-foreground hover:text-destructive transition-colors">
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="bg-card border-border">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle className="text-foreground">Remover oferta?</AlertDialogTitle>
+                            <AlertDialogDescription className="text-muted-foreground">
+                              Esta ação não pode ser desfeita. O produto "{offer.product_name}" será removido permanentemente da lista de ofertas.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel className="border-border text-muted-foreground hover:bg-secondary">
+                              Cancelar
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => handleDelete(offer.id)}
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                              Remover produto
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </td>
+
+
+                  <td className="px-4 py-3 text-center">
+                    <a href={offer.link} target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center text-primary hover:text-accent transition-colors">
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  </td>
+                </tr>
+
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </>
   );

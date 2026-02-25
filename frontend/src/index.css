@@ -82,6 +82,15 @@
 }
 
 @layer components {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE e Edge antigo */
+    scrollbar-width: none; /* Firefox */
+  }
+
   .stat-card {
     @apply relative overflow-hidden rounded-xl border border-border bg-card p-5;
     background: var(--gradient-card);

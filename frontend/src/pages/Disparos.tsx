@@ -170,13 +170,47 @@ const Disparos = () => {
         </p>
       </div>
 
-      <div className="mb-6 grid gap-4 sm:grid-cols-3">
-        <StatCard title="Na Fila" value={stats.pending} icon={Clock} />
-        <StatCard title="Enviados Hoje" value={stats.sent_today} icon={CheckCircle} />
-        <StatCard title="Falhas" value={stats.failures ?? 0} icon={AlertCircle} />
+      <div className="mb-6">
+
+        {/* Mobile: carrossel */}
+        <div className="flex items-stretch gap-4 overflow-x-auto snap-x snap-mandatory md:hidden pb-2 no-scrollbar touch-pan-x">
+
+          <div className="snap-start shrink-0 flex">
+            <StatCard
+              title="Na Fila"
+              value={stats.pending}
+              icon={Clock}
+            />
+          </div>
+
+          <div className="snap-start shrink-0 flex">
+            <StatCard
+              title="Enviados Hoje"
+              value={stats.sent_today}
+              icon={CheckCircle}
+            />
+          </div>
+
+          <div className="snap-start shrink-0 flex">
+            <StatCard
+              title="Falhas"
+              value={stats.failures ?? 0}
+              icon={AlertCircle}
+            />
+          </div>
+
+        </div>
+
+        {/* Desktop: grid normal */}
+        <div className="hidden md:grid gap-4 sm:grid-cols-3">
+          <StatCard title="Na Fila" value={stats.pending} icon={Clock} />
+          <StatCard title="Enviados Hoje" value={stats.sent_today} icon={CheckCircle} />
+          <StatCard title="Falhas" value={stats.failures ?? 0} icon={AlertCircle} />
+        </div>
+
       </div>
 
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-2 mb-6 overflow-x-auto no-scrollbar md:overflow-visible">
         <Button
           size="sm"
           variant={selectedSession === "all" ? "default" : "outline"}
@@ -330,13 +364,13 @@ const Disparos = () => {
 
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-5">
+      <div className="grid gap-6 grid-cols-1 lg:grid-cols-5">
         {/* Pending products list */}
         <div className="lg:col-span-3">
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-2">
               <Package className="h-4 w-4 text-primary" />
-              <h2 className="text-lg font-semibold text-foreground">Produtos na Lista de Envio</h2>
+              <h2 className="text-lg font-semibold text-foreground">Lista de Envio</h2>
             </div>
             {queue.length > 0 && (
               <Badge
@@ -349,7 +383,7 @@ const Disparos = () => {
           </div>
 
           <div className="space-y-3">
-            <div className="flex gap-2 mb-4">
+            <div className="flex gap-2 mb-4 overflow-x-auto no-scrollbar md:overflow-visible">
               <Button
                 size="sm"
                 variant={selectedNiche === null ? "default" : "outline"}
@@ -455,7 +489,7 @@ const Disparos = () => {
         </div>
 
         {/* Dispatch history */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 min-w-0">
           <div className="mb-4">
             <h2 className="text-lg font-semibold text-foreground">Histórico</h2>
           </div>
@@ -465,7 +499,7 @@ const Disparos = () => {
         </div>
       </div>
 
-
+      <div className="w-full max-w-full min-w-0"></div>
     </AppLayout>
   );
 };
