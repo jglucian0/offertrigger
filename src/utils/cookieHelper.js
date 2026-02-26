@@ -1,15 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 
-const COOKIE_FILE = '../../www.mercadolivre.com.br_cookies.txt';
-const ESSENTIAL_COOKIES = ['ssid', '_d2id', '_dsid', 'cp'];
-
-async function loadCookies() {
+async function loadCookies(userId) {
   try {
-    const filePath = resolveCookiePath();
+    const filePath = resolveCookiePath(userId);
 
     if (!fs.existsSync(filePath)) {
-      logMissingFile(filePath);
+      console.warn('[CookieHelper] Arquivo não encontrado para user:', userId);
       return [];
     }
 
@@ -17,19 +14,25 @@ async function loadCookies() {
 
     const cookies = parseCookies(content);
 
-    return filterEssentialCookies(cookies);
+    if (!cookies.length) {
+      console.warn('[CookieHelper] Nenhum cookie válido encontrado');
+      return [];
+    }
+
+    return cookies;
+
+
   } catch (error) {
-    console.error('[CookieHelper] Erro ao processar cookies:', error.message);
+    console.error('[CookieHelper] Erro ao carregar cookies:', error.message);
     return [];
   }
 }
 
-function resolveCookiePath() {
-  return path.resolve(__dirname, COOKIE_FILE);
-}
-
-function logMissingFile(filePath) {
-  console.warn('[CookieHelper] Arquivo de cookies não encontrado em:', filePath);
+function resolveCookiePath(userId) {
+  return path.resolve(
+    __dirname,
+    `../../uploads/cookies/${userId}_mercadolivre.txt`
+  );
 }
 
 function parseCookies(content) {
@@ -46,19 +49,14 @@ function parseCookieLine(line) {
   if (parts.length < 7) return null;
 
   return {
-    name: parts[5],
-    value: parts[6].trim(),
     domain: parts[0],
     path: parts[2],
     secure: parts[3] === 'TRUE',
-    httpOnly: parts[1] === 'TRUE'
+    expires: Number(parts[4]) || -1,
+    name: parts[5],
+    value: parts[6].trim(),
+    httpOnly: false
   };
-}
-
-function filterEssentialCookies(cookies) {
-  return cookies.filter(cookie =>
-    ESSENTIAL_COOKIES.includes(cookie.name)
-  );
 }
 
 module.exports = { loadCookies };

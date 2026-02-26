@@ -3,7 +3,7 @@ const AffiliateService = require('../services/affiliate/affiliateService')
 const affiliateService = new AffiliateService()
 
 exports.generateLink = async (req, res) => {
-  const { url } = req.body
+  const { url, userId } = req.body
 
   if (!url) {
     return res.status(400).json({
@@ -14,7 +14,7 @@ exports.generateLink = async (req, res) => {
   try {
     console.log(`[Route] Gerando link afiliado: ${url}`)
 
-    const affiliateUrl = await affiliateService.generateAffiliateLink(url)
+    const affiliateUrl = await affiliateService.generateAffiliateLink(url, userId)
 
     if (!affiliateUrl) {
       throw new Error('Link vazio')
@@ -27,6 +27,20 @@ exports.generateLink = async (req, res) => {
 
   } catch (err) {
     console.error('[AffiliateController] Erro:', err)
+
+    if (err.message === 'COOKIES_NOT_FOUND affiliateController.js') {
+      return res.status(400).json({
+        success: false,
+        error: 'Cookies não encontrados para este usuário'
+      })
+    }
+
+    if (err.message === 'NO_SSID') {
+      return res.status(401).json({
+        success: false,
+        error: 'Sessão inválida. Reenvie os cookies.'
+      })
+    }
 
     return res.status(500).json({
       success: false,

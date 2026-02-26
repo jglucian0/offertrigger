@@ -427,13 +427,13 @@ class BotService {
       if (urlDetectada && nichosIdentificados.length > 0) {
         try {
 
-          const dadosScraper = await this.scraperService.fetchProducts(urlDetectada);
+          const dadosScraper = await this.scraperService.fetchProducts(urlDetectada, sessionId);
           const produtoUrlReal = dadosScraper.url || urlDetectada;
           let linkAfiliado;
 
           try {
             console.log('[Bot] Convertendo link real do produto...');
-            linkAfiliado = await this.affiliateService.generateAffiliateLink(produtoUrlReal);
+            linkAfiliado = await this.affiliateService.generateAffiliateLink(produtoUrlReal, sessionId);
           } catch (err) {
             console.error('[Bot] Falha ao converter link:', err.message);
             linkAfiliado = produtoUrlReal;

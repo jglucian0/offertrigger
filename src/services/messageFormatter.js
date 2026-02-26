@@ -2,7 +2,9 @@ class MessageFormatter {
 
   static detectStore(link) {
     if (!link) return 'na internet';
-    if (link.startsWith('https://mercadolivre.com/sec/')) return 'no Mercado Livre';
+    if (link.startsWith('https://mercadolivre.com/sec/') || link.startsWith('https://meli.la/')) {
+      return 'no Mercado Livre';
+    }
     if (link.startsWith('https://amzn.to/')) return 'na Amazon';
     return 'na internet';
   }

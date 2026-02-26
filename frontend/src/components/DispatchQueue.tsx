@@ -3,6 +3,7 @@ import { Clock, CheckCircle, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react"
 import { api } from "@/lib/api"
+import { useDragScroll } from "@/hooks/useDragScroll";
 
 interface DispatchItem {
   id: string;
@@ -28,6 +29,7 @@ interface Props {
 
 export const DispatchQueue = ({ sessionId, selectedNiche }: Props) => {
   const [history, setHistory] = useState<DispatchItem[]>([]);
+  const scrollRef = useDragScroll();
 
   useEffect(() => {
     const loadHistory = async () => {
@@ -77,7 +79,10 @@ export const DispatchQueue = ({ sessionId, selectedNiche }: Props) => {
 
 
   return (
-    <div className="overflow-x-auto no-scrollbar">
+    <div
+      ref={scrollRef}
+      className="overflow-x-auto custom-scrollbar cursor-grab active:cursor-grabbing select-none scroll-smooth"
+    >
       <div className="min-w-[600px] space-y-2">
         {history.length === 0 && (
           <p className="text-xs text-muted-foreground">

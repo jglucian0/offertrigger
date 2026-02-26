@@ -5,8 +5,12 @@ const { loadCookies } = require('../utils/cookieHelper');
 puppeteer.use(StealthPlugin());
 
 class ScraperService {
-  async fetchProducts(url) {
-    const cookies = await loadCookies();
+  async fetchProducts(url, userId) {
+    const cookies = await loadCookies(userId)
+    if (!cookies.length) {
+      throw new Error('COOKIES_NOT_FOUND scraperService.js');
+    }
+
     const browser = await this.launchBrowser();
 
     try {
@@ -46,7 +50,9 @@ class ScraperService {
     );
 
     if (cookies.length) {
-      await page.setCookie(...cookies);
+      await page.goto('https://www.mercadolivre.com.br', { waitUntil: 'domcontentloaded' })
+      await page.setCookie(...cookies)
+      await page.reload()
     }
 
     return page;

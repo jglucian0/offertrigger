@@ -26,6 +26,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useDragScroll } from "@/hooks/useDragScroll";
 
 export interface Offer {
   id: string;
@@ -62,6 +63,7 @@ export const OfferTable = ({ offers = [], onRefresh, niche }: OfferTableProps) =
   const [isMigrating, setIsMigrating] = useState(false);
   const [internalOffers, setInternalOffers] = useState<Offer[]>(offers)
   const [sessionsLoaded, setSessionsLoaded] = useState(false);
+  const scrollRef = useDragScroll();
 
   const handleDelete = async (id: string) => {
     try {
@@ -290,7 +292,10 @@ export const OfferTable = ({ offers = [], onRefresh, niche }: OfferTableProps) =
       </Dialog>
 
       <div className="rounded-xl border border-border w-full min-w-0">
-        <div className="w-full overflow-x-auto no-scrollbar">
+        <div
+          ref={scrollRef}
+          className="overflow-x-auto custom-scrollbar cursor-grab active:cursor-grabbing select-none scroll-smooth"
+        >
           <table className="min-w-[950px] w-full">
             <thead>
               <tr className="border-b border-border bg-secondary/50">

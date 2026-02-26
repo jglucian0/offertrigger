@@ -42,6 +42,8 @@ app.put('/offers/:id/migrate', offerController.migrateOffer)
 
 
 app.use('/dispatch', require('./routes/dispatch'));
+app.use('/cookies', require('./routes/cookies'));
+app.use('/marketplace', require('./routes/marketplace'));
 
 
 app.get('/niche-groups/:sessionId', nicheGroupController.listBySession)

@@ -3,8 +3,12 @@ const { loadCookies } = require('../../utils/cookieHelper')
 
 class AffiliateRequest {
 
-  async generate(originalLink) {
-    const cookies = await loadCookies()
+  async generate(originalLink, userId) {
+    const cookies = await loadCookies(userId)
+    if (!cookies.length) {
+      throw new Error(`COOKIES_NOT_FOUND affiliateRequest.js ${userId}`);
+    }
+
     const ssid = cookies.find(c => c.name === 'ssid')?.value
 
     if (!ssid) throw new Error('NO_SSID')

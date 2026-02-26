@@ -22,7 +22,7 @@ exports.sendMessage = async (req, res) => {
 
     console.log(`[Controller] Scraping produto: ${url}`)
 
-    const produtos = await scraper.fetchProducts(url)
+    const produtos = await scraper.fetchProducts(url, userId)
     const item = produtos?.[0]
 
     if (!item) {
@@ -31,7 +31,8 @@ exports.sendMessage = async (req, res) => {
 
     console.log('[Controller] Gerando link afiliado...')
 
-    item.link = await affiliate.generateAffiliateLink(item.link)
+    item.link = await affiliate.generateAffiliateLink(item.url, userId) //VER SE N È LINK
+    console.log(`usuario do messagecontroller ${userId}`)
 
     const mensagem = MessageFormatter.format(item)
 
@@ -47,6 +48,18 @@ exports.sendMessage = async (req, res) => {
 
   } catch (err) {
     console.error('[Controller] Erro:', err)
+
+    if (err.message === 'COOKIES_NOT_FOUND mesageController.js') {
+      return res.status(400).json({
+        error: 'Cookies não enviados ou inválidos para este usuário'
+      })
+    }
+
+    if (err.message === 'SESSION_EXPIRED') {
+      return res.status(401).json({
+        error: 'Sessão do Mercado Livre expirada. Envie novos cookies.'
+      })
+    }
 
     return res.status(500).json({
       error: 'Falha ao processar e enviar oferta',

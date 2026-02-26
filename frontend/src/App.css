@@ -18,6 +18,38 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+/* Scrollbar moderna dark */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(120, 120, 120, 0.4) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    90deg,
+    rgba(100, 100, 100, 0.4),
+    rgba(160, 160, 160, 0.4)
+  );
+  border-radius: 999px;
+  transition: all 0.3s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    90deg,
+    rgba(140, 140, 140, 0.6),
+    rgba(200, 200, 200, 0.6)
+  );
+}
+
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -39,13 +71,4 @@
 
 .read-the-docs {
   color: #888;
-}
-
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.no-scrollbar {
-  -ms-overflow-style: none; /* IE e Edge antigo */
-  scrollbar-width: none; /* Firefox */
 }
