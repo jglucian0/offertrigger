@@ -7,9 +7,9 @@ class AffiliateService {
     this.browser = new AffiliateBrowser()
   }
 
-  async generateAffiliateLink(originalLink, userId) {
+  async generateAffiliateLink(originalLink) {
     try {
-      const link = await this.request.generate(originalLink, userId)
+      const link = await this.request.generate(originalLink)
       return link
 
     } catch {

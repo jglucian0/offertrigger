@@ -3,27 +3,62 @@ import { Settings, Globe, Plug } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { MarketplaceConfigDialog } from "@/components/MarketplaceConfigDialog";
+import { useEffect } from "react";
+import { api } from "@/lib/api";
 
-const marketplaces = [
-  {
-    id: "mercadolivre",
-    name: "Mercado Livre",
-    description: "Integração via Cookies",
-    type: "cookies+tag",
-    connected: false
-  },
-  {
-    id: "amazon",
-    name: "Amazon",
-    description: "Integração via API Key",
-    type: "apiKey",
-    connected: false
-  }
-];
 
 const Configuracoes = () => {
+
+  const [marketplaces, setMarketplaces] = useState([
+    {
+      id: "mercadolivre",
+      name: "Mercado Livre",
+      description: "Integração via Cookies",
+      type: "cookies+tag",
+      enabled: false,
+      configured: false
+    },
+    {
+      id: "amazon",
+      name: "Amazon",
+      description: "Integração via API Key",
+      type: "apiKey",
+      enabled: false,
+      configured: false
+    }
+  ]);
   const [selected, setSelected] = useState<any>(null);
+
+  useEffect(() => {
+    const loadConfigs = async () => {
+      try {
+        const { data } = await api.get("/marketplace/config/status");
+
+        setMarketplaces(prev =>
+          prev.map(mp => {
+            const dbConfig = data.find(
+              (c: any) => c.marketplace === mp.id
+            );
+
+            if (!dbConfig) return mp;
+
+            return {
+              ...mp,
+              enabled: dbConfig.enabled,
+              configured: dbConfig.configured
+            };
+          })
+        );
+
+      } catch (err) {
+        console.error("Erro ao carregar configs:", err);
+      }
+    };
+
+    loadConfigs();
+  }, []);
 
   return (
     <AppLayout>
@@ -62,24 +97,40 @@ const Configuracoes = () => {
 
                 <Badge
                   variant="secondary"
-                  className={`text-[10px] ${mp.connected
+                  className={`text-[10px] ${mp.configured
                     ? "bg-success/20 text-success"
                     : "bg-secondary text-muted-foreground"
                     }`}
                 >
-                  {mp.connected ? "Conectado" : "Não configurado"}
+                  {mp.configured ? "Conectado" : "Não configurado"}
                 </Badge>
               </div>
 
-              <div className="mt-auto pt-5">
-                <Button
-                  size="sm"
-                  onClick={() => setSelected(mp)}
-                  className="w-full gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
-                >
-                  <Plug className="h-3.5 w-3.5" />
-                  {mp.connected ? "Editar Configuração" : "Configurar"}
-                </Button>
+              <div className="mt-auto pt-6">
+                <div className="flex items-center justify-between gap-5">
+
+                  <Button
+                    disabled={!mp.enabled}
+                    onClick={() => setSelected(mp)}
+                    className="flex-1 h-10 gap-2 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-all"
+                  >
+                    <Plug className="h-4 w-4" />
+                    {mp.configured ? "Editar Configuração" : "Configurar"}
+                  </Button>
+
+                  <Switch
+                    checked={mp.enabled}
+                    onCheckedChange={(value) => {
+                      setMarketplaces(prev =>
+                        prev.map(m =>
+                          m.id === mp.id ? { ...m, enabled: value } : m
+                        )
+                      );
+                    }}
+                    className="scale-110"
+                  />
+
+                </div>
               </div>
             </div>
           </div>

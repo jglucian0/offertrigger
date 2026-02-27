@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path')
@@ -29,6 +30,10 @@ app.post('/session/start', sessionController.startSession);
 app.get('/session/status/:userId', sessionController.checkStatus);
 app.delete('/session/:userId', sessionController.deleteSession);
 app.get('/session/list', sessionController.listSessions);
+
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'UP' });
+});
 
 app.post('/message/send', messageController.sendMessage);
 

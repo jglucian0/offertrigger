@@ -1,9 +1,10 @@
 const fs = require('fs');
 const path = require('path');
+const { DEFAULT_MARKETPLACE_OWNER } = require('../config/appConfig');
 
-async function loadCookies(userId) {
+async function loadCookies() {
   try {
-    const filePath = resolveCookiePath(userId);
+    const filePath = resolveCookiePath();
 
     if (!fs.existsSync(filePath)) {
       console.warn('[CookieHelper] Arquivo não encontrado para user:', userId);
@@ -28,10 +29,10 @@ async function loadCookies(userId) {
   }
 }
 
-function resolveCookiePath(userId) {
+function resolveCookiePath() {
   return path.resolve(
     __dirname,
-    `../../uploads/cookies/${userId}_mercadolivre.txt`
+    `../../uploads/cookies/${DEFAULT_MARKETPLACE_OWNER}_mercadolivre.txt`
   );
 }
 

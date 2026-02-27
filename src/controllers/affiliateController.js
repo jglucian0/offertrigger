@@ -1,9 +1,9 @@
 const AffiliateService = require('../services/affiliate/affiliateService')
-
 const affiliateService = new AffiliateService()
 
 exports.generateLink = async (req, res) => {
-  const { url, userId } = req.body
+  const { url } = req.body;
+  const { DEFAULT_MARKETPLACE_OWNER } = require('../config/appConfig');
 
   if (!url) {
     return res.status(400).json({
@@ -14,7 +14,10 @@ exports.generateLink = async (req, res) => {
   try {
     console.log(`[Route] Gerando link afiliado: ${url}`)
 
-    const affiliateUrl = await affiliateService.generateAffiliateLink(url, userId)
+    const affiliateUrl = await affiliateService.generateAffiliateLink(
+      url,
+      DEFAULT_MARKETPLACE_OWNER
+    )
 
     if (!affiliateUrl) {
       throw new Error('Link vazio')

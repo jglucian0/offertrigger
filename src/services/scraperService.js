@@ -5,8 +5,8 @@ const { loadCookies } = require('../utils/cookieHelper');
 puppeteer.use(StealthPlugin());
 
 class ScraperService {
-  async fetchProducts(url, userId) {
-    const cookies = await loadCookies(userId)
+  async fetchProducts(url) {
+    const cookies = await loadCookies()
     if (!cookies.length) {
       throw new Error('COOKIES_NOT_FOUND scraperService.js');
     }

@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { api } from "@/lib/api";
 
@@ -26,16 +26,43 @@ export const MarketplaceConfigDialog = ({
   const [tag, setTag] = useState("");
   const [file, setFile] = useState<File | null>(null);
 
+  useEffect(() => {
+    if (!open || !marketplace) return;
+
+    const loadTag = async () => {
+      try {
+        if (marketplace.id === "mercadolivre") {
+          const { data } = await api.get("/marketplace/mercadolivre/tag");
+
+          if (data.tag) {
+            setTag(data.tag);
+          }
+        }
+      } catch (err) {
+        console.error("Erro ao carregar tag:", err);
+      }
+    };
+
+    loadTag();
+  }, [open, marketplace]);
+
+  useEffect(() => {
+    if (!open) {
+      setTag("");
+      setFile(null);
+    }
+  }, [open]);
+
   if (!marketplace) return null;
+
+
 
   const handleSave = async () => {
     try {
-      const userId = localStorage.getItem("userId");
-
-      if (!userId) {
+      if (!marketplace.enabled) {
         return toast({
           variant: "destructive",
-          title: "Usuário não identificado"
+          title: "Marketplace não ativado"
         });
       }
 
@@ -43,28 +70,37 @@ export const MarketplaceConfigDialog = ({
       // MERCADO LIVRE (cookies + tag)
       // ===============================
       if (marketplace.type === "cookies+tag") {
-        if (!tag || !file) {
+        if (!tag) {
           return toast({
             variant: "destructive",
-            title: "Dados incompletos",
-            description: "Envie a tag e o arquivo cookies.txt"
+            title: "Tag obrigatória"
           });
         }
 
-        // 1️⃣ Upload do cookie
-        const formData = new FormData();
-        formData.append("userId", userId);
-        formData.append("cookieFile", file);
+        const isFirstConfig = !marketplace.configured;
 
-        await api.post("/cookies/upload", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        });
+        // 🔴 Se for primeira configuração → arquivo obrigatório
+        if (isFirstConfig && !file) {
+          return toast({
+            variant: "destructive",
+            title: "Arquivo cookies.txt obrigatório na primeira configuração"
+          });
+        }
 
-        // 2️⃣ Salvar tag em arquivo
+        // 🟢 Se enviou novo arquivo → faz upload
+        if (file) {
+          const formData = new FormData();
+          formData.append("cookieFile", file);
+
+          await api.post("/cookies/upload", formData, {
+            headers: { "Content-Type": "multipart/form-data" }
+          });
+
+          await api.post("/marketplace/mercadolivre/validate");
+        }
+
+        // ✅ Sempre salva a tag
         await api.post("/marketplace/mercadolivre/tag", {
-          userId,
           tag
         });
       }
@@ -81,7 +117,6 @@ export const MarketplaceConfigDialog = ({
         }
 
         await api.post("/marketplace/amazon/config", {
-          userId,
           apiKey: tag
         });
       }
@@ -91,7 +126,15 @@ export const MarketplaceConfigDialog = ({
         description: `${marketplace.name} configurado com sucesso`
       });
 
+
+      await api.post("/marketplace/config/status", {
+        marketplace: marketplace.id,
+        enabled: true,
+        configured: true
+      });
+
       onClose();
+
     } catch (error) {
       toast({
         variant: "destructive",
@@ -159,7 +202,7 @@ export const MarketplaceConfigDialog = ({
             Cancelar
           </Button>
           <Button onClick={handleSave} className="bg-primary">
-            Salvar Configuração
+            {marketplace.configured ? "Salvar Alterações" : "Salvar Configuração"}
           </Button>
         </DialogFooter>
       </DialogContent>
