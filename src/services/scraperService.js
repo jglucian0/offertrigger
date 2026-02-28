@@ -3,6 +3,7 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const { loadCookies } = require('../utils/cookieHelper');
 
 puppeteer.use(StealthPlugin());
+let browserInstance = null;
 
 class ScraperService {
   async fetchProducts(url) {
@@ -27,12 +28,16 @@ class ScraperService {
       console.error(`[Scraper] Erro ao recuperar produto: ${error.message}`);
       return { title: "Erro ao recuperar título" };
     } finally {
-      await browser.close();
+      if (page) {
+        await page.close().catch(() => { });
+      }
     }
   }
 
   async launchBrowser() {
-    return puppeteer.launch({
+    if (browserInstance) return browserInstance;
+
+    browserInstance = await puppeteer.launch({
       headless: "new",
       args: [
         '--no-sandbox',
@@ -40,6 +45,13 @@ class ScraperService {
         '--disable-dev-shm-usage'
       ]
     });
+
+    browserInstance.on('disconnected', () => {
+      console.log('⚠️ Browser desconectado. Resetando instância...');
+      browserInstance = null;
+    });
+
+    return browserInstance;
   }
 
   async createPage(browser, cookies) {
@@ -72,11 +84,18 @@ class ScraperService {
 
   async navigate(page, url) {
     await page.goto(url, {
-      waitUntil: 'domcontentloaded',
-      timeout: 30000
+      waitUntil: 'networkidle2',
+      timeout: 60000
     });
 
     await this.resolveProductPage(page);
+    await page.waitForTimeout(3000);
+
+    ////
+    console.log("URL final:", page.url());
+    const content = await page.content();
+    console.log(content.includes("ui-pdp-title"));
+    ////
 
     await page.waitForSelector('.ui-pdp-title, h1', { timeout: 10000 });
 
