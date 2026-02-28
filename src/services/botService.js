@@ -200,9 +200,6 @@ class BotService {
 
   async processIncomingMessage(client, message, sessionId) {
     try {
-
-    } catch (error) {
-      console.error('[Bot] Erro inesperado:', error);
       if (message.fromMe) return;
       if (message.isGroupMsg || message.from.includes('@g.us')) return;
 
@@ -228,7 +225,6 @@ class BotService {
             client,
             {
               ...message,
-              body: `${nichoEscolhido}\n${state.link}`,
               body: `${nichoEscolhido}\n${state.link}`,
               isMedia: !!state.imagePath,
               type: state.imagePath ? 'image' : message.type,
@@ -534,16 +530,16 @@ class BotService {
           }
         }
       }
+    } catch (error) {
+      console.error('[Bot] Erro inesperado:', error);
+
       try {
         await client.sendText(
           message.from,
           '❌ Ocorreu um erro inesperado. O bot já está pronto para receber outro produto.'
         );
       } catch (_) { }
-
     }
-
-
   }
 }
 

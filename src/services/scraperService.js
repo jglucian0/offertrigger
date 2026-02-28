@@ -3,7 +3,6 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const { loadCookies } = require('../utils/cookieHelper');
 
 puppeteer.use(StealthPlugin());
-let browserInstance = null;
 
 class ScraperService {
   async fetchProducts(url) {
@@ -28,16 +27,12 @@ class ScraperService {
       console.error(`[Scraper] Erro ao recuperar produto: ${error.message}`);
       return { title: "Erro ao recuperar título" };
     } finally {
-      if (page) {
-        await page.close().catch(() => { });
-      }
+      await browser.close();
     }
   }
 
   async launchBrowser() {
-    if (browserInstance) return browserInstance;
-
-    browserInstance = await puppeteer.launch({
+    return puppeteer.launch({
       headless: "new",
       args: [
         '--no-sandbox',
@@ -45,13 +40,6 @@ class ScraperService {
         '--disable-dev-shm-usage'
       ]
     });
-
-    browserInstance.on('disconnected', () => {
-      console.log('⚠️ Browser desconectado. Resetando instância...');
-      browserInstance = null;
-    });
-
-    return browserInstance;
   }
 
   async createPage(browser, cookies) {
@@ -84,20 +72,15 @@ class ScraperService {
 
   async navigate(page, url) {
     await page.goto(url, {
-      waitUntil: 'networkidle2',
-      timeout: 60000
+      waitUntil: 'domcontentloaded',
+      timeout: 40000
     });
 
+    console.log(`[Scraper] Título da Página: ${await page.title()} | Status: ${response.status()}`);
+
     await this.resolveProductPage(page);
-    await page.waitForTimeout(3000);
 
-    ////
-    console.log("URL final:", page.url());
-    const content = await page.content();
-    console.log(content.includes("ui-pdp-title"));
-    ////
-
-    await page.waitForSelector('.ui-pdp-title, h1', { timeout: 10000 });
+    await page.waitForSelector('.ui-pdp-title, h1', { timeout: 15000 });
 
     await page.waitForSelector('.ui-pdp-header__subtitle', { timeout: 8000 }).catch(() => { });
     await page.waitForSelector('#coupon-awareness-row-label', { timeout: 5000 }).catch(() => { });
