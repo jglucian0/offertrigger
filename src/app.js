@@ -13,8 +13,7 @@ const affiliateController = require('./controllers/affiliateController');
 const offerController = require('./controllers/offerController');
 const nicheGroupController = require('./controllers/nicheGroupController');
 
-//App Init
-const app = express();
+
 
 //Session Boot
 manager.loadExistingSessions();
@@ -22,6 +21,8 @@ manager.loadExistingSessions();
 for (const session of manager.sessions.values()) {
   wppService.initSession(session.id);
 }
+
+const app = express();
 
 //Middlewares
 app.use(cors());
@@ -49,9 +50,6 @@ app.post('/affiliate/generate', affiliateController.generateLink);
 app.use('/offers', require('./routes/offers.routes'));
 
 //Niche Groups
-app.get('/niche-groups/:sessionId', nicheGroupController.listBySession);
-app.post('/niche-groups/:sessionId', nicheGroupController.register);
-app.delete('/niche-groups/:sessionId', nicheGroupController.remove);
 app.use('/niche-groups', require('./routes/nicheGroups.routes'));
 
 //External Routes
