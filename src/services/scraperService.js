@@ -21,10 +21,13 @@ class ScraperService {
           '--disable-accelerated-2d-canvas',
           '--no-first-run',
           '--no-zygote',
-          '--disable-gpu',
-          '--single-process',
-          '--disable-features=IsolateOrigins,site-per-process'
+          '--disable-gpu'
         ]
+      });
+
+      this.browser.on('disconnected', () => {
+        console.log('⚠️ Browser disconnected. Resetando...');
+        this.browser = null;
       });
     }
 
@@ -32,41 +35,33 @@ class ScraperService {
   }
 
   async fetchProducts(url) {
-    const cookies = await loadCookies()
+    const cookies = await loadCookies();
     if (!cookies.length) {
-      throw new Error('COOKIES_NOT_FOUND scraperService.js');
+      throw new Error('COOKIES_NOT_FOUND');
     }
 
     const browser = await this.getBrowser();
+    let page;
 
     try {
-      const page = await this.createPage(browser, cookies);
+      page = await this.createPage(browser, cookies);
 
       await this.preparePage(page);
       await this.navigate(page, url);
 
-      const productData = await this.extractProduct(page);
-
-      return productData;
+      return await this.extractProduct(page);
 
     } catch (error) {
-      console.error(`[Scraper] Erro ao recuperar produto: ${error.message}`);
+      console.error(`[Scraper] Erro: ${error.message}`);
       return { title: "Erro ao recuperar título" };
+
     } finally {
-      console.error(`[Scraper] Coletado com sucesso!`);
+      if (page && !page.isClosed()) {
+        await page.close().catch(() => { });
+      }
     }
   }
 
-  async launchBrowser() {
-    return puppeteer.launch({
-      headless: "new",
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage'
-      ]
-    });
-  }
 
   async createPage(browser, cookies) {
     const page = await browser.newPage();
@@ -88,7 +83,9 @@ class ScraperService {
     await page.setRequestInterception(true);
 
     page.on('request', req => {
-      if (!['document', 'xhr', 'fetch', 'script'].includes(req.resourceType())) {
+      const allowedResources = ['document', 'xhr', 'fetch', 'script', 'stylesheet'];
+
+      if (!allowedResources.includes(req.resourceType())) {
         req.abort();
       } else {
         req.continue();
@@ -97,36 +94,26 @@ class ScraperService {
   }
 
   async navigate(page, url) {
-    const response = await page.goto(url, {
+
+    await page.goto(url, {
       waitUntil: 'domcontentloaded',
       timeout: 40000
     });
 
     await this.resolveProductPage(page);
-
-    await page.waitForSelector('.ui-pdp-title, h1', { timeout: 15000 });
-
-    await page.waitForSelector('.ui-pdp-header__subtitle', { timeout: 8000 }).catch(() => { });
-    await page.waitForSelector('#coupon-awareness-row-label', { timeout: 5000 }).catch(() => { });
-
-    await page.waitForSelector(
-      '#price [data-testid="price-part"] .andes-money-amount__fraction',
-      { timeout: 15000 }
-    );
   }
 
-  async extractProduct(page) {
-    return page.evaluate(extractProductData);
-  }
+  async resolveProductPage(page, depth = 0) {
 
-  async resolveProductPage(page) {
+    if (depth > 3) {
+      console.log('⚠️ Limite de redirects atingido.');
+      return;
+    }
 
     const isProduct = await page.$('.ui-pdp-title');
-
     if (isProduct) return;
 
     const productLink = await page.evaluate(() => {
-
       const titleLink = document.querySelector('.poly-component__title[href]');
       if (titleLink) return titleLink.href;
 
@@ -145,9 +132,13 @@ class ScraperService {
       timeout: 40000
     });
 
-    await this.resolveProductPage(page);
-
+    return this.resolveProductPage(page, depth + 1);
   }
+
+  async extractProduct(page) {
+    return page.evaluate(extractProductData);
+  }
+
 }
 
 function extractProductData() {
