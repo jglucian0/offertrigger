@@ -8,6 +8,7 @@ const MessageFormatter = require('./messageFormatter');
 const ImageService = require('./imageService');
 const DispatchQueueRepository = require('../repositories/dispatchQueueRepository')
 const nicheGroupService = require('../services/nicheGroupService')
+const urlResolverService = require('../services/urlResolveService');
 
 
 class BotService {
@@ -234,6 +235,7 @@ class BotService {
           );
         }
 
+
         return this.handleApprovalResponse(client, message, sessionId);
       }
 
@@ -429,8 +431,19 @@ class BotService {
           await client.sendText(message.from, '⏳ Aguarde um momento, estou processando o produto...');
 
           try {
+            let urlFinal = urlDetectada;
 
-            const dadosScraper = await this.scraperService.fetchProducts(urlDetectada, sessionId);
+            if (
+              urlDetectada.includes('meli.la') ||
+              urlDetectada.includes('/social/') ||
+              urlDetectada.includes('/sec/')
+            ) {
+              console.log('[Bot] Resolvendo URL encurtada...');
+              urlFinal = await urlResolverService.resolveFinalUrl(urlDetectada);
+              console.log('[Bot] URL final:', urlFinal);
+            }
+
+            const dadosScraper = await this.scraperService.fetchProducts(urlFinal);
             const produtoUrlReal = dadosScraper.url || urlDetectada;
             let linkAfiliado;
 
