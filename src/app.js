@@ -1,64 +1,68 @@
 require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
-const path = require('path')
+const path = require('path');
+
+//Controllers
 const sessionController = require('./controllers/sessionController');
+const { manager, wppService } = sessionController;
+
 const messageController = require('./controllers/messageController');
 const affiliateController = require('./controllers/affiliateController');
 const offerController = require('./controllers/offerController');
-const { manager, wppService } = require('./controllers/sessionController');
 const nicheGroupController = require('./controllers/nicheGroupController');
 
+//App Init
+const app = express();
 
+//Session Boot
 manager.loadExistingSessions();
 
 for (const session of manager.sessions.values()) {
   wppService.initSession(session.id);
 }
 
-const app = express();
-
+//Middlewares
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+//Health / Base
 app.get('/', (req, res) => {
   res.status(200).json({ message: 'Servidor online' });
 });
-
-app.post('/session/start', sessionController.startSession);
-app.get('/session/status/:userId', sessionController.checkStatus);
-app.delete('/session/:userId', sessionController.deleteSession);
-app.get('/session/list', sessionController.listSessions);
 
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'UP' });
 });
 
+//Session Routes
+app.use('/session', require('./routes/session.routes'));
+
+//Message
 app.post('/message/send', messageController.sendMessage);
 
-app.get('/session/groups/:userId', sessionController.getGroups);
-
+//Affiliate / Offers
 app.post('/affiliate/generate', affiliateController.generateLink);
-app.get('/offers', offerController.listOffers);
-app.delete("/offers/:id", offerController.deleteOffer);
-app.put("/offers/:id", offerController.updateOffer);
-app.put('/offers/:id/migrate', offerController.migrateOffer)
 
+app.use('/offers', require('./routes/offers.routes'));
 
+//Niche Groups
+app.get('/niche-groups/:sessionId', nicheGroupController.listBySession);
+app.post('/niche-groups/:sessionId', nicheGroupController.register);
+app.delete('/niche-groups/:sessionId', nicheGroupController.remove);
+app.use('/niche-groups', require('./routes/nicheGroups.routes'));
+
+//External Routes
 app.use('/dispatch', require('./routes/dispatch'));
 app.use('/cookies', require('./routes/cookies'));
 app.use('/marketplace', require('./routes/marketplace'));
 
-
-app.get('/niche-groups/:sessionId', nicheGroupController.listBySession)
-app.post('/niche-groups/:sessionId', nicheGroupController.register)
-app.delete('/niche-groups/:sessionId', nicheGroupController.remove)
-app.use('/niche-groups', require('./routes/nicheGroups'))
-
+//Static Files
 app.use(
   '/uploads',
   express.static(path.resolve(__dirname, '../uploads'))
-)
+);
 
 module.exports = app;
