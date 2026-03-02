@@ -8,7 +8,8 @@ const MessageFormatter = require('./messageFormatter');
 const ImageService = require('./imageService');
 const DispatchQueueRepository = require('../repositories/dispatchQueueRepository')
 const nicheGroupService = require('../services/nicheGroupService')
-const urlResolverService = require('../services/urlResolveService');
+const urlResolverService = require('../services/urlResolverService');
+
 
 
 class BotService {
@@ -443,10 +444,7 @@ class BotService {
               console.log('[Bot] URL final:', urlFinal);
             }
 
-            const finalUrl = await urlResolverService.resolveFinalUrl(urlDetectada);
-
-            const dadosScraper = await this.scraperService.fetchProducts(finalUrl);
-
+            const dadosScraper = await this.scraperService.fetchProducts(urlFinal);
             const produtoUrlReal = dadosScraper.url || urlDetectada;
             let linkAfiliado;
 
