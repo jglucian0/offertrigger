@@ -21,10 +21,13 @@ class ScraperService {
           '--disable-accelerated-2d-canvas',
           '--no-first-run',
           '--no-zygote',
-          '--disable-gpu',
-          '--single-process',
-          '--disable-features=IsolateOrigins,site-per-process'
+          '--disable-gpu'
         ]
+      });
+
+      this.browser.on('disconnected', () => {
+        console.log('⚠️ Browser disconnected. Resetando...');
+        this.browser = null;
       });
     }
 
@@ -32,28 +35,30 @@ class ScraperService {
   }
 
   async fetchProducts(url) {
-    const cookies = await loadCookies()
+    const cookies = await loadCookies();
     if (!cookies.length) {
-      throw new Error('COOKIES_NOT_FOUND scraperService.js');
+      throw new Error('COOKIES_NOT_FOUND');
     }
 
     const browser = await this.getBrowser();
+    let page;
 
     try {
-      const page = await this.createPage(browser, cookies);
+      page = await this.createPage(browser, cookies);
 
       await this.preparePage(page);
       await this.navigate(page, url);
 
-      const productData = await this.extractProduct(page);
-
-      return productData;
+      return await this.extractProduct(page);
 
     } catch (error) {
-      console.error(`[Scraper] Erro ao recuperar produto: ${error.message}`);
+      console.error(`[Scraper] Erro: ${error.message}`);
       return { title: "Erro ao recuperar título" };
+
     } finally {
-      console.error(`[Scraper] Coletado com sucesso!`);
+      if (page && !page.isClosed()) {
+        await page.close().catch(() => { });
+      }
     }
   }
 
