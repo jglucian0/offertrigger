@@ -14,6 +14,15 @@ class MessageFormatter {
     return `R$ ${reais},${cents}`;
   }
 
+  static formatToBRL(value) {
+    if (value === null || value === undefined) return null;
+
+    return Number(value).toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
   static formatCouponText(coupon) {
     if (!coupon?.value || coupon.value <= 0) return null;
 
@@ -30,7 +39,7 @@ class MessageFormatter {
     const titulo = `${anteTitulo}${tituloBase}`;
 
     const price = product.precoCustom
-      ? `R$ ${product.precoCustom}`
+      ? `R$ ${this.formatToBRL(product.precoCustom)}`
       : this.formatPrice(product.currentPriceReais, product.currentPriceCents);
 
     const oldPrice = product.removerPrecoAntigo
@@ -51,7 +60,17 @@ class MessageFormatter {
 
     const extraInfoText = product.extraInfo ? `\n\n\`${product.extraInfo}\`` : '';
 
-    const couponFormatted = this.formatCouponText(product.coupon);
+    if (product.removeCoupon) {
+      product.coupon = null;
+    }
+
+    if (product.couponOverride) {
+      product.coupon = { value: 1 };
+    }
+
+    const couponFormatted = product.couponOverride
+      ? product.couponOverride
+      : this.formatCouponText(product.coupon);
     let couponText = '';
 
     if (couponFormatted) {

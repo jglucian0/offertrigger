@@ -42,6 +42,36 @@ class BotService {
       .trim();
   }
 
+  normalizePriceInput(value) {
+    if (!value) return null;
+
+    let v = value.trim();
+
+    // remove R$, espaços e tudo que não seja número, vírgula ou ponto
+    v = v.replace(/[^\d.,]/g, '');
+
+    // Se tiver vírgula e ponto
+    if (v.includes(',') && v.includes('.')) {
+      // Assume que o último separador é o decimal
+      if (v.lastIndexOf(',') > v.lastIndexOf('.')) {
+        // Formato BR: 1.299,90
+        v = v.replace(/\./g, '').replace(',', '.');
+      } else {
+        // Formato US: 1,299.90
+        v = v.replace(/,/g, '');
+      }
+    }
+    // Só vírgula
+    else if (v.includes(',')) {
+      v = v.replace(',', '.');
+    }
+    // Só ponto → já está ok
+
+    const parsed = parseFloat(v);
+
+    return isNaN(parsed) ? null : parsed;
+  }
+
   async identificarNicho(sessionId, termo) {
 
     if (!termo) return undefined;
@@ -113,6 +143,7 @@ class BotService {
 [6] - \`📝 Adicionar informação\`
 [7] - \`⚡ Disparo instantâneo\`
 [8] - \`📌 Inserir antetítulo\`
+[9] - \`🎟️ Gerenciar cupom\`
 [0] - \`❌ Cancelar\``);
   }
 
@@ -155,7 +186,7 @@ class BotService {
         fs.unlinkSync(finalImage)
 
         if (state.config.precoCustom) {
-          state.current_price = state.config.precoCustom;
+          state.current_price = parseFloat(state.config.precoCustom);
         }
 
         for (const niche of state.niches) {
@@ -183,15 +214,60 @@ class BotService {
       if (text === '5') return state.config.semEmoji = true, this.sendPreview(client, message.from, state);
       if (text === '6') return state.etapa = 'edit_extra', client.sendText(message.from, '📝 Informação extra:');
       if (text === '8') return state.etapa = 'edit_ante', client.sendText(message.from, '📌 Antetítulo:');
+      if (text === '9') {
+        state.etapa = 'coupon_menu';
+        return client.sendText(message.from,
+          `🎟️ Gerenciar cupom:
+
+[1] - Apagar cupom
+[2] - Editar cupom
+[0] - Voltar`);
+      }
       if (text === '0') return sessionMap.delete(message.from), client.sendText(message.from, '❌ Cancelado.');
 
       return client.sendText(message.from, 'Opção inválida.');
     }
 
+    if (state.etapa === 'coupon_menu') {
+
+      if (text === '1') {
+        state.config.couponOverride = null;
+        state.config.removeCoupon = true;
+        state.etapa = 'menu';
+        return this.sendPreview(client, message.from, state);
+      }
+
+      if (text === '2') {
+        state.etapa = 'edit_coupon';
+        return client.sendText(message.from, '✏️ Envie o texto do cupom (ex: +R$20 OFF ou +15% OFF)');
+      }
+
+      if (text === '0') {
+        state.etapa = 'menu';
+        return this.sendPreview(client, message.from, state);
+      }
+
+      return client.sendText(message.from, 'Opção inválida.');
+    }
+
     if (state.etapa === 'edit_title') state.config.tituloCustom = text;
-    if (state.etapa === 'edit_price') state.config.precoCustom = text;
+    if (state.etapa === 'edit_price') {
+      const normalized = this.normalizePriceInput(text);
+
+      if (!normalized) {
+        return client.sendText(message.from, '❌ Valor inválido.');
+      }
+
+      state.config.precoCustom = normalized;
+    }
     if (state.etapa === 'edit_extra') state.config.extraInfo = text;
     if (state.etapa === 'edit_ante') state.config.anteTitulo = text;
+    if (state.etapa === 'edit_coupon') {
+      state.config.couponOverride = text;
+      state.config.removeCoupon = false;
+      state.etapa = 'menu';
+      return this.sendPreview(client, message.from, state);
+    }
 
     state.etapa = 'menu';
     return this.sendPreview(client, message.from, state);
@@ -449,7 +525,6 @@ class BotService {
             let linkAfiliado;
 
             try {
-              console.log('[Bot] Convertendo link real do produto...');
               linkAfiliado = await this.affiliateService.generateAffiliateLink(produtoUrlReal, sessionId);
             } catch (err) {
               console.error('[Bot] Falha ao converter link:', err.message);
@@ -506,7 +581,9 @@ class BotService {
                 precoCustom: null,
                 removerPrecoAntigo: false,
                 semEmoji: false,
-                extraInfo: null
+                extraInfo: null,
+                couponOverride: null,
+                removeCoupon: false
               }
             });
 
@@ -530,6 +607,7 @@ class BotService {
 [6] - \`📝 Adicionar informação\`
 [7] - \`⚡ Disparo instantâneo\`
 [8] - \`📌 Inserir antetítulo\`
+[9] - \`🎟️ Gerenciar cupom\`
 [0] - \`❌ Cancelar\``);
 
           } catch (err) {
