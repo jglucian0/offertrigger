@@ -1,17 +1,43 @@
-const puppeteer = require('puppeteer-extra');
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+// const puppeteer = require('puppeteer-extra');
+// const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+const puppeteer = require('puppeteer');
 const { loadCookies } = require('../utils/cookieHelper');
 
-puppeteer.use(StealthPlugin());
+// puppeteer.use(StealthPlugin());
 
 class ScraperService {
+  constructor() {
+    this.browser = null;
+  }
+
+  async getBrowser() {
+    if (!this.browser) {
+      this.browser = await puppeteer.launch({
+        headless: true,
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-accelerated-2d-canvas',
+          '--no-first-run',
+          '--no-zygote',
+          '--disable-gpu',
+          '--single-process',
+          '--disable-features=IsolateOrigins,site-per-process'
+        ]
+      });
+    }
+
+    return this.browser;
+  }
+
   async fetchProducts(url) {
     const cookies = await loadCookies()
     if (!cookies.length) {
       throw new Error('COOKIES_NOT_FOUND scraperService.js');
     }
 
-    const browser = await this.launchBrowser();
+    const browser = await this.getBrowser();
 
     try {
       const page = await this.createPage(browser, cookies);
@@ -27,7 +53,7 @@ class ScraperService {
       console.error(`[Scraper] Erro ao recuperar produto: ${error.message}`);
       return { title: "Erro ao recuperar título" };
     } finally {
-      await browser.close();
+      console.error(`[Scraper] Coletado com sucesso!`);
     }
   }
 
@@ -62,7 +88,7 @@ class ScraperService {
     await page.setRequestInterception(true);
 
     page.on('request', req => {
-      if (['image', 'font', 'stylesheet', 'media'].includes(req.resourceType())) {
+      if (!['document', 'xhr', 'fetch', 'script'].includes(req.resourceType())) {
         req.abort();
       } else {
         req.continue();
@@ -71,12 +97,10 @@ class ScraperService {
   }
 
   async navigate(page, url) {
-    await page.goto(url, {
+    const response = await page.goto(url, {
       waitUntil: 'domcontentloaded',
       timeout: 40000
     });
-
-    console.log(`[Scraper] Título da Página: ${await page.title()} | Status: ${response.status()}`);
 
     await this.resolveProductPage(page);
 
@@ -85,8 +109,9 @@ class ScraperService {
     await page.waitForSelector('.ui-pdp-header__subtitle', { timeout: 8000 }).catch(() => { });
     await page.waitForSelector('#coupon-awareness-row-label', { timeout: 5000 }).catch(() => { });
 
-    await page.waitForFunction(() =>
-      document.querySelector('#price [data-testid="price-part"] .andes-money-amount__fraction')
+    await page.waitForSelector(
+      '#price [data-testid="price-part"] .andes-money-amount__fraction',
+      { timeout: 15000 }
     );
   }
 
@@ -99,8 +124,6 @@ class ScraperService {
     const isProduct = await page.$('.ui-pdp-title');
 
     if (isProduct) return;
-
-    console.log('[Scraper] Página intermediária detectada. Procurando produto...');
 
     const productLink = await page.evaluate(() => {
 
@@ -117,12 +140,12 @@ class ScraperService {
       throw new Error('Nenhum link de produto encontrado na página intermediária');
     }
 
-    console.log('[Scraper] Entrando no produto:', productLink);
-
     await page.goto(productLink, {
       waitUntil: 'domcontentloaded',
-      timeout: 30000
+      timeout: 40000
     });
+
+    await this.resolveProductPage(page);
 
   }
 }
