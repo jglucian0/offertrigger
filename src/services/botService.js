@@ -430,7 +430,9 @@ class BotService {
 
           try {
 
-            const dadosScraper = await this.scraperService.fetchProducts(urlDetectada, sessionId);
+            const finalUrl = await urlResolverService.resolveFinalUrl(urlDetectada);
+
+            const dadosScraper = await this.scraperService.fetchProducts(finalUrl);
             const produtoUrlReal = dadosScraper.url || urlDetectada;
             let linkAfiliado;
 

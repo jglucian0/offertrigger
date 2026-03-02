@@ -62,16 +62,6 @@ class ScraperService {
     }
   }
 
-  async launchBrowser() {
-    return puppeteer.launch({
-      headless: "new",
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage'
-      ]
-    });
-  }
 
   async createPage(browser, cookies) {
     const page = await browser.newPage();
@@ -93,12 +83,24 @@ class ScraperService {
     await page.setRequestInterception(true);
 
     page.on('request', req => {
-      if (!['document', 'xhr', 'fetch', 'script'].includes(req.resourceType())) {
+      const allowedResources = ['document', 'xhr', 'fetch', 'script', 'stylesheet'];
+
+      if (!allowedResources.includes(req.resourceType())) {
         req.abort();
       } else {
         req.continue();
       }
     });
+  }
+
+  async navigate(page, url) {
+
+    await page.goto(url, {
+      waitUntil: 'domcontentloaded',
+      timeout: 40000
+    });
+
+    await this.resolveProductPage(page);
   }
 
   async resolveProductPage(page, depth = 0) {
@@ -137,35 +139,6 @@ class ScraperService {
     return page.evaluate(extractProductData);
   }
 
-  async resolveProductPage(page) {
-
-    const isProduct = await page.$('.ui-pdp-title');
-
-    if (isProduct) return;
-
-    const productLink = await page.evaluate(() => {
-
-      const titleLink = document.querySelector('.poly-component__title[href]');
-      if (titleLink) return titleLink.href;
-
-      const buttonLink = document.querySelector('.poly-component__link--action-link[href]');
-      if (buttonLink) return buttonLink.href;
-
-      return null;
-    });
-
-    if (!productLink) {
-      throw new Error('Nenhum link de produto encontrado na página intermediária');
-    }
-
-    await page.goto(productLink, {
-      waitUntil: 'domcontentloaded',
-      timeout: 40000
-    });
-
-    await this.resolveProductPage(page);
-
-  }
 }
 
 function extractProductData() {
