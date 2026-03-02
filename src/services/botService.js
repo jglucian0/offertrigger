@@ -443,7 +443,10 @@ class BotService {
               console.log('[Bot] URL final:', urlFinal);
             }
 
-            const dadosScraper = await this.scraperService.fetchProducts(urlFinal);
+            const finalUrl = await urlResolverService.resolveFinalUrl(urlDetectada);
+
+            const dadosScraper = await this.scraperService.fetchProducts(finalUrl);
+
             const produtoUrlReal = dadosScraper.url || urlDetectada;
             let linkAfiliado;
 
