@@ -1,6 +1,6 @@
 node_modules
 arquivos temporarios (não usado)
-.env
+
 /src/generated/prisma
 tokens
 frontend
