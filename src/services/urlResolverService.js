@@ -21,7 +21,22 @@ class UrlResolverService {
         const html = response.data;
 
         // Regex para capturar links do Mercado Livre que contenham MLB (ID do produto)
-        const productMatch = html.match(/https:\/\/(www\.|produto\.)?mercadolivre\.com\.br\/[^\s"']+MLB-?\d+[^\s"']+/);
+        const singleSectionMatch = html.match(
+          /<section class="rl-list-single">([\s\S]*?)<\/section>\s*<\/section>/
+        );
+
+        if (singleSectionMatch) {
+          const singleSectionHtml = singleSectionMatch[1];
+
+          // 2️⃣ Agora buscamos apenas dentro desse bloco
+          const productMatch = singleSectionHtml.match(
+            /https:\/\/produto\.mercadolivre\.com\.br\/MLB-\d+[^"'\s]+/
+          );
+
+          if (productMatch) {
+            return productMatch[0].split('?')[0];
+          }
+        }
 
         if (productMatch) {
           const cleanUrl = productMatch[0].split('?')[0]; // Remove trackings

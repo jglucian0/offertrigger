@@ -449,6 +449,43 @@ class BotService {
       const bodyTrim = (message.caption || message.body || '').trim();
       const urlDetectada = bodyTrim.match(/https?:\/\/\S+/)?.[0];
 
+      if (urlDetectada && lines.length > 2) {
+
+        let fotoCaminhoLocal = null;
+
+        if (message.isMedia || message.type === 'image') {
+          const buffer = await client.decryptFile(message);
+          const fileName = `${Date.now()}.jpg`;
+          fotoCaminhoLocal = path.join(this.uploadPath, fileName);
+          fs.writeFileSync(fotoCaminhoLocal, buffer);
+        }
+
+        const groups = (await nicheGroupService.listBySession(sessionId))
+          .filter(g => g.active);
+
+        const nichosUnicos = [...new Set(groups.map(g => g.niche))];
+
+        if (!nichosUnicos.length)
+          return client.sendText(message.from, 'Nenhum nicho configurado.');
+
+        const sessionMap = this.getSessionMap(this.pendingApprovals, sessionId);
+
+        sessionMap.set(message.from, {
+          etapa: 'escolher_nicho',
+          link: urlDetectada,
+          nichosDisponiveis: nichosUnicos,
+          imagePath: fotoCaminhoLocal
+        });
+
+        let menu = 'Escolha o nicho:\n\n';
+
+        nichosUnicos.forEach((n, i) => {
+          menu += `[${i + 1}] - ${n}\n`;
+        });
+
+        return client.sendText(message.from, menu);
+      }
+
       if (urlDetectada && lines.length === 1) {
 
         let fotoCaminhoLocal = null;
@@ -488,7 +525,7 @@ class BotService {
 
       let nichosIdentificados = [];
 
-      if (lines.length >= 2) {
+      if (lines.length === 2) {
         const nichosRaw = lines[0].split(',');
         nichosIdentificados = await Promise.all(
           nichosRaw.map(n => this.identificarNicho(sessionId, n))
