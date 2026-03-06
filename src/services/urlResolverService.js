@@ -25,6 +25,8 @@ class UrlResolverService {
           /<section class="rl-list-single">([\s\S]*?)<\/section>\s*<\/section>/
         );
 
+        let productMatch = null;
+
         if (singleSectionMatch) {
           const singleSectionHtml = singleSectionMatch[1];
 
